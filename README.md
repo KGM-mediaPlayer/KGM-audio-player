@@ -10,7 +10,7 @@ KGM Music Player is a modern, minimal, and feature-rich desktop music player bui
 ---
 
 ## ✨ Features
-(utils/images/sample_image.png)
+![UI image](utils/images/sample_image.png)
 ### 🎧 Audio Playback
 - Supports `.mp3`, `.wav`, and `.ogg` file formats.
 - Play, pause, stop, skip forward/backward.
