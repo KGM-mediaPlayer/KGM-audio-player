@@ -32,7 +32,7 @@ class Ui_MusicApp(object):
         font.setWeight(75)
         self.overlay_layer.setFont(font)
         self.overlay_layer.setText("")
-        self.overlay_layer.setPixmap(QtGui.QPixmap("utils/bg_imgs/bg_overlay.png"))
+        self.overlay_layer.setPixmap(QtGui.QPixmap(":/img/utils/bg_imgs/bg_overlay.png"))
         self.overlay_layer.setScaledContents(True)
         self.overlay_layer.setObjectName("overlay_layer")
         self.title_frame = QtWidgets.QFrame(self.centralwidget)
@@ -44,7 +44,7 @@ class Ui_MusicApp(object):
         self.App_logo.setGeometry(QtCore.QRect(30, 10, 30, 40))
         self.App_logo.setMaximumSize(QtCore.QSize(30, 50))
         self.App_logo.setText("")
-        self.App_logo.setPixmap(QtGui.QPixmap("utils/images/KGM app logo1.png"))
+        self.App_logo.setPixmap(QtGui.QPixmap(":/img/utils/images/KGM app logo1.png"))
         self.App_logo.setScaledContents(True)
         self.App_logo.setObjectName("App_logo")
         self.label_3 = QtWidgets.QLabel(self.title_frame)
@@ -65,12 +65,12 @@ class Ui_MusicApp(object):
 "}")
         self.minimize_btn.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("utils/images/min.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/img/utils/images/min.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.minimize_btn.setIcon(icon)
         self.minimize_btn.setIconSize(QtCore.QSize(24, 24))
         self.minimize_btn.setObjectName("minimize_btn")
         self.Close_btn = QtWidgets.QPushButton(self.title_frame)
-        self.Close_btn.setGeometry(QtCore.QRect(830, 10, 31, 21))
+        self.Close_btn.setGeometry(QtCore.QRect(830, 0, 31, 30))
         self.Close_btn.setStyleSheet("QPushButton{\n"
 "    background-color: rgba(255,255,255,0);\n"
 "}\n"
@@ -80,9 +80,9 @@ class Ui_MusicApp(object):
 "}")
         self.Close_btn.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("utils/images/quit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/img/utils/images/quit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.Close_btn.setIcon(icon1)
-        self.Close_btn.setIconSize(QtCore.QSize(24, 24))
+        self.Close_btn.setIconSize(QtCore.QSize(24, 20))
         self.Close_btn.setObjectName("Close_btn")
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(30, 210, 281, 261))
@@ -266,13 +266,17 @@ class Ui_MusicApp(object):
 "\n"
 "QPushButton:hover{\n"
 "    background-color: rgba(255,255,255,130);\n"
+"}\n"
+"\n"
+"QPushButton:checked {\n"
+"    background-color: rgba(255, 255, 255, 130); \n"
 "}")
         self.loop_btn.setText("")
         icon9 = QtGui.QIcon()
         icon9.addPixmap(QtGui.QPixmap(":/img/utils/images/loop-one.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.loop_btn.setIcon(icon9)
         self.loop_btn.setCheckable(True)
-        self.loop_btn.setChecked(True)
+        self.loop_btn.setChecked(False)
         self.loop_btn.setObjectName("loop_btn")
         self.horizontalLayout.addWidget(self.loop_btn)
         self.shuffle_songs_btn = QtWidgets.QPushButton(self.frame_3)
@@ -281,14 +285,18 @@ class Ui_MusicApp(object):
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"    background-color: rgba(255,255,255,130);\n"
+"    background-color: rgba(255,255,255,180);\n"
+"}\n"
+"\n"
+"QPushButton:checked {\n"
+"    background-color: rgba(255, 255, 255, 130); \n"
 "}")
         self.shuffle_songs_btn.setText("")
         icon10 = QtGui.QIcon()
         icon10.addPixmap(QtGui.QPixmap(":/img/utils/images/play-random.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.shuffle_songs_btn.setIcon(icon10)
         self.shuffle_songs_btn.setCheckable(True)
-        self.shuffle_songs_btn.setChecked(True)
+        self.shuffle_songs_btn.setChecked(False)
         self.shuffle_songs_btn.setObjectName("shuffle_songs_btn")
         self.horizontalLayout.addWidget(self.shuffle_songs_btn)
         self.music_slider = QtWidgets.QSlider(self.frame_2)
@@ -407,13 +415,18 @@ class Ui_MusicApp(object):
         self.frame_4.setObjectName("frame_4")
         self.song_list_btn = QtWidgets.QPushButton(self.frame_4)
         self.song_list_btn.setGeometry(QtCore.QRect(10, 20, 111, 21))
-        self.song_list_btn.setStyleSheet("\n"
-"color: rgb(255, 255, 255);\n"
-"background-color: rgba(56, 208, 255, 161);\n"
-"border-radius: 10px;\n"
+        self.song_list_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background-color: rgba(56, 208, 255, 161);\n"
+"    border-radius: 10px;\n"
+"}\n"
 "\n"
-"QPushButton:{\n"
-"    background-color:hover: rgba(255,255,255,130);\n"
+"QPushButton:hover {\n"
+"    background-color: rgba(56, 208, 255, 200);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgba(30, 150, 200, 200); \n"
 "}\n"
 "")
         self.song_list_btn.setCheckable(True)
@@ -421,17 +434,39 @@ class Ui_MusicApp(object):
         self.playlist_btn = QtWidgets.QPushButton(self.frame_4)
         self.playlist_btn.setGeometry(QtCore.QRect(180, 20, 111, 21))
         self.playlist_btn.setStyleSheet("\n"
-"color: rgb(255, 255, 255);\n"
-"background-color: rgb(253, 138, 32);\n"
-"border-radius: 10px;\n"
+"\n"
+"QPushButton {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background-color: rgba(253, 138, 32, 161);\n"
+"    border-radius: 10px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(254, 163, 29)\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgba(30, 150, 200, 200); \n"
+"}\n"
 "")
         self.playlist_btn.setObjectName("playlist_btn")
         self.favourites_btn = QtWidgets.QPushButton(self.frame_4)
         self.favourites_btn.setGeometry(QtCore.QRect(350, 20, 111, 21))
-        self.favourites_btn.setStyleSheet("\n"
-"color: rgb(255, 255, 255);\n"
-"background-color: rgba(255, 255, 255, 100);\n"
-"border-radius: 10px;\n"
+        self.favourites_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background-color: rgba(255, 255, 255, 100);\n"
+"    border-radius: 10px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(170, 172, 146)\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgba(30, 150, 200, 200); \n"
+"}\n"
+"\n"
+"\n"
 "")
         self.favourites_btn.setObjectName("favourites_btn")
         self.album_art_view = QtWidgets.QLabel(self.centralwidget)
@@ -469,8 +504,8 @@ class Ui_MusicApp(object):
 
         self.retranslateUi(MusicApp)
         self.Close_btn.clicked.connect(MusicApp.close) # type: ignore
-        self.minimize_btn.clicked.connect(MusicApp.show) # type: ignore
-        self.volume_dial.actionTriggered['int'].connect(self.volume_label.setNum) # type: ignore
+        self.minimize_btn.clicked.connect(MusicApp.showMinimized) # type: ignore
+        self.volume_dial.valueChanged['int'].connect(self.volume_label.setNum) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MusicApp)
 
     def retranslateUi(self, MusicApp):

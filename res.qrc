@@ -1,5 +1,19 @@
 <RCC>
   <qresource prefix="img">
+    <file>utils/bg_imgs/bg_0003_1.jpg</file>
+    <file>utils/bg_imgs/bg_0011_4.jpeg</file>
+    <file>utils/bg_imgs/bg_0004_12.jpg</file>
+    <file>utils/bg_imgs/bg_overlay.png</file>
+    <file>utils/bg_imgs/bg_0002_11.jpg</file>
+    <file>utils/bg_imgs/bg_0013_2.jpg</file>
+    <file>utils/bg_imgs/bg_0011_4.png</file>
+    <file>utils/bg_imgs/bg_0005_10.jpg</file>
+    <file>utils/bg_imgs/bg_0006_9.jpg</file>
+    <file>utils/bg_imgs/bg_0008_7.jpg</file>
+    <file>utils/bg_imgs/bg_0012_3.jpg</file>
+    <file>utils/bg_imgs/bg_0009_6.jpg</file>
+    <file>utils/bg_imgs/bg_0007_8.jpg</file>
+    <file>utils/bg_imgs/bg_0010_5.jpg</file>
     <file>utils/images/KGM app logo1.png</file>
     <file>utils/images/bg_0012_3.png</file>
     <file>utils/images/remove.png</file>

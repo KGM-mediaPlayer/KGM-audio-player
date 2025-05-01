@@ -64,7 +64,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>utils/bg_imgs/bg_overlay.png</pixmap>
+     <pixmap resource="res.qrc">:/img/utils/bg_imgs/bg_overlay.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -104,7 +104,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>utils/images/KGM app logo1.png</pixmap>
+      <pixmap resource="res.qrc">:/img/utils/images/KGM app logo1.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -153,8 +153,8 @@ QPushButton:hover{
       <string/>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>utils/images/min.png</normaloff>utils/images/min.png</iconset>
+      <iconset resource="res.qrc">
+       <normaloff>:/img/utils/images/min.png</normaloff>:/img/utils/images/min.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -167,9 +167,9 @@ QPushButton:hover{
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>10</y>
+       <y>0</y>
        <width>31</width>
-       <height>21</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -185,13 +185,13 @@ QPushButton:hover{
       <string/>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>utils/images/quit.png</normaloff>utils/images/quit.png</iconset>
+      <iconset resource="res.qrc">
+       <normaloff>:/img/utils/images/quit.png</normaloff>:/img/utils/images/quit.png</iconset>
      </property>
      <property name="iconSize">
       <size>
        <width>24</width>
-       <height>24</height>
+       <height>20</height>
       </size>
      </property>
     </widget>
@@ -586,6 +586,10 @@ QPushButton:hover{
 
 QPushButton:hover{
 	background-color: rgba(255,255,255,130);
+}
+
+QPushButton:checked {
+    background-color: rgba(255, 255, 255, 130); 
 }</string>
         </property>
         <property name="text">
@@ -599,7 +603,7 @@ QPushButton:hover{
          <bool>true</bool>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -611,7 +615,11 @@ QPushButton:hover{
 }
 
 QPushButton:hover{
-	background-color: rgba(255,255,255,130);
+	background-color: rgba(255,255,255,180);
+}
+
+QPushButton:checked {
+    background-color: rgba(255, 255, 255, 130); 
 }</string>
         </property>
         <property name="text">
@@ -625,7 +633,7 @@ QPushButton:hover{
          <bool>true</bool>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -929,13 +937,18 @@ selection-background-color: rgb(253, 138, 32);</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">
-color: rgb(255, 255, 255);
-background-color: rgba(56, 208, 255, 161);
-border-radius: 10px;
+      <string notr="true">QPushButton {
+    color: rgb(255, 255, 255);
+    background-color: rgba(56, 208, 255, 161);
+    border-radius: 10px;
+}
 
-QPushButton:{
-	background-color:hover: rgba(255,255,255,130);
+QPushButton:hover {
+    background-color: rgba(56, 208, 255, 200);
+}
+
+QPushButton:pressed {
+    background-color: rgba(30, 150, 200, 200); 
 }
 </string>
      </property>
@@ -957,9 +970,20 @@ QPushButton:{
      </property>
      <property name="styleSheet">
       <string notr="true">
-color: rgb(255, 255, 255);
-background-color: rgb(253, 138, 32);
-border-radius: 10px;
+
+QPushButton {
+    color: rgb(255, 255, 255);
+    background-color: rgba(253, 138, 32, 161);
+    border-radius: 10px;
+}
+
+QPushButton:hover {
+    background-color: rgb(254, 163, 29)
+}
+
+QPushButton:pressed {
+    background-color: rgba(30, 150, 200, 200); 
+}
 </string>
      </property>
      <property name="text">
@@ -976,10 +1000,21 @@ border-radius: 10px;
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">
-color: rgb(255, 255, 255);
-background-color: rgba(255, 255, 255, 100);
-border-radius: 10px;
+      <string notr="true">QPushButton {
+    color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 100);
+    border-radius: 10px;
+}
+
+QPushButton:hover {
+    background-color: rgb(170, 172, 146)
+}
+
+QPushButton:pressed {
+    background-color: rgba(30, 150, 200, 200); 
+}
+
+
 </string>
      </property>
      <property name="text">
@@ -1102,7 +1137,7 @@ border-radius: 10px;
   <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
-   <header>clickablelabel.h</header>
+   <header location="global">clickablelabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>
@@ -1129,7 +1164,7 @@ border-radius: 10px;
    <sender>minimize_btn</sender>
    <signal>clicked()</signal>
    <receiver>MusicApp</receiver>
-   <slot>show()</slot>
+   <slot>showMinimized()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>805</x>
@@ -1143,7 +1178,7 @@ border-radius: 10px;
   </connection>
   <connection>
    <sender>volume_dial</sender>
-   <signal>actionTriggered(int)</signal>
+   <signal>valueChanged(int)</signal>
    <receiver>volume_label</receiver>
    <slot>setNum(int)</slot>
    <hints>

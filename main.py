@@ -7,6 +7,7 @@ from PyQt5.QtGui import QIcon,QImage,QPixmap
 from PyQt5.QtCore import Qt,pyqtSignal
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
+from config_loader import load_config, save_config
 import sys
 import json
 import time
@@ -60,7 +61,7 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         self.delete_selected_btn.clicked.connect(self.remove_one_song)
         self.delete_all_songs_btn.clicked.connect(self.remove_all_songs)
         self.listWidget.itemDoubleClicked.connect(self.play_audio)
-        self.favourites_btn.clicked.connect(self.show_favorites)
+        self.favourites_btn.clicked.connect(self.show_favourite_songs)
         self.playlist_btn.clicked.connect(self.show_playlist)
         self.song_list_btn.clicked.connect(self.song_list)
         self.App_logo.clicked.connect(self.show_about_dialog)
@@ -75,7 +76,8 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         # data storage
         self.favorites_file = "data/favorites.json"
         os.makedirs("data", exist_ok=True)  # Ensure directory exists
-        self.favorites_list = self.load_favorites()
+        self.favourites_list = songs.favorite_songs_list
+        self.playlist = songs.current_song_list
         self.default_music_folder = self.get_or_select_music_folder()
         self.load_tracks_from_folder(self.default_music_folder)
 
@@ -472,6 +474,7 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
     # songs list
     def song_list(self):
         try:
+            self.listWidget.clear()
             for song in songs.current_song_list:
                 self.listWidget.addItem(
                     QListWidgetItem(
@@ -497,7 +500,7 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
             print(f"Error displaying playlist: {e}")
     
     # favourite songs
-    def favourite_songs(self):
+    def show_favourite_songs(self):
         try:
             self.listWidget.clear()
             for song in songs.current_song_list:
@@ -511,42 +514,7 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
             print(f"Error displaying favourite songs: {e}")
     
     # dealling with favorites & playlists
-    def load_favorites(self):
-        try:
-            if os.path.exists(self.favorites_file):
-                with open(self.favorites_file, "r") as f:
-                    return json.load(f)
-        except Exception as e:
-            print(f"Error loading favorites: {e}")
-        return []
 
-    def save_favorites(self):
-        try:
-            with open(self.favorites_file, "w") as f:
-                json.dump(self.favorites_list, f)
-        except Exception as e:
-            print(f"Error saving favorites: {e}")
-
-    def add_to_favorites(self, song_path):
-        if song_path not in self.favorites_list:
-            self.favorites_list.append(song_path)
-            self.save_favorites()
-
-    def remove_from_favorites(self, song_path):
-        if song_path in self.favorites_list:
-            self.favorites_list.remove(song_path)
-            self.save_favorites()
-
-    def show_favorites(self):
-        self.listWidget.clear()
-        for song in self.favorites_list:
-            self.listWidget.addItem(
-                QListWidgetItem(
-                    QtGui.QIcon(':/img/utils/images/MusicListItem.png'), 
-                    os.path.basename(song)
-                )
-            )
-    
     def get_or_select_music_folder(self):
         config_path = "data/config.json"
         os.makedirs("data", exist_ok=True)
@@ -580,8 +548,6 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
             print(f"Error loading songs from folder: {e}")
 
 
-
-
 #DIALOGUE about page
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
@@ -593,7 +559,7 @@ class AboutDialog(QDialog):
 
         # App logo
         logo_label = QLabel()
-        logo_pixmap = QPixmap("utils/images/KGM app logo1.png").scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        logo_pixmap = QPixmap("utils/images/KGM app logo1.png").scaled(70, 70, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         logo_label.setPixmap(logo_pixmap)
         logo_label.setAlignment(Qt.AlignCenter)
 
@@ -604,6 +570,7 @@ class AboutDialog(QDialog):
             "<p>Developed by: Kisakye Gibreel</p>"
             "<p>Thank you for using this player!</p>"
             "<p>Copyright 2025</p>"
+            "<p>Kampala,Uganda 🇺🇬</p>"
         )
         info_label.setAlignment(Qt.AlignCenter)
         info_label.setWordWrap(True)
