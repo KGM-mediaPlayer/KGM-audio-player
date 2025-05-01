@@ -3,7 +3,7 @@ Free Open source audio player written in python and QT
 
 # 🎵 KGM Music Player
 
-![KGM Logo](utils/images/KGM app logo1.png)
+![KGM Logo](utils/images/KGM%app%logo1.png)
 
 KGM Music Player is a modern, minimal, and feature-rich desktop music player built using Python and PyQt5. It offers a sleek interface, powerful audio features, and a personalized user experience.
 
