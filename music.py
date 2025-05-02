@@ -105,14 +105,16 @@ class Ui_MusicApp(object):
         font.setBold(True)
         font.setWeight(75)
         self.currently_playing.setFont(font)
-        self.currently_playing.setStyleSheet("color: rgb(255, 255, 255);")
+        self.currently_playing.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgba(255, 255, 255, 0);")
         self.currently_playing.setObjectName("currently_playing")
         self.label_6 = QtWidgets.QLabel(self.frame)
         self.label_6.setGeometry(QtCore.QRect(30, 50, 51, 21))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.label_6.setFont(font)
-        self.label_6.setStyleSheet("color: rgb(116, 212, 255);")
+        self.label_6.setStyleSheet("color: rgb(116, 212, 255);\n"
+"background-color: rgba(255, 255, 255, 0);")
         self.label_6.setObjectName("label_6")
         self.Current_song_name = QtWidgets.QLabel(self.frame)
         self.Current_song_name.setGeometry(QtCore.QRect(30, 70, 171, 21))
@@ -127,7 +129,8 @@ class Ui_MusicApp(object):
         font = QtGui.QFont()
         font.setPointSize(14)
         self.label_7.setFont(font)
-        self.label_7.setStyleSheet("color: rgb(116, 212, 255);")
+        self.label_7.setStyleSheet("color: rgb(116, 212, 255);\n"
+"background-color: rgba(255, 255, 255, 0);")
         self.label_7.setObjectName("label_7")
         self.Current_song_path = QtWidgets.QLabel(self.frame)
         self.Current_song_path.setGeometry(QtCore.QRect(30, 120, 171, 21))
@@ -137,24 +140,24 @@ class Ui_MusicApp(object):
         self.Current_song_path.setStyleSheet("color: rgba(255, 255, 255, 255);\n"
 "background-color: rgba(255, 255, 255, 0);")
         self.Current_song_path.setObjectName("Current_song_path")
-        self.add_to_favourites = QtWidgets.QPushButton(self.frame)
-        self.add_to_favourites.setGeometry(QtCore.QRect(50, 160, 171, 21))
-        self.add_to_favourites.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+        self.add_to_favourites_btn = QtWidgets.QPushButton(self.frame)
+        self.add_to_favourites_btn.setGeometry(QtCore.QRect(50, 160, 171, 21))
+        self.add_to_favourites_btn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "color: rgb(253, 124, 9);\n"
 "raduis: 20px;")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/img/utils/images/like.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.add_to_favourites.setIcon(icon2)
-        self.add_to_favourites.setObjectName("add_to_favourites")
-        self.add_to_playlist = QtWidgets.QPushButton(self.frame)
-        self.add_to_playlist.setGeometry(QtCore.QRect(50, 200, 171, 21))
-        self.add_to_playlist.setStyleSheet("background-color: rgb(253, 138, 32);\n"
+        self.add_to_favourites_btn.setIcon(icon2)
+        self.add_to_favourites_btn.setObjectName("add_to_favourites_btn")
+        self.add_to_playlist_btn = QtWidgets.QPushButton(self.frame)
+        self.add_to_playlist_btn.setGeometry(QtCore.QRect(50, 200, 171, 21))
+        self.add_to_playlist_btn.setStyleSheet("background-color: rgb(253, 138, 32);\n"
 "color: rgb(255, 255, 255);\n"
 "raduis: 20px;")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/img/utils/images/music_list.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.add_to_playlist.setIcon(icon3)
-        self.add_to_playlist.setObjectName("add_to_playlist")
+        self.add_to_playlist_btn.setIcon(icon3)
+        self.add_to_playlist_btn.setObjectName("add_to_playlist_btn")
         self.volume_dial = QtWidgets.QDial(self.centralwidget)
         self.volume_dial.setGeometry(QtCore.QRect(240, 400, 131, 91))
         self.volume_dial.setMaximum(100)
@@ -397,16 +400,129 @@ class Ui_MusicApp(object):
         self.delete_all_songs_btn.setIcon(icon13)
         self.delete_all_songs_btn.setIconSize(QtCore.QSize(30, 30))
         self.delete_all_songs_btn.setObjectName("delete_all_songs_btn")
-        self.listWidget = QtWidgets.QListWidget(self.page)
-        self.listWidget.setGeometry(QtCore.QRect(20, 70, 491, 261))
-        self.listWidget.setStyleSheet("background-color: rgba(230, 225, 255, 50);\n"
+        self.song_listWidget = QtWidgets.QListWidget(self.page)
+        self.song_listWidget.setGeometry(QtCore.QRect(20, 70, 491, 261))
+        self.song_listWidget.setStyleSheet("background-color: rgba(230, 225, 255, 50);\n"
 "color: rgb(255, 255, 255);\n"
 "selection-background-color: rgb(253, 138, 32);")
-        self.listWidget.setObjectName("listWidget")
+        self.song_listWidget.setObjectName("song_listWidget")
         self.stackedWidget.addWidget(self.page)
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName("page_2")
+        self.playlist_Widget = QtWidgets.QListWidget(self.page_2)
+        self.playlist_Widget.setGeometry(QtCore.QRect(20, 70, 491, 261))
+        self.playlist_Widget.setStyleSheet("background-color: rgba(230, 225, 255, 50);\n"
+"color: rgb(255, 255, 255);\n"
+"selection-background-color: rgb(253, 138, 32);")
+        self.playlist_Widget.setObjectName("playlist_Widget")
+        self.delete_selected_btn_2 = QtWidgets.QPushButton(self.page_2)
+        self.delete_selected_btn_2.setEnabled(True)
+        self.delete_selected_btn_2.setGeometry(QtCore.QRect(440, 10, 41, 32))
+        self.delete_selected_btn_2.setMinimumSize(QtCore.QSize(30, 30))
+        self.delete_selected_btn_2.setSizeIncrement(QtCore.QSize(30, 30))
+        self.delete_selected_btn_2.setBaseSize(QtCore.QSize(30, 30))
+        self.delete_selected_btn_2.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
+        self.delete_selected_btn_2.setText("")
+        self.delete_selected_btn_2.setIcon(icon12)
+        self.delete_selected_btn_2.setIconSize(QtCore.QSize(30, 30))
+        self.delete_selected_btn_2.setObjectName("delete_selected_btn_2")
+        self.delete_all_songs_btn_2 = QtWidgets.QPushButton(self.page_2)
+        self.delete_all_songs_btn_2.setEnabled(True)
+        self.delete_all_songs_btn_2.setGeometry(QtCore.QRect(480, 10, 41, 32))
+        self.delete_all_songs_btn_2.setMinimumSize(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_2.setSizeIncrement(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_2.setBaseSize(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_2.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
+        self.delete_all_songs_btn_2.setText("")
+        self.delete_all_songs_btn_2.setIcon(icon13)
+        self.delete_all_songs_btn_2.setIconSize(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_2.setObjectName("delete_all_songs_btn_2")
+        self.song_list_label_2 = QtWidgets.QLabel(self.page_2)
+        self.song_list_label_2.setGeometry(QtCore.QRect(200, 40, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        self.song_list_label_2.setFont(font)
+        self.song_list_label_2.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(253, 138, 32);")
+        self.song_list_label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.song_list_label_2.setObjectName("song_list_label_2")
         self.stackedWidget.addWidget(self.page_2)
+        self.page_3 = QtWidgets.QWidget()
+        self.page_3.setObjectName("page_3")
+        self.playlist_Widget_2 = QtWidgets.QListWidget(self.page_3)
+        self.playlist_Widget_2.setGeometry(QtCore.QRect(20, 70, 491, 261))
+        self.playlist_Widget_2.setStyleSheet("background-color: rgba(230, 225, 255, 50);\n"
+"color: rgb(255, 255, 255);\n"
+"selection-background-color: rgb(253, 138, 32);")
+        self.playlist_Widget_2.setObjectName("playlist_Widget_2")
+        self.delete_selected_btn_3 = QtWidgets.QPushButton(self.page_3)
+        self.delete_selected_btn_3.setEnabled(True)
+        self.delete_selected_btn_3.setGeometry(QtCore.QRect(440, 10, 41, 32))
+        self.delete_selected_btn_3.setMinimumSize(QtCore.QSize(30, 30))
+        self.delete_selected_btn_3.setSizeIncrement(QtCore.QSize(30, 30))
+        self.delete_selected_btn_3.setBaseSize(QtCore.QSize(30, 30))
+        self.delete_selected_btn_3.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
+        self.delete_selected_btn_3.setText("")
+        self.delete_selected_btn_3.setIcon(icon12)
+        self.delete_selected_btn_3.setIconSize(QtCore.QSize(30, 30))
+        self.delete_selected_btn_3.setObjectName("delete_selected_btn_3")
+        self.delete_all_songs_btn_3 = QtWidgets.QPushButton(self.page_3)
+        self.delete_all_songs_btn_3.setEnabled(True)
+        self.delete_all_songs_btn_3.setGeometry(QtCore.QRect(480, 10, 41, 32))
+        self.delete_all_songs_btn_3.setMinimumSize(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_3.setSizeIncrement(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_3.setBaseSize(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_3.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
+        self.delete_all_songs_btn_3.setText("")
+        self.delete_all_songs_btn_3.setIcon(icon13)
+        self.delete_all_songs_btn_3.setIconSize(QtCore.QSize(30, 30))
+        self.delete_all_songs_btn_3.setObjectName("delete_all_songs_btn_3")
+        self.label = QtWidgets.QLabel(self.page_3)
+        self.label.setGeometry(QtCore.QRect(180, 40, 21, 21))
+        self.label.setText("")
+        self.label.setPixmap(QtGui.QPixmap(":/img/utils/images/like.png"))
+        self.label.setScaledContents(True)
+        self.label.setObjectName("label")
+        self.favourite_song_list_lable = QtWidgets.QLabel(self.page_3)
+        self.favourite_song_list_lable.setGeometry(QtCore.QRect(220, 40, 121, 21))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        self.favourite_song_list_lable.setFont(font)
+        self.favourite_song_list_lable.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(253, 138, 32);")
+        self.favourite_song_list_lable.setAlignment(QtCore.Qt.AlignCenter)
+        self.favourite_song_list_lable.setObjectName("favourite_song_list_lable")
+        self.stackedWidget.addWidget(self.page_3)
         self.frame_4 = QtWidgets.QFrame(self.centralwidget)
         self.frame_4.setGeometry(QtCore.QRect(360, 430, 471, 51))
         self.frame_4.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
@@ -503,6 +619,7 @@ class Ui_MusicApp(object):
         self.actionapp_logo_clicked.setObjectName("actionapp_logo_clicked")
 
         self.retranslateUi(MusicApp)
+        self.stackedWidget.setCurrentIndex(0)
         self.Close_btn.clicked.connect(MusicApp.close) # type: ignore
         self.minimize_btn.clicked.connect(MusicApp.showMinimized) # type: ignore
         self.volume_dial.valueChanged['int'].connect(self.volume_label.setNum) # type: ignore
@@ -517,11 +634,13 @@ class Ui_MusicApp(object):
         self.Current_song_name.setText(_translate("MusicApp", "Song name goes here"))
         self.label_7.setText(_translate("MusicApp", "Path"))
         self.Current_song_path.setText(_translate("MusicApp", "Song path goes here"))
-        self.add_to_favourites.setText(_translate("MusicApp", "Add to Favourites"))
-        self.add_to_playlist.setText(_translate("MusicApp", "Add to Playlist"))
+        self.add_to_favourites_btn.setText(_translate("MusicApp", "Add to Favourites"))
+        self.add_to_playlist_btn.setText(_translate("MusicApp", "Add to Playlist"))
         self.volume_label.setText(_translate("MusicApp", "20"))
         self.time_lable.setText(_translate("MusicApp", "00:00:00 / 00:00:00"))
         self.song_list_label.setText(_translate("MusicApp", "Song list"))
+        self.song_list_label_2.setText(_translate("MusicApp", "Playlists"))
+        self.favourite_song_list_lable.setText(_translate("MusicApp", "favourites list"))
         self.song_list_btn.setText(_translate("MusicApp", "Song list"))
         self.playlist_btn.setText(_translate("MusicApp", "playlist"))
         self.favourites_btn.setText(_translate("MusicApp", "favourites"))

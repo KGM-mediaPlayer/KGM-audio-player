@@ -3,16 +3,18 @@ from music import Ui_MusicApp
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QUrl, QTimer
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtGui import QIcon,QImage,QPixmap
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtGui import QIcon, QImage, QPixmap
+from PyQt5.QtCore import Qt, pyqtSignal
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-from config_loader import load_config, save_config
+from db_function import *
 import sys
 import json
 import time
-import os 
+import os
 import songs
+from db_function import *
+import random  # Import the random module
 
 class ModernMusicApp(QMainWindow, Ui_MusicApp):
     def __init__(self):
@@ -25,14 +27,14 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle("KGM audio player")
         self.setWindowIcon(QIcon(":/img/utils/images/KGM app logo.png"))
-        
-        # Globals
-        global stopped
-        global looped
-        global is_shuffled
-        stopped = False
-        looped = False
-        is_shuffled = False
+
+        # Globals (Consider using instance attributes instead)
+        self.stopped = False
+        self.looped = False
+        self.is_shuffled = False
+
+        # DB STUFF
+        create_database_or_database_table("favorites")
 
         # Create player
         self.player = QMediaPlayer()
@@ -43,51 +45,66 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
 
         # Initial position of the window
         self.inititial_position = None
-        
+
         # Slider timer
         self.timer = QTimer(self)
         self.timer.start(1000)
         self.timer.timeout.connect(self.move_slider)
 
+        # listViews
+        self._views = {
+            'all': self.song_listWidget,
+            'favourites': self.playlist_Widget_2,
+            'playlist': self.playlist_Widget,
+        }
+        # Songlists
+        self._song_list = {
+            'all': songs.current_song_list,
+            'favourites': songs.favorite_songs_list,
+            'playlist': songs.playlist_songs_list,
+        }
+
+        self._active_view = 'all'
+        self._active_widget = self._views[self._active_view]
+        self._active_list = self._song_list[self._active_view]
+
+        for view in self._views.values():
+            view.itemDoubleClicked.connect(self._play_selected_audio)
+
         # Connections
         self.add_songs_btn.clicked.connect(self.add_Songs)
-        self.play_btn.clicked.connect(self.play_audio)
+        self.play_btn.clicked.connect(self._toggle_play)
         self.pause_btn.clicked.connect(self.pause_and_unpause)
         self.stop_btn.clicked.connect(self.stop_song)
-        self.next_btn.clicked.connect(self.next_song)
-        self.prev_btn.clicked.connect(self.previous_song)
-        self.loop_btn.clicked.connect(self.looped_next)
+        self.next_btn.clicked.connect(self._play_next_song)
+        self.prev_btn.clicked.connect(self._play_previous_song)
+        self.loop_btn.clicked.connect(self.toggle_loop)
         self.shuffle_songs_btn.clicked.connect(self.toggle_shuffle_mode)
-        self.delete_selected_btn.clicked.connect(self.remove_one_song)
-        self.delete_all_songs_btn.clicked.connect(self.remove_all_songs)
-        self.listWidget.itemDoubleClicked.connect(self.play_audio)
-        self.favourites_btn.clicked.connect(self.show_favourite_songs)
-        self.playlist_btn.clicked.connect(self.show_playlist)
-        self.song_list_btn.clicked.connect(self.song_list)
+        self.delete_selected_btn.clicked.connect(self._remove_one_song)
+        self.delete_all_songs_btn.clicked.connect(self._remove_all_songs)
         self.App_logo.clicked.connect(self.show_about_dialog)
+        self.song_list_btn.clicked.connect(self.show_all_songs_page)
+        self.favourites_btn.clicked.connect(self.show_favourites_page)
+        self.playlist_btn.clicked.connect(self.show_playlist_page)
 
+        self.add_Songs()
 
-        
         # loop/suffle/playback
-        self.player.mediaStatusChanged.connect(self.handle_media_status)
-        self.loop_playlist = True 
+        self.player.mediaStatusChanged.connect(self._handle_media_status)
+        self.loop_playlist = False
         self.shuffle_mode = False
-        
-        # data storage
-        self.favorites_file = "data/favorites.json"
-        os.makedirs("data", exist_ok=True)  # Ensure directory exists
-        self.favourites_list = songs.favorite_songs_list
-        self.playlist = songs.current_song_list
-        self.default_music_folder = self.get_or_select_music_folder()
-        self.load_tracks_from_folder(self.default_music_folder)
 
+        # data storage
+        os.makedirs("data", exist_ok=True)
+        self.favourites_list = songs.favorite_songs_list
+        self.playlist_list = songs.playlist_songs_list
+        self.song_listWidget = self._views['all']  # Use the stored widget
 
         # Slider interactions
         self.music_slider.sliderPressed.connect(lambda: setattr(self, 'stopped', True))
         self.music_slider.sliderReleased.connect(self.seek_slider_release)
 
         self.volume_dial.valueChanged.connect(self.volume_changed)
-
 
         # Define mouse move function for dragging
         def moveApp(event):
@@ -105,12 +122,22 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
 
         self.title_frame.mousePressEvent = pressApp
 
-        self.show()
+        # FAVOURITES PAGE
 
-    def handle_media_status(self, status):
-            if status == QMediaPlayer.EndOfMedia:
-                self.play_next_if_available()
+        self.show()
     
+    # active page
+    def _activate(self, key):
+        self._active_view = key
+        self._active_widget = self._views[key]
+        self._active_list = self._song_list[key]
+    
+    
+    
+    def _handle_media_status(self, status):
+        if status == QMediaPlayer.EndOfMedia:
+            self._play_next_if_available()
+
     # Format time from milliseconds to M:S or H:M:S
     def format_time(self, ms):
         seconds = int(ms / 1000)
@@ -118,16 +145,15 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
             return time.strftime('%M:%S', time.gmtime(seconds))
         else:
             return time.strftime('%H:%M:%S', time.gmtime(seconds))
-    
+
     # ABOUT PAGE
     def show_about_dialog(self, event=None):
         dialog = AboutDialog(self)
         dialog.exec_()
 
-
     # Function to move slider
     def move_slider(self):
-        if getattr(self, "stopped", False):
+        if self.stopped:
             return
 
         if self.player.state() == QMediaPlayer.PlayingState:
@@ -150,17 +176,17 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
     # Add songs
     def add_Songs(self):
         files, _ = QFileDialog.getOpenFileNames(
-            self, caption='Add audio files', directory='C:\\', 
+            self, caption='Add audio files', directory='C:\\',
             filter="Supported files (*.mp3 *.wav *.flac *.ogg *.m4a)"
         )
-        
+
         if files:
-            print(files) 
+            print(files)
             for file in files:
                 songs.current_song_list.append(file)
-                self.listWidget.addItem(
+                self.song_listWidget.addItem(
                     QListWidgetItem(
-                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'), 
+                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'),
                         os.path.basename(file)
                     )
                 )
@@ -184,81 +210,77 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         timer.start(150)  # speed in milliseconds
         label._marquee_timer = timer
 
-    # Play audio file
-    def play_audio(self):
-        try:
-            current_selection = self.listWidget.currentRow()
-            current_song = songs.current_song_list[current_selection]
+    def _play_selected_audio(self, item=None):
+        idx = self._active_widget.currentRow()
+        if idx < 0 or idx >= len(self._active_list):
+            return
 
-            song_url = QMediaContent(QUrl.fromLocalFile(current_song))
-            self.player.setMedia(song_url)
+        current_song = self._active_list[idx]
+        self.player.setMedia(QMediaContent(QUrl.fromLocalFile(current_song)))
+        self.player.play()
+
+        self.Current_song_name.setText(os.path.basename(current_song))
+        self.Current_song_path.setText(os.path.dirname(current_song))
+        self.start_marquee(self.Current_song_name)
+        self.start_marquee(self.Current_song_path)
+        self._set_album_art(current_song)
+
+    def _toggle_play(self):
+        if self.player.media().isNull():
+            self._play_selected_audio(self._active_widget.currentItem())
+        elif self.player.state() == QMediaPlayer.PlayingState:
+            self.player.pause()
+        else:
             self.player.play()
 
-            self.Current_song_name.setText(os.path.basename(current_song))
-            self.Current_song_path.setText(os.path.dirname(current_song))
-
-            # Marquee function
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-
-            # Extract and display album art
-            album_art = self.get_album_art_from_audio(current_song)
-            if album_art:
-                self.album_art_view.setPixmap(QPixmap.fromImage(album_art))
-                self.set_album_art(current_song)
-            else:
-                default_pixmap = QPixmap("utils/images/No-album-art.png")
-                self.album_art_view.setPixmap(default_pixmap)
-
-        except Exception as e:
-            print(f"Error playing audio: {e}")
-    
     # Handle media status changes
     def toggle_shuffle_mode(self):
         self.shuffle_mode = not self.shuffle_mode
         print(f"Shuffle mode {'enabled' if self.shuffle_mode else 'disabled'}")
 
+    def toggle_loop(self):
+        self.loop_playlist = not self.loop_playlist
+        print(f"Loop mode {'enabled' if self.loop_playlist else 'disabled'}")
 
-    def play_next_if_available(self):
+    def _play_next_if_available(self):
         try:
-            if not songs.current_song_list:
+            if not self._active_list:
                 return
 
-            if self.shuffle_mode:
-                import random
-                next_index = random.randint(0, len(songs.current_song_list) - 1)
-            else:
-                current_index = self.listWidget.currentRow()
-                next_index = current_index + 1
+            current_index = self._active_widget.currentRow()
+            next_index = -1
 
-                if next_index >= len(songs.current_song_list):
-                    if self.loop_playlist:
+            if self.shuffle_mode:
+                next_index = random.randint(0, len(self._active_list) - 1)
+            else:
+                next_index = current_index + 1
+                if next_index >= len(self._active_list):
+                    if self.loop_playlist and len(self._active_list) > 0:
                         next_index = 0
                     else:
                         print("Reached end of playlist.")
                         return
 
-            next_song = songs.current_song_list[next_index]
-
-            song_url = QMediaContent(QUrl.fromLocalFile(next_song))
-            self.player.setMedia(song_url)
-            self.player.play()
-            self.listWidget.setCurrentRow(next_index)
-
-            self.Current_song_name.setText(os.path.basename(next_song))
-            self.Current_song_path.setText(os.path.dirname(next_song))
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-            self.set_album_art(next_song)
+            if 0 <= next_index < len(self._active_list):
+                next_song = self._active_list[next_index]
+                self._play_song_at_index(next_index, next_song)
 
         except Exception as e:
             print(f"Error in play_next_if_available: {e}")
 
+    def _play_song_at_index(self, index, song_path):
+        song_url = QMediaContent(QUrl.fromLocalFile(song_path))
+        self.player.setMedia(song_url)
+        self.player.play()
+        self._active_widget.setCurrentRow(index)
+        self.Current_song_name.setText(os.path.basename(song_path))
+        self.Current_song_path.setText(os.path.dirname(song_path))
+        self.start_marquee(self.Current_song_name)
+        self.start_marquee(self.Current_song_path)
+        self._set_album_art(song_path)
+
     def get_album_art_from_audio(self, audio_file_path):
-        """
-        Extract album art from the audio file using Mutagen.
-        Returns QImage or None if no album art is found.
-        """
+        
         try:
             # Open the audio file
             audio = MP3(audio_file_path, ID3=ID3)
@@ -277,8 +299,8 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
 
         # Return None if no album art is found
         return None
-    
-    def set_album_art(self, audio_file_path):
+
+    def _set_album_art(self, audio_file_path):
         """
         Gets album art from the audio file and displays it in albumArtLabel.
         Clears the label if no art is found.
@@ -290,264 +312,97 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
             default_pixmap = QPixmap("utils/images/No-album-art.png")
             self.album_art_view.setPixmap(default_pixmap)
 
-
     # Pause and unpause audio
     def pause_and_unpause(self):
         if self.player.state() == QMediaPlayer.PlayingState:
             self.player.pause()
         else:
             self.player.play()
-    
+
     # Stop audio
     def stop_song(self):
         try:
             self.player.stop()
         except Exception as e:
             print(f"Error stopping audio: {e}")
-    
+
     # Change volume
     def volume_changed(self, value):
         self.player.setVolume(value)
-    
-    #Default next song
-    def default_next(self):
+
+    # Play next song
+    def _play_next_song(self):
+        self._play_next_if_available()
+
+    # Play previous song
+
+    def _play_previous_song(self):
         try:
-            song_index = self.listWidget.currentRow()
-            next_index = song_index + 1
-            next_song= songs.current_song_list[next_index]
-
-            song_url = QMediaContent(QUrl.fromLocalFile(next_song))
-            self.player.setMedia(song_url)
-            self.player.play()
-            self.listWidget.setCurrentRow(next_index)
-
-            self.Current_song_name.setText(os.path.basename(next_song))
-            self.Current_song_path.setText(os.path.dirname(next_song))
-            
-            # Marquee function
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-
-            # Extract and display album art
-            album_art = self.get_album_art_from_audio(next_song)
-            if album_art:
-                self.album_art_view.setPixmap(QPixmap.fromImage(album_art))
-                self.set_album_art(next_song)
-            else:
-                default_pixmap = QPixmap("utils/images/No-album-art.png")
-                self.album_art_view.setPixmap(default_pixmap)
+            current_index = self._active_widget.currentRow()
+            prev_index = current_index - 1
+            if 0 <= prev_index < len(self._active_list):
+                prev_song = self._active_list[prev_index]
+                self._play_song_at_index(prev_index, prev_song)
+            elif self.loop_playlist and len(self._active_list) > 0:
+                prev_index = len(self._active_list) - 1
+                prev_song = self._active_list[prev_index]
+                self._play_song_at_index(prev_index, prev_song)
         except Exception as e:
-            print(f"Default next song error: {e}")
-    
-    # Looped next song
-    def looped_next(self):
-        try:
-            current_index = self.listWidget.currentRow()
-            current_song = songs.current_song_list[current_index]
+            print(f"Error playing previous song: {e}")
 
-            song_url = QMediaContent(QUrl.fromLocalFile(current_song))
-            self.player.setMedia(song_url)
-            self.player.play()
-            self.listWidget.setCurrentRow(current_index)  # Optional but safe
+    # remove one song
+    def _remove_one_song(self):
+        current_selection = self._active_widget.currentRow()
+        if current_selection != -1:
+            item = self._active_widget.takeItem(current_selection)
+            if self._active_view == 'all':
+                if 0 <= current_selection < len(songs.current_song_list):
+                    del songs.current_song_list[current_selection]
+            elif self._active_view == 'favourites':
+                if 0 <= current_selection < len(songs.favorite_songs_list):
+                    song_to_remove = songs.favorite_songs_list.pop(current_selection)
+                    delete_all_song_from_database_table(song_to_remove, table='favorites')
+            elif self._active_view == 'playlist':
+                if 0 <= current_selection < len(songs.playlist_songs_list):
+                    del songs.playlist_songs_list[current_selection]
 
-            self.Current_song_name.setText(os.path.basename(current_song))
-            self.Current_song_path.setText(os.path.dirname(current_song))
-
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-
-            self.set_album_art(current_song)
-
-        except Exception as e:
-            print(f"Loop current song error: {e}")
-
-    
-    
-    def shuffled_next(self):
-        try:
-            import random
-            song_list = songs.current_song_list
-            if not song_list:
-                return
-
-            random_song = random.choice(song_list)
-            random_index = song_list.index(random_song)
-
-            song_url = QMediaContent(QUrl.fromLocalFile(random_song))
-            self.player.setMedia(song_url)
-            self.player.play()
-            self.listWidget.setCurrentRow(random_index)
-
-            self.Current_song_name.setText(os.path.basename(random_song))
-            self.Current_song_path.setText(os.path.dirname(random_song))
-
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-
-            self.set_album_art(random_song)
-
-        except Exception as e:
-            print(f"Shuffled next song error: {e}")
-
-    
-    #play_next song
-    def next_song(self):
-        try:
-            song_index = self.listWidget.currentRow()
-            next_index = song_index + 1
-            next_song= songs.current_song_list[next_index]
-
-            song_url = QMediaContent(QUrl.fromLocalFile(next_song))
-            self.player.setMedia(song_url)
-            self.player.play()
-            self.listWidget.setCurrentRow(next_index)
-
-            self.Current_song_name.setText(os.path.basename(next_song))
-            self.Current_song_path.setText(os.path.dirname(next_song))
-            
-            # Marquee function
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-
-            # Extract and display album art
-            album_art = self.get_album_art_from_audio(next_song)
-            if album_art:
-                self.album_art_view.setPixmap(QPixmap.fromImage(album_art))
-                self.set_album_art(next_song)
-            else:
-                default_pixmap = QPixmap("utils/images/No-album-art.png")
-                self.album_art_view.setPixmap(default_pixmap)
-
-        except Exception as e:
-            print(f"Error getting current song index: {e}")
-            return
-    
-    #play_next song
-    def previous_song(self):
-        try:
-            song_index = self.listWidget.currentRow()
-            prev_index = song_index - 1
-            prev_song= songs.current_song_list[prev_index]
-
-            song_url = QMediaContent(QUrl.fromLocalFile(prev_song))
-            self.player.setMedia(song_url)
-            self.player.play()
-            self.listWidget.setCurrentRow(prev_index)
-
-            self.Current_song_name.setText(os.path.basename(prev_song))
-            self.Current_song_path.setText(os.path.dirname(prev_song))
-            
-            # Marquee function
-            self.start_marquee(self.Current_song_name)
-            self.start_marquee(self.Current_song_path)
-            
-            # Extract and display album art
-            album_art = self.get_album_art_from_audio(prev_song)
-            if album_art:
-                self.album_art_view.setPixmap(QPixmap.fromImage(album_art))
-                self.set_album_art(prev_song)
-            else:
-                default_pixmap = QPixmap("utils/images/No-album-art.png")
-                self.album_art_view.setPixmap(default_pixmap)
-
-        except Exception as e:
-            print(f"Error getting current song index: {e}")
-            return
-    # remove one somg
-    def remove_one_song(self):
-        try:
-            current_selection = self.listWidget.currentRow()
-            if current_selection != -1:
-                self.listWidget.takeItem(current_selection)
-                del songs.current_song_list[current_selection]
-        except Exception as e:
-            print(f"Error removing song: {e}")
-    
     # remove all songs
-    def remove_all_songs(self):
-        try:
+    def _remove_all_songs(self):
+        if self._active_view == 'all':
             self.listWidget.clear()
             songs.current_song_list.clear()
-        except Exception as e:
-            print(f"Error removing all songs: {e}")
-    
-    # songs list
+        elif self._active_view == 'favourites':
+            self.playlist_Widget_2.clear()
+            songs.favorite_songs_list.clear()
+            delete_song_from_database_table('favorites')
+        elif self._active_view == 'playlist':
+            self.playlist_Widget.clear()
+            songs.playlist_songs_list.clear()
+
+    # songs list (not directly called in the provided snippet)
     def song_list(self):
         try:
             self.listWidget.clear()
             for song in songs.current_song_list:
                 self.listWidget.addItem(
                     QListWidgetItem(
-                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'), 
+                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'),
                         os.path.basename(song)
                     )
                 )
         except Exception as e:
-            print(f"Error displaying songs list: {e}")
+            print(f"Error displaying")
+    def show_all_songs_page(self):
+        self._activate('all')
+        self.stackedWidget.setCurrentWidget(self.song_listWidget)
+    def show_favourites_page(self):
+        self._activate('favourites')
+        self.stackedWidget.setCurrentWidget(self.playlist_Widget_2)
+
+    def show_playlist_page(self):
+        self._activate('playlist')
+        self.stackedWidget.setCurrentWidget(self.playlist_Widget)
     
-    #playlist
-    def show_playlist(self):
-        try:
-            self.listWidget.clear()
-            for song in songs.current_song_list:
-                self.listWidget.addItem(
-                    QListWidgetItem(
-                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'), 
-                        os.path.basename(song)
-                    )
-                )
-        except Exception as e:
-            print(f"Error displaying playlist: {e}")
-    
-    # favourite songs
-    def show_favourite_songs(self):
-        try:
-            self.listWidget.clear()
-            for song in songs.current_song_list:
-                self.listWidget.addItem(
-                    QListWidgetItem(
-                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'), 
-                        os.path.basename(song)
-                    )
-                )
-        except Exception as e:
-            print(f"Error displaying favourite songs: {e}")
-    
-    # dealling with favorites & playlists
-
-    def get_or_select_music_folder(self):
-        config_path = "data/config.json"
-        os.makedirs("data", exist_ok=True)
-
-        if os.path.exists(config_path):
-            with open(config_path, "r") as f:
-                config = json.load(f)
-                return config.get("music_folder", "")
-
-        # Ask user to select a music folder
-        folder = QFileDialog.getExistingDirectory(self, "Select Your Music Folder")
-        if folder:
-            with open(config_path, "w") as f:
-                json.dump({"music_folder": folder}, f)
-            return folder
-        else:
-            QMessageBox.warning(self, "No Folder Selected", "No folder was selected. Exiting app.")
-            sys.exit()
-    
-    def load_tracks_from_folder(self, folder_path):
-        supported_ext = ('.mp3', '.wav', '.flac', '.ogg', '.m4a')
-        try:
-            songs_in_folder = [
-                os.path.join(folder_path, f)
-                for f in os.listdir(folder_path)
-                if f.lower().endswith(supported_ext)
-            ]
-            songs.current_song_list = songs_in_folder
-            self.playlist()
-        except Exception as e:
-            print(f"Error loading songs from folder: {e}")
-
-
 #DIALOGUE about page
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
@@ -579,5 +434,4 @@ class AboutDialog(QDialog):
         layout.addWidget(logo_label)
         layout.addWidget(info_label)
 
-        self.setLayout(layout)
-
+        self.setLayout(layout)         

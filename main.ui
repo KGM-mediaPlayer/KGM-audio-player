@@ -254,7 +254,8 @@ border radius: 10px;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);</string>
+      <string notr="true">color: rgb(255, 255, 255);
+background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="text">
       <string>Currently playing</string>
@@ -275,7 +276,8 @@ border radius: 10px;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(116, 212, 255);</string>
+      <string notr="true">color: rgb(116, 212, 255);
+background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="text">
       <string>Name</string>
@@ -318,7 +320,8 @@ background-color: rgba(255, 255, 255, 0);</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(116, 212, 255);</string>
+      <string notr="true">color: rgb(116, 212, 255);
+background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="text">
       <string>Path</string>
@@ -346,7 +349,7 @@ background-color: rgba(255, 255, 255, 0);</string>
       <string>Song path goes here</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="add_to_favourites">
+    <widget class="QPushButton" name="add_to_favourites_btn">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -368,7 +371,7 @@ raduis: 20px;</string>
        <normaloff>:/img/utils/images/like.png</normaloff>:/img/utils/images/like.png</iconset>
      </property>
     </widget>
-    <widget class="QPushButton" name="add_to_playlist">
+    <widget class="QPushButton" name="add_to_playlist_btn">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -703,6 +706,9 @@ QSlider::handle:horizontal{
      <string notr="true">background-color: rgba(0, 0, 0, 50);
 border-radius: 10px;</string>
     </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
     <widget class="QWidget" name="page">
      <widget class="QLabel" name="song_list_label">
       <property name="geometry">
@@ -891,7 +897,7 @@ QPushButton:hover{
        </size>
       </property>
      </widget>
-     <widget class="QListWidget" name="listWidget">
+     <widget class="QListWidget" name="song_listWidget">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -907,7 +913,327 @@ selection-background-color: rgb(253, 138, 32);</string>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_2"/>
+    <widget class="QWidget" name="page_2">
+     <widget class="QListWidget" name="playlist_Widget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>491</width>
+        <height>261</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgba(230, 225, 255, 50);
+color: rgb(255, 255, 255);
+selection-background-color: rgb(253, 138, 32);</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delete_selected_btn_2">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>10</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/img/utils/images/clear.png</normaloff>:/img/utils/images/clear.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delete_all_songs_btn_2">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>10</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/img/utils/images/remove.png</normaloff>:/img/utils/images/remove.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="song_list_label_2">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>40</y>
+        <width>101</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <underline>false</underline>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(253, 138, 32);</string>
+      </property>
+      <property name="text">
+       <string>Playlists</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_3">
+     <widget class="QListWidget" name="playlist_Widget_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>491</width>
+        <height>261</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgba(230, 225, 255, 50);
+color: rgb(255, 255, 255);
+selection-background-color: rgb(253, 138, 32);</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delete_selected_btn_3">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>10</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/img/utils/images/clear.png</normaloff>:/img/utils/images/clear.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delete_all_songs_btn_3">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>10</y>
+        <width>41</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/img/utils/images/remove.png</normaloff>:/img/utils/images/remove.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>40</y>
+        <width>21</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="res.qrc">:/img/utils/images/like.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="favourite_song_list_lable">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>40</y>
+        <width>121</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <underline>false</underline>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(253, 138, 32);</string>
+      </property>
+      <property name="text">
+       <string>favourites list</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QFrame" name="frame_4">
     <property name="geometry">
