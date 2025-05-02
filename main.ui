@@ -121,6 +121,7 @@
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>15</pointsize>
       </font>
      </property>
@@ -248,6 +249,7 @@ border radius: 10px;</string>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>14</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -272,6 +274,7 @@ background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -294,6 +297,7 @@ background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -316,6 +320,7 @@ background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -338,6 +343,7 @@ background-color: rgba(255, 255, 255, 0);</string>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -357,6 +363,11 @@ background-color: rgba(255, 255, 255, 0);</string>
        <width>171</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
@@ -379,6 +390,11 @@ raduis: 20px;</string>
        <width>171</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(253, 138, 32);
@@ -721,6 +737,7 @@ border-radius: 10px;</string>
       </property>
       <property name="font">
        <font>
+        <family>Arial</family>
         <pointsize>15</pointsize>
         <weight>50</weight>
         <bold>false</bold>
@@ -1262,6 +1279,11 @@ background-color: rgb(253, 138, 32);</string>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+      </font>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
     color: rgb(255, 255, 255);
@@ -1294,6 +1316,11 @@ QPushButton:pressed {
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+      </font>
+     </property>
      <property name="styleSheet">
       <string notr="true">
 
@@ -1324,6 +1351,11 @@ QPushButton:pressed {
        <width>111</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {

@@ -50,6 +50,7 @@ class Ui_MusicApp(object):
         self.label_3 = QtWidgets.QLabel(self.title_frame)
         self.label_3.setGeometry(QtCore.QRect(70, 20, 131, 16))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(15)
         self.label_3.setFont(font)
         self.label_3.setStyleSheet("color: rgb(255, 255, 255);")
@@ -101,6 +102,7 @@ class Ui_MusicApp(object):
         self.currently_playing = QtWidgets.QLabel(self.frame)
         self.currently_playing.setGeometry(QtCore.QRect(80, 20, 121, 21))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
@@ -111,6 +113,7 @@ class Ui_MusicApp(object):
         self.label_6 = QtWidgets.QLabel(self.frame)
         self.label_6.setGeometry(QtCore.QRect(30, 50, 51, 21))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(14)
         self.label_6.setFont(font)
         self.label_6.setStyleSheet("color: rgb(116, 212, 255);\n"
@@ -119,6 +122,7 @@ class Ui_MusicApp(object):
         self.Current_song_name = QtWidgets.QLabel(self.frame)
         self.Current_song_name.setGeometry(QtCore.QRect(30, 70, 171, 21))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(14)
         self.Current_song_name.setFont(font)
         self.Current_song_name.setStyleSheet("color: rgb(255, 255, 255);\n"
@@ -127,6 +131,7 @@ class Ui_MusicApp(object):
         self.label_7 = QtWidgets.QLabel(self.frame)
         self.label_7.setGeometry(QtCore.QRect(30, 100, 41, 21))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(14)
         self.label_7.setFont(font)
         self.label_7.setStyleSheet("color: rgb(116, 212, 255);\n"
@@ -135,6 +140,7 @@ class Ui_MusicApp(object):
         self.Current_song_path = QtWidgets.QLabel(self.frame)
         self.Current_song_path.setGeometry(QtCore.QRect(30, 120, 171, 21))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(14)
         self.Current_song_path.setFont(font)
         self.Current_song_path.setStyleSheet("color: rgba(255, 255, 255, 255);\n"
@@ -142,6 +148,9 @@ class Ui_MusicApp(object):
         self.Current_song_path.setObjectName("Current_song_path")
         self.add_to_favourites_btn = QtWidgets.QPushButton(self.frame)
         self.add_to_favourites_btn.setGeometry(QtCore.QRect(50, 160, 171, 21))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        self.add_to_favourites_btn.setFont(font)
         self.add_to_favourites_btn.setStyleSheet("background-color: rgb(255, 255, 255);\n"
 "color: rgb(253, 124, 9);\n"
 "raduis: 20px;")
@@ -151,6 +160,9 @@ class Ui_MusicApp(object):
         self.add_to_favourites_btn.setObjectName("add_to_favourites_btn")
         self.add_to_playlist_btn = QtWidgets.QPushButton(self.frame)
         self.add_to_playlist_btn.setGeometry(QtCore.QRect(50, 200, 171, 21))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        self.add_to_playlist_btn.setFont(font)
         self.add_to_playlist_btn.setStyleSheet("background-color: rgb(253, 138, 32);\n"
 "color: rgb(255, 255, 255);\n"
 "raduis: 20px;")
@@ -334,6 +346,7 @@ class Ui_MusicApp(object):
         self.song_list_label = QtWidgets.QLabel(self.page)
         self.song_list_label.setGeometry(QtCore.QRect(200, 40, 101, 21))
         font = QtGui.QFont()
+        font.setFamily("Arial")
         font.setPointSize(15)
         font.setBold(False)
         font.setUnderline(False)
@@ -531,6 +544,9 @@ class Ui_MusicApp(object):
         self.frame_4.setObjectName("frame_4")
         self.song_list_btn = QtWidgets.QPushButton(self.frame_4)
         self.song_list_btn.setGeometry(QtCore.QRect(10, 20, 111, 21))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        self.song_list_btn.setFont(font)
         self.song_list_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgba(56, 208, 255, 161);\n"
@@ -549,6 +565,9 @@ class Ui_MusicApp(object):
         self.song_list_btn.setObjectName("song_list_btn")
         self.playlist_btn = QtWidgets.QPushButton(self.frame_4)
         self.playlist_btn.setGeometry(QtCore.QRect(180, 20, 111, 21))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        self.playlist_btn.setFont(font)
         self.playlist_btn.setStyleSheet("\n"
 "\n"
 "QPushButton {\n"
@@ -568,6 +587,9 @@ class Ui_MusicApp(object):
         self.playlist_btn.setObjectName("playlist_btn")
         self.favourites_btn = QtWidgets.QPushButton(self.frame_4)
         self.favourites_btn.setGeometry(QtCore.QRect(350, 20, 111, 21))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        self.favourites_btn.setFont(font)
         self.favourites_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgba(255, 255, 255, 100);\n"
