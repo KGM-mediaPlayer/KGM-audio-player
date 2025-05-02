@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="img">
+    <file>icon.icns</file>
     <file>utils/bg_imgs/bg_0003_1.jpg</file>
     <file>utils/bg_imgs/bg_0011_4.jpeg</file>
     <file>utils/bg_imgs/bg_0004_12.jpg</file>

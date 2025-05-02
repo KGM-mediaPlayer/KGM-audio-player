@@ -4,22 +4,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QUrl, QTimer
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QIcon, QImage, QPixmap
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
 from db_function import *
-import sys
-import json
 import time
 import os
 import songs
 from db_function import *
-import random  # Import the random module
+import random
 
 class ModernMusicApp(QMainWindow, Ui_MusicApp):
     def __init__(self):
         super().__init__()
-        self.wondow = QMainWindow  # (still unused, but kept per request)
+        self.wondow = QMainWindow
         self.setupUi(self)
 
         # Remove title bar
@@ -98,7 +96,7 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         os.makedirs("data", exist_ok=True)
         self.favourites_list = songs.favorite_songs_list
         self.playlist_list = songs.playlist_songs_list
-        self.song_listWidget = self._views['all']  # Use the stored widget
+        self.song_listWidget = self._views['all']
 
         # Slider interactions
         self.music_slider.sliderPressed.connect(lambda: setattr(self, 'stopped', True))
@@ -125,15 +123,14 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         # FAVOURITES PAGE
 
         self.show()
-    
+
     # active page
     def _activate(self, key):
         self._active_view = key
         self._active_widget = self._views[key]
         self._active_list = self._song_list[key]
-    
-    
-    
+
+
     def _handle_media_status(self, status):
         if status == QMediaPlayer.EndOfMedia:
             self._play_next_if_available()
@@ -176,18 +173,18 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
     # Add songs
     def add_Songs(self):
         files, _ = QFileDialog.getOpenFileNames(
-            self, caption='Add audio files', directory='C:\\',
-            filter="Supported files (*.mp3 *.wav *.flac *.ogg *.m4a)"
-        )
+        self, caption='Add audio files', directory='C:\\',
+        filter="Supported files (*.mp3 *.wav *.flac *.ogg *.m4a)"
+    )
 
         if files:
             print(files)
             for file in files:
                 songs.current_song_list.append(file)
                 self.song_listWidget.addItem(
-                    QListWidgetItem(
-                        QtGui.QIcon(':/img/utils/images/MusicListItem.png'),
-                        os.path.basename(file)
+                       QListWidgetItem(
+                         QtGui.QIcon(':/img/utils/images/MusicListItem.png'),
+                          os.path.basename(file)
                     )
                 )
 
@@ -195,19 +192,18 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
     def start_marquee(self, label: QLabel):
         text = label.text()
         if len(text) <= 1:
-            return  # Skip short text
+            return
 
         def scroll_text():
             current = label.text()
-            label.setText(current[1:] + current[0])  # Rotate text left
+            label.setText(current[1:] + current[0])
 
-        # Stop any existing timer if needed
         if hasattr(label, "_marquee_timer") and label._marquee_timer:
             label._marquee_timer.stop()
 
         timer = QTimer(self)
         timer.timeout.connect(scroll_text)
-        timer.start(150)  # speed in milliseconds
+        timer.start(150)
         label._marquee_timer = timer
 
     def _play_selected_audio(self, item=None):
@@ -280,7 +276,7 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
         self._set_album_art(song_path)
 
     def get_album_art_from_audio(self, audio_file_path):
-        
+
         try:
             # Open the audio file
             audio = MP3(audio_file_path, ID3=ID3)
@@ -354,37 +350,53 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
     def _remove_one_song(self):
         current_selection = self._active_widget.currentRow()
         if current_selection != -1:
+            item_text = self._active_widget.item(current_selection).text()
+
             item = self._active_widget.takeItem(current_selection)
+
             if self._active_view == 'all':
                 if 0 <= current_selection < len(songs.current_song_list):
                     del songs.current_song_list[current_selection]
             elif self._active_view == 'favourites':
-                if 0 <= current_selection < len(songs.favorite_songs_list):
-                    song_to_remove = songs.favorite_songs_list.pop(current_selection)
-                    delete_all_song_from_database_table(song_to_remove, table='favorites')
+                song_path_to_remove = None
+                for song_path in songs.favorite_songs_list:
+                    if os.path.basename(song_path) == item_text:
+                        song_path_to_remove = song_path
+                        break
+
+                if song_path_to_remove:
+                    if song_path_to_remove in songs.favorite_songs_list:
+                        songs.favorite_songs_list.remove(song_path_to_remove)
+
+                    delete_song_from_database_table(song=song_path_to_remove, table='favorites')
+                else:
+                    print(f"Warning: Could not find song path matching '{item_text}' in favorites list.")
+
             elif self._active_view == 'playlist':
                 if 0 <= current_selection < len(songs.playlist_songs_list):
                     del songs.playlist_songs_list[current_selection]
 
+
     # remove all songs
     def _remove_all_songs(self):
         if self._active_view == 'all':
-            self.listWidget.clear()
+            self._views['all'].clear()
             songs.current_song_list.clear()
         elif self._active_view == 'favourites':
-            self.playlist_Widget_2.clear()
+            self._views['favourites'].clear()
             songs.favorite_songs_list.clear()
-            delete_song_from_database_table('favorites')
+            delete_all_song_from_database_table(table='favorites')
         elif self._active_view == 'playlist':
-            self.playlist_Widget.clear()
+            self._views['playlist'].clear()
             songs.playlist_songs_list.clear()
+
 
     # songs list (not directly called in the provided snippet)
     def song_list(self):
         try:
-            self.listWidget.clear()
+            self._views['all'].clear()
             for song in songs.current_song_list:
-                self.listWidget.addItem(
+                self._views['all'].addItem(
                     QListWidgetItem(
                         QtGui.QIcon(':/img/utils/images/MusicListItem.png'),
                         os.path.basename(song)
@@ -392,17 +404,32 @@ class ModernMusicApp(QMainWindow, Ui_MusicApp):
                 )
         except Exception as e:
             print(f"Error displaying")
+
+
     def show_all_songs_page(self):
         self._activate('all')
         self.stackedWidget.setCurrentWidget(self.song_listWidget)
+
+
     def show_favourites_page(self):
         self._activate('favourites')
         self.stackedWidget.setCurrentWidget(self.playlist_Widget_2)
+        songs.favorite_songs_list = fetch_all_songs_from_database_table(table='favorites')
+        self._views['favourites'].clear()
+        for song_path in songs.favorite_songs_list:
+             self._views['favourites'].addItem(
+                 QListWidgetItem(
+                     QtGui.QIcon(':/img/utils/images/MusicListItem.png'),
+                     os.path.basename(song_path)
+                 )
+             )
+
 
     def show_playlist_page(self):
         self._activate('playlist')
         self.stackedWidget.setCurrentWidget(self.playlist_Widget)
-    
+
+
 #DIALOGUE about page
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
@@ -434,4 +461,4 @@ class AboutDialog(QDialog):
         layout.addWidget(logo_label)
         layout.addWidget(info_label)
 
-        self.setLayout(layout)         
+        self.setLayout(layout)
