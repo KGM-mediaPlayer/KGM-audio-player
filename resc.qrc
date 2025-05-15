@@ -1,0 +1,42 @@
+<RCC>
+  <qresource prefix="resc">
+    <file>UI_V2/play_alt.png</file>
+    <file>UI_V2/next_page.png</file>
+    <file>UI_V2/No-album-art.png</file>
+    <file>UI_V2/audio_file_mark.png</file>
+    <file>UI_V2/vid_file_mark.png</file>
+    <file>UI_V2/prev_page.png</file>
+    <file>UI_V2/clear.png</file>
+    <file>UI_V2/remove.png</file>
+    <file>UI_V2/MusicListItem.png</file>
+    <file>UI_V2/addFromLocal.png</file>
+    <file>UI_V2/album_art.png</file>
+    <file>UI_V2/track_info_btn.png</file>
+    <file>UI_V2/Artboard1_3.png</file>
+    <file>UI_V2/Artboard1_2.png</file>
+    <file>UI_V2/close_btb.png</file>
+    <file>UI_V2/more_details_btn.png</file>
+    <file>UI_V2/min_btn.png</file>
+    <file>UI_V2/max_btn.png</file>
+    <file>UI_V2/app_logo.png</file>
+    <file>UI_V2/settings_btn.png</file>
+    <file>UI_V2/play_btn.png</file>
+    <file>UI_V2/prev_track_btn.png</file>
+    <file>UI_V2/next_track_btn.png</file>
+    <file>UI_V2/all_songs _btn.png</file>
+    <file>UI_V2/sys_dir_btn.png</file>
+    <file>UI_V2/favourite_btn.png</file>
+    <file>UI_V2/add_to_playlist_btn.png</file>
+    <file>UI_V2/recently_added_btn.png</file>
+    <file>UI_V2/Pplay_list_btn.png</file>
+    <file>UI_V2/suffle_btn.png</file>
+    <file>UI_V2/slice4.png</file>
+    <file>UI_V2/slice3.png</file>
+    <file>UI_V2/slice2.png</file>
+    <file>UI_V2/slice1.png</file>
+    <file>UI_V2/volume_btn.png</file>
+    <file>UI_V2/Artboard1.png</file>
+    <file>UI_V2/KGM media player UI.png</file>
+    <file>UI_V2/all_songs_btn.png</file>
+  </qresource>
+</RCC>
