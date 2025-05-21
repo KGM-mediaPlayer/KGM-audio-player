@@ -1,5 +1,4 @@
 import sqlite3
-import os
 
 DB_NAME = "music_library.db"
 
@@ -86,6 +85,43 @@ def get_all_songs(table_name):
     songs = cursor.fetchall()
     connect.close()
     return songs
+
+# check if a song exists in a table
+def song_exists(table_name, title):
+    connect = sqlite3.connect(DB_NAME)
+    cursor = connect.cursor()
+
+    query = f'''
+        SELECT * FROM {table_name} WHERE path= ?
+    '''
+    cursor.execute(query, (title,))
+    song = cursor.fetchone()
+    connect.close()
+    return song is not None
+
+    #song exist by name (for track info)
+
+def get_song_by_filename(table_name, file_path):
+    import sqlite3
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    query = f'''
+        SELECT title, artist, album, path FROM {table_name} WHERE path = ?
+    '''
+    cursor.execute(query, (file_path,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        return {
+            'title': row[0],
+            'artist': row[1],
+            'album': row[2],
+            'path': row[3]
+        }
+    return None
+
 
 
 # EQ presets

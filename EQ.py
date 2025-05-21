@@ -1,10 +1,12 @@
+import os
+import sys
 from PyQt5 import QtWidgets, uic
 import vlc
 
 class EqualizerWindow(QtWidgets.QWidget):
     def __init__(self, vlc_player):
         super().__init__()
-        uic.loadUi("EQ.ui", self)
+        uic.loadUi(self.resource_path("EQ.ui"), self)
         self.player = vlc_player  # store vlc player instance
 
         self.sliders = [
@@ -17,6 +19,14 @@ class EqualizerWindow(QtWidgets.QWidget):
         self.reset_btn.clicked.connect(self.reset_eq)
         self.save_btn.clicked.connect(self.save_preset)
         self.load_btn.clicked.connect(self.load_preset)
+
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller bundle """
+        try:
+            base_path = sys._MEIPASS  # Temp directory PyInstaller extracts to
+        except AttributeError:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
 
     def apply_eq(self):
         eq = vlc.AudioEqualizer()

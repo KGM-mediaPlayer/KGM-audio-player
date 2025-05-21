@@ -1,0 +1,4 @@
+([('KGM Media Player',
+   '/Users/gibreel/Documents/KGM-audio-player/KGM-audio-player/dist/KGM Media '
+   'Player',
+   'EXECUTABLE')],)

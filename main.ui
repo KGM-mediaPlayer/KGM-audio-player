@@ -659,7 +659,7 @@ color: rgb(255, 255, 255);</string>
                    </property>
                    <property name="icon">
                     <iconset resource="resc.qrc">
-                     <normaloff>:/resc/UI_V2/favourite_btn.png</normaloff>:/resc/UI_V2/favourite_btn.png</iconset>
+                     <normaloff>:/resc/UI_V2/fav_btn_1.png</normaloff>:/resc/UI_V2/fav_btn_1.png</iconset>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -667,7 +667,7 @@ color: rgb(255, 255, 255);</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="add_to_playlist_btn">
+                  <widget class="QPushButton" name="loop_btn">
                    <property name="styleSheet">
                     <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
                    </property>
@@ -676,7 +676,7 @@ color: rgb(255, 255, 255);</string>
                    </property>
                    <property name="icon">
                     <iconset resource="resc.qrc">
-                     <normaloff>:/resc/UI_V2/add_to_playlist_btn.png</normaloff>:/resc/UI_V2/add_to_playlist_btn.png</iconset>
+                     <normaloff>:/resc/UI_V2/loop.png</normaloff>:/resc/UI_V2/loop.png</iconset>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -1004,16 +1004,6 @@ QScrollBar::sub-page:vertical {
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>item q</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>New Item</string>
-                 </property>
-                </item>
                </widget>
               </item>
               <item>
@@ -1071,6 +1061,19 @@ background-color: rgb(208, 87, 82);</string>
                      <normaloff>:/resc/UI_V2/clear.png</normaloff>:/resc/UI_V2/clear.png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_6">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                  <item>
                   <widget class="QPushButton" name="remove_all_songs_btn">
