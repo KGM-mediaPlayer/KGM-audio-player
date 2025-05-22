@@ -101,7 +101,7 @@ def song_exists(table_name, title):
 
     #song exist by name (for track info)
 
-def get_song_by_filename(table_name, file_path):
+def get_song_by_filepath(table_name, file_path):
     import sqlite3
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()

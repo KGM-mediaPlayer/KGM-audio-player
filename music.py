@@ -53,21 +53,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.app_label)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem)
-        self.close_btn = QtWidgets.QPushButton(self.menu_bar)
-        self.close_btn.setStyleSheet("QPushButton{\n"
-"    background-color: rgba(255,255,255,0);\n"
-"}\n"
-"\n"
-"QPushButton:hover{\n"
-"    background-color: rgba(255,255,255,130);\n"
-"}")
-        self.close_btn.setText("")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/resc/UI_V2/close_btb.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.close_btn.setIcon(icon1)
-        self.close_btn.setIconSize(QtCore.QSize(12, 12))
-        self.close_btn.setObjectName("close_btn")
-        self.horizontalLayout_5.addWidget(self.close_btn)
         self.minimize_btn = QtWidgets.QPushButton(self.menu_bar)
         self.minimize_btn.setStyleSheet("QPushButton{\n"
 "    background-color: rgba(255,255,255,0);\n"
@@ -77,9 +62,9 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.minimize_btn.setText("")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/resc/UI_V2/min_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.minimize_btn.setIcon(icon2)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/resc/UI_V2/min_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.minimize_btn.setIcon(icon1)
         self.minimize_btn.setIconSize(QtCore.QSize(12, 12))
         self.minimize_btn.setObjectName("minimize_btn")
         self.horizontalLayout_5.addWidget(self.minimize_btn)
@@ -92,12 +77,27 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.maximize_btn.setText("")
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/resc/UI_V2/max_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.maximize_btn.setIcon(icon3)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/resc/UI_V2/max_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.maximize_btn.setIcon(icon2)
         self.maximize_btn.setIconSize(QtCore.QSize(12, 12))
         self.maximize_btn.setObjectName("maximize_btn")
         self.horizontalLayout_5.addWidget(self.maximize_btn)
+        self.close_btn = QtWidgets.QPushButton(self.menu_bar)
+        self.close_btn.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
+        self.close_btn.setText("")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/resc/UI_V2/close_btb.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.close_btn.setIcon(icon3)
+        self.close_btn.setIconSize(QtCore.QSize(12, 12))
+        self.close_btn.setObjectName("close_btn")
+        self.horizontalLayout_5.addWidget(self.close_btn)
         self.verticalLayout_12.addWidget(self.menu_bar)
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setEnabled(True)
@@ -167,21 +167,6 @@ class Ui_MainWindow(object):
         self.play_list_btn.setIconSize(QtCore.QSize(20, 30))
         self.play_list_btn.setObjectName("play_list_btn")
         self.verticalLayout_5.addWidget(self.play_list_btn)
-        self.recently_added_btn = QtWidgets.QPushButton(self.side_frame)
-        self.recently_added_btn.setStyleSheet("QPushButton{\n"
-"    background-color: rgba(255,255,255,0);\n"
-"}\n"
-"\n"
-"QPushButton:hover{\n"
-"    background-color: rgba(255,255,255,130);\n"
-"}")
-        self.recently_added_btn.setText("")
-        icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(":/resc/UI_V2/recently_added_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.recently_added_btn.setIcon(icon7)
-        self.recently_added_btn.setIconSize(QtCore.QSize(20, 30))
-        self.recently_added_btn.setObjectName("recently_added_btn")
-        self.verticalLayout_5.addWidget(self.recently_added_btn)
         self.favourite_btn = QtWidgets.QPushButton(self.side_frame)
         self.favourite_btn.setStyleSheet("QPushButton{\n"
 "    background-color: rgba(255,255,255,0);\n"
@@ -191,26 +176,20 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.favourite_btn.setText("")
-        icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(":/resc/UI_V2/favourite_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.favourite_btn.setIcon(icon8)
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(":/resc/UI_V2/favourite_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.favourite_btn.setIcon(icon7)
         self.favourite_btn.setIconSize(QtCore.QSize(20, 30))
         self.favourite_btn.setObjectName("favourite_btn")
         self.verticalLayout_5.addWidget(self.favourite_btn)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem1)
         self.settings_btn = QtWidgets.QPushButton(self.side_frame)
-        self.settings_btn.setStyleSheet("QPushButton{\n"
-"    background-color: rgba(255,255,255,0);\n"
-"}\n"
-"\n"
-"QPushButton:hover{\n"
-"    background-color: rgba(255,255,255,130);\n"
-"}")
+        self.settings_btn.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
         self.settings_btn.setText("")
-        icon9 = QtGui.QIcon()
-        icon9.addPixmap(QtGui.QPixmap(":/resc/UI_V2/settings_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.settings_btn.setIcon(icon9)
+        icon8 = QtGui.QIcon()
+        icon8.addPixmap(QtGui.QPixmap(":/resc/UI_V2/audio_file_mark.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.settings_btn.setIcon(icon8)
         self.settings_btn.setIconSize(QtCore.QSize(30, 30))
         self.settings_btn.setObjectName("settings_btn")
         self.verticalLayout_5.addWidget(self.settings_btn)
@@ -291,38 +270,62 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8 = QtWidgets.QHBoxLayout(self.advanced_play_functions_frame)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
         self.make_favourite_btn = QtWidgets.QPushButton(self.advanced_play_functions_frame)
-        self.make_favourite_btn.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+        self.make_favourite_btn.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
         self.make_favourite_btn.setText("")
-        icon10 = QtGui.QIcon()
-        icon10.addPixmap(QtGui.QPixmap(":/resc/UI_V2/fav_btn_1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.make_favourite_btn.setIcon(icon10)
+        icon9 = QtGui.QIcon()
+        icon9.addPixmap(QtGui.QPixmap(":/resc/UI_V2/fav_btn_1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.make_favourite_btn.setIcon(icon9)
         self.make_favourite_btn.setCheckable(True)
         self.make_favourite_btn.setObjectName("make_favourite_btn")
         self.horizontalLayout_8.addWidget(self.make_favourite_btn)
         self.loop_btn = QtWidgets.QPushButton(self.advanced_play_functions_frame)
-        self.loop_btn.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+        self.loop_btn.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
         self.loop_btn.setText("")
-        icon11 = QtGui.QIcon()
-        icon11.addPixmap(QtGui.QPixmap(":/resc/UI_V2/loop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.loop_btn.setIcon(icon11)
+        icon10 = QtGui.QIcon()
+        icon10.addPixmap(QtGui.QPixmap(":/resc/UI_V2/loop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.loop_btn.setIcon(icon10)
         self.loop_btn.setCheckable(True)
         self.loop_btn.setObjectName("loop_btn")
         self.horizontalLayout_8.addWidget(self.loop_btn)
         self.shuffle_btn = QtWidgets.QPushButton(self.advanced_play_functions_frame)
-        self.shuffle_btn.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+        self.shuffle_btn.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
         self.shuffle_btn.setText("")
-        icon12 = QtGui.QIcon()
-        icon12.addPixmap(QtGui.QPixmap(":/resc/UI_V2/suffle_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.shuffle_btn.setIcon(icon12)
+        icon11 = QtGui.QIcon()
+        icon11.addPixmap(QtGui.QPixmap(":/resc/UI_V2/play_all_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.shuffle_btn.setIcon(icon11)
         self.shuffle_btn.setCheckable(True)
         self.shuffle_btn.setObjectName("shuffle_btn")
         self.horizontalLayout_8.addWidget(self.shuffle_btn)
         self.about_track_btn = QtWidgets.QPushButton(self.advanced_play_functions_frame)
-        self.about_track_btn.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+        self.about_track_btn.setStyleSheet("QPushButton{\n"
+"    background-color: rgba(255,255,255,0);\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: rgba(255,255,255,130);\n"
+"}")
         self.about_track_btn.setText("")
-        icon13 = QtGui.QIcon()
-        icon13.addPixmap(QtGui.QPixmap(":/resc/UI_V2/track_info_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.about_track_btn.setIcon(icon13)
+        icon12 = QtGui.QIcon()
+        icon12.addPixmap(QtGui.QPixmap(":/resc/UI_V2/track_info_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.about_track_btn.setIcon(icon12)
         self.about_track_btn.setObjectName("about_track_btn")
         self.horizontalLayout_8.addWidget(self.about_track_btn)
         self.verticalLayout.addWidget(self.advanced_play_functions_frame, 0, QtCore.Qt.AlignHCenter)
@@ -375,7 +378,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.frame_3 = QtWidgets.QFrame(self.page_2)
-        self.frame_3.setMinimumSize(QtCore.QSize(0, 30))
+        self.frame_3.setMinimumSize(QtCore.QSize(0, 50))
+        self.frame_3.setMaximumSize(QtCore.QSize(16777215, 50))
         self.frame_3.setStyleSheet("")
         self.frame_3.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -391,29 +395,51 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.back_to_home.setText("")
-        icon14 = QtGui.QIcon()
-        icon14.addPixmap(QtGui.QPixmap(":/resc/UI_V2/prev_page.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.back_to_home.setIcon(icon14)
+        icon13 = QtGui.QIcon()
+        icon13.addPixmap(QtGui.QPixmap(":/resc/UI_V2/prev_page.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.back_to_home.setIcon(icon13)
         self.back_to_home.setIconSize(QtCore.QSize(23, 23))
         self.back_to_home.setObjectName("back_to_home")
         self.horizontalLayout_4.addWidget(self.back_to_home)
-        self.back_to_list = QtWidgets.QPushButton(self.frame_3)
-        self.back_to_list.setStyleSheet("QPushButton{\n"
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem5)
+        self.search_play_list_btn = QtWidgets.QPushButton(self.frame_3)
+        self.search_play_list_btn.setStyleSheet("QPushButton{\n"
 "    background-color: rgba(255,255,255,0);\n"
 "}\n"
 "\n"
 "QPushButton:hover{\n"
 "    background-color: rgba(255,255,255,130);\n"
 "}")
-        self.back_to_list.setText("")
-        icon15 = QtGui.QIcon()
-        icon15.addPixmap(QtGui.QPixmap(":/resc/UI_V2/next_page.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.back_to_list.setIcon(icon15)
-        self.back_to_list.setIconSize(QtCore.QSize(23, 23))
-        self.back_to_list.setObjectName("back_to_list")
-        self.horizontalLayout_4.addWidget(self.back_to_list)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_4.addItem(spacerItem5)
+        self.search_play_list_btn.setText("")
+        icon14 = QtGui.QIcon()
+        icon14.addPixmap(QtGui.QPixmap(":/resc/UI_V2/serach_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.search_play_list_btn.setIcon(icon14)
+        self.search_play_list_btn.setIconSize(QtCore.QSize(23, 23))
+        self.search_play_list_btn.setObjectName("search_play_list_btn")
+        self.horizontalLayout_4.addWidget(self.search_play_list_btn)
+        self.search_bar = QtWidgets.QLineEdit(self.frame_3)
+        self.search_bar.setMaximumSize(QtCore.QSize(300, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        self.search_bar.setFont(font)
+        self.search_bar.setStyleSheet("QLineEdit {\n"
+"    border: 2px solid #87CEFA;  /* Light blue */\n"
+"    border-radius: 6px;\n"
+"    padding: 6px 10px;\n"
+"    background-color: transparent;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"}\n"
+"\n"
+"QLineEdit:focus {\n"
+"    border: 2px solid #00BFFF;  /* Deeper blue on focus */\n"
+"    background-color: transparent;\n"
+"}\n"
+"\n"
+"")
+        self.search_bar.setObjectName("search_bar")
+        self.horizontalLayout_4.addWidget(self.search_bar)
         self.page_label = QtWidgets.QLabel(self.frame_3)
         self.page_label.setStyleSheet("color: rgb(255, 255, 255);")
         self.page_label.setObjectName("page_label")
@@ -489,9 +515,9 @@ class Ui_MainWindow(object):
         self.add_songs_to_library_btn.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(170, 103, 18);\n"
 "")
-        icon16 = QtGui.QIcon()
-        icon16.addPixmap(QtGui.QPixmap(":/resc/UI_V2/addFromLocal.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.add_songs_to_library_btn.setIcon(icon16)
+        icon15 = QtGui.QIcon()
+        icon15.addPixmap(QtGui.QPixmap(":/resc/UI_V2/addFromLocal.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.add_songs_to_library_btn.setIcon(icon15)
         self.add_songs_to_library_btn.setObjectName("add_songs_to_library_btn")
         self.horizontalLayout_3.addWidget(self.add_songs_to_library_btn)
         self.remove_current_selection_btn = QtWidgets.QPushButton(self.frame_2)
@@ -500,9 +526,9 @@ class Ui_MainWindow(object):
         self.remove_current_selection_btn.setFont(font)
         self.remove_current_selection_btn.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(208, 87, 82);")
-        icon17 = QtGui.QIcon()
-        icon17.addPixmap(QtGui.QPixmap(":/resc/UI_V2/clear.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.remove_current_selection_btn.setIcon(icon17)
+        icon16 = QtGui.QIcon()
+        icon16.addPixmap(QtGui.QPixmap(":/resc/UI_V2/clear.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.remove_current_selection_btn.setIcon(icon16)
         self.remove_current_selection_btn.setObjectName("remove_current_selection_btn")
         self.horizontalLayout_3.addWidget(self.remove_current_selection_btn)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -513,9 +539,9 @@ class Ui_MainWindow(object):
         self.remove_all_songs_btn.setFont(font)
         self.remove_all_songs_btn.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(131, 14, 10);")
-        icon18 = QtGui.QIcon()
-        icon18.addPixmap(QtGui.QPixmap(":/resc/UI_V2/remove.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.remove_all_songs_btn.setIcon(icon18)
+        icon17 = QtGui.QIcon()
+        icon17.addPixmap(QtGui.QPixmap(":/resc/UI_V2/remove.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.remove_all_songs_btn.setIcon(icon17)
         self.remove_all_songs_btn.setObjectName("remove_all_songs_btn")
         self.horizontalLayout_3.addWidget(self.remove_all_songs_btn)
         self.verticalLayout_2.addWidget(self.frame_2)
@@ -621,9 +647,9 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.prev_btn.setText("")
-        icon19 = QtGui.QIcon()
-        icon19.addPixmap(QtGui.QPixmap(":/resc/UI_V2/prev_track_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.prev_btn.setIcon(icon19)
+        icon18 = QtGui.QIcon()
+        icon18.addPixmap(QtGui.QPixmap(":/resc/UI_V2/prev_track_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.prev_btn.setIcon(icon18)
         self.prev_btn.setIconSize(QtCore.QSize(40, 20))
         self.prev_btn.setObjectName("prev_btn")
         self.horizontalLayout_2.addWidget(self.prev_btn)
@@ -636,9 +662,9 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.pause_btn.setText("")
-        icon20 = QtGui.QIcon()
-        icon20.addPixmap(QtGui.QPixmap(":/resc/UI_V2/play_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pause_btn.setIcon(icon20)
+        icon19 = QtGui.QIcon()
+        icon19.addPixmap(QtGui.QPixmap(":/resc/UI_V2/play_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pause_btn.setIcon(icon19)
         self.pause_btn.setIconSize(QtCore.QSize(40, 20))
         self.pause_btn.setObjectName("pause_btn")
         self.horizontalLayout_2.addWidget(self.pause_btn)
@@ -651,36 +677,21 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.next_btn.setText("")
-        icon21 = QtGui.QIcon()
-        icon21.addPixmap(QtGui.QPixmap(":/resc/UI_V2/next_track_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.next_btn.setIcon(icon21)
+        icon20 = QtGui.QIcon()
+        icon20.addPixmap(QtGui.QPixmap(":/resc/UI_V2/next_track_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.next_btn.setIcon(icon20)
         self.next_btn.setIconSize(QtCore.QSize(40, 20))
         self.next_btn.setObjectName("next_btn")
         self.horizontalLayout_2.addWidget(self.next_btn)
         spacerItem8 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem8)
         self.frame_6 = QtWidgets.QFrame(self.media_control_area)
-        self.frame_6.setMinimumSize(QtCore.QSize(70, 0))
+        self.frame_6.setMinimumSize(QtCore.QSize(110, 0))
         self.frame_6.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
         self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_6.setObjectName("frame_6")
         self.horizontalLayout_2.addWidget(self.frame_6)
-        self.volume_btn = QtWidgets.QPushButton(self.media_control_area)
-        self.volume_btn.setStyleSheet("QPushButton{\n"
-"    background-color: rgba(255,255,255,0);\n"
-"}\n"
-"\n"
-"QPushButton:hover{\n"
-"    background-color: rgba(255,255,255,130);\n"
-"}")
-        self.volume_btn.setText("")
-        icon22 = QtGui.QIcon()
-        icon22.addPixmap(QtGui.QPixmap(":/resc/UI_V2/volume_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.volume_btn.setIcon(icon22)
-        self.volume_btn.setIconSize(QtCore.QSize(30, 20))
-        self.volume_btn.setObjectName("volume_btn")
-        self.horizontalLayout_2.addWidget(self.volume_btn)
         self.more_options_btn = QtWidgets.QPushButton(self.media_control_area)
         self.more_options_btn.setStyleSheet("QPushButton{\n"
 "    background-color: rgba(255,255,255,0);\n"
@@ -690,9 +701,9 @@ class Ui_MainWindow(object):
 "    background-color: rgba(255,255,255,130);\n"
 "}")
         self.more_options_btn.setText("")
-        icon23 = QtGui.QIcon()
-        icon23.addPixmap(QtGui.QPixmap(":/resc/UI_V2/more_details_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.more_options_btn.setIcon(icon23)
+        icon21 = QtGui.QIcon()
+        icon21.addPixmap(QtGui.QPixmap(":/resc/UI_V2/more_details_btn.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.more_options_btn.setIcon(icon21)
         self.more_options_btn.setIconSize(QtCore.QSize(30, 15))
         self.more_options_btn.setObjectName("more_options_btn")
         self.horizontalLayout_2.addWidget(self.more_options_btn)
@@ -720,6 +731,7 @@ class Ui_MainWindow(object):
         self.album_label.setText(_translate("MainWindow", "album_label"))
         self.current_time_label.setText(_translate("MainWindow", "00:00:00"))
         self.total_time_label.setText(_translate("MainWindow", "00:00:00"))
+        self.search_bar.setText(_translate("MainWindow", "Search"))
         self.page_label.setText(_translate("MainWindow", "All tracks"))
         self.add_songs_to_library_btn.setText(_translate("MainWindow", "Add songs"))
         self.remove_current_selection_btn.setText(_translate("MainWindow", "remove selection"))

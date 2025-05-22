@@ -126,32 +126,6 @@ color: rgb(255, 255, 255);</string>
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="close_btn">
-         <property name="styleSheet">
-          <string notr="true">QPushButton{
-	background-color: rgba(255,255,255,0);
-}
-
-QPushButton:hover{
-	background-color: rgba(255,255,255,130);
-}</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="resc.qrc">
-           <normaloff>:/resc/UI_V2/close_btb.png</normaloff>:/resc/UI_V2/close_btb.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>12</width>
-           <height>12</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="minimize_btn">
          <property name="styleSheet">
           <string notr="true">QPushButton{
@@ -194,6 +168,32 @@ QPushButton:hover{
          <property name="icon">
           <iconset resource="resc.qrc">
            <normaloff>:/resc/UI_V2/max_btn.png</normaloff>:/resc/UI_V2/max_btn.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>12</width>
+           <height>12</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="close_btn">
+         <property name="styleSheet">
+          <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resc.qrc">
+           <normaloff>:/resc/UI_V2/close_btb.png</normaloff>:/resc/UI_V2/close_btb.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -348,32 +348,6 @@ QPushButton:hover{
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="recently_added_btn">
-              <property name="styleSheet">
-               <string notr="true">QPushButton{
-	background-color: rgba(255,255,255,0);
-}
-
-QPushButton:hover{
-	background-color: rgba(255,255,255,130);
-}</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resc.qrc">
-                <normaloff>:/resc/UI_V2/recently_added_btn.png</normaloff>:/resc/UI_V2/recently_added_btn.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>20</width>
-                <height>30</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="favourite_btn">
               <property name="styleSheet">
                <string notr="true">QPushButton{
@@ -415,20 +389,14 @@ QPushButton:hover{
             <item>
              <widget class="QPushButton" name="settings_btn">
               <property name="styleSheet">
-               <string notr="true">QPushButton{
-	background-color: rgba(255,255,255,0);
-}
-
-QPushButton:hover{
-	background-color: rgba(255,255,255,130);
-}</string>
+               <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
               </property>
               <property name="text">
                <string/>
               </property>
               <property name="icon">
                <iconset resource="resc.qrc">
-                <normaloff>:/resc/UI_V2/settings_btn.png</normaloff>:/resc/UI_V2/settings_btn.png</iconset>
+                <normaloff>:/resc/UI_V2/audio_file_mark.png</normaloff>:/resc/UI_V2/audio_file_mark.png</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -652,7 +620,13 @@ color: rgb(255, 255, 255);</string>
                  <item>
                   <widget class="QPushButton" name="make_favourite_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+                    <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -669,7 +643,13 @@ color: rgb(255, 255, 255);</string>
                  <item>
                   <widget class="QPushButton" name="loop_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+                    <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -686,14 +666,20 @@ color: rgb(255, 255, 255);</string>
                  <item>
                   <widget class="QPushButton" name="shuffle_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+                    <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
                    </property>
                    <property name="text">
                     <string/>
                    </property>
                    <property name="icon">
                     <iconset resource="resc.qrc">
-                     <normaloff>:/resc/UI_V2/suffle_btn.png</normaloff>:/resc/UI_V2/suffle_btn.png</iconset>
+                     <normaloff>:/resc/UI_V2/play_all_btn.png</normaloff>:/resc/UI_V2/play_all_btn.png</iconset>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -703,7 +689,13 @@ color: rgb(255, 255, 255);</string>
                  <item>
                   <widget class="QPushButton" name="about_track_btn">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+                    <string notr="true">QPushButton{
+	background-color: rgba(255,255,255,0);
+}
+
+QPushButton:hover{
+	background-color: rgba(255,255,255,130);
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -852,7 +844,13 @@ color: rgb(255, 255, 255);</string>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>30</height>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>50</height>
                  </size>
                 </property>
                 <property name="styleSheet">
@@ -892,7 +890,20 @@ QPushButton:hover{
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="back_to_list">
+                  <spacer name="horizontalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="search_play_list_btn">
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
 	background-color: rgba(255,255,255,0);
@@ -907,7 +918,7 @@ QPushButton:hover{
                    </property>
                    <property name="icon">
                     <iconset resource="resc.qrc">
-                     <normaloff>:/resc/UI_V2/next_page.png</normaloff>:/resc/UI_V2/next_page.png</iconset>
+                     <normaloff>:/resc/UI_V2/serach_btn.png</normaloff>:/resc/UI_V2/serach_btn.png</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -918,17 +929,39 @@ QPushButton:hover{
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
+                  <widget class="QLineEdit" name="search_bar">
+                   <property name="maximumSize">
                     <size>
-                     <width>40</width>
-                     <height>20</height>
+                     <width>300</width>
+                     <height>16777215</height>
                     </size>
                    </property>
-                  </spacer>
+                   <property name="font">
+                    <font>
+                     <pointsize>-1</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QLineEdit {
+    border: 2px solid #87CEFA;  /* Light blue */
+    border-radius: 6px;
+    padding: 6px 10px;
+    background-color: transparent;
+    color: white;
+    font-size: 12px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #00BFFF;  /* Deeper blue on focus */
+    background-color: transparent;
+}
+
+</string>
+                   </property>
+                   <property name="text">
+                    <string>Search</string>
+                   </property>
+                  </widget>
                  </item>
                  <item alignment="Qt::AlignHCenter">
                   <widget class="QLabel" name="page_label">
@@ -1390,7 +1423,7 @@ QPushButton:hover{
                 <widget class="QFrame" name="frame_6">
                  <property name="minimumSize">
                   <size>
-                   <width>70</width>
+                   <width>110</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -1402,32 +1435,6 @@ QPushButton:hover{
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="volume_btn">
-                 <property name="styleSheet">
-                  <string notr="true">QPushButton{
-	background-color: rgba(255,255,255,0);
-}
-
-QPushButton:hover{
-	background-color: rgba(255,255,255,130);
-}</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="resc.qrc">
-                   <normaloff>:/resc/UI_V2/volume_btn.png</normaloff>:/resc/UI_V2/volume_btn.png</iconset>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>30</width>
-                   <height>20</height>
-                  </size>
                  </property>
                 </widget>
                </item>

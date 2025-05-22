@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="resc">
+    <file>UI_V2/app.png</file>
+    <file>UI_V2/play_all_btn.png</file>
+    <file>UI_V2/serach_btn.png</file>
     <file>UI_V2/loop-one.png</file>
     <file>UI_V2/fav_btn_1.png</file>
     <file>UI_V2/loop.png</file>
