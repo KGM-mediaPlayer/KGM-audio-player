@@ -572,7 +572,6 @@ class Ui_MainWindow(object):
 "    height: 12px;\n"
 "    margin: -4px 0;\n"
 "    border-radius: 6px;\n"
-"    box-shadow: 0px 0px 5px 2px rgba(255,255,255,0.6);\n"
 "}\n"
 "\n"
 "QSlider::sub-page:horizontal {\n"

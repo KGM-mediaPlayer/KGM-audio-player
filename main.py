@@ -11,11 +11,24 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt,QTimer
 from PyQt5.QtWidgets import QWidget,QMessageBox
-from mutagen import File
+from mutagen import File as MutagenFile
+from mutagen.mp3 import HeaderNotFoundError
 
 from music import Ui_MainWindow
 from EQ import EqualizerWindow
 import database
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and py2app/pyinstaller bundles."""
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller / py2app frozen environment
+        return os.path.join(sys._MEIPASS, relative_path)
+    elif getattr(sys, 'frozen', False):
+        # macOS app bundle, typical py2app case
+        return os.path.join(os.path.dirname(sys.executable), '..', 'Resources', relative_path)
+    else:
+        # Normal dev mode
+        return os.path.join(os.path.abspath("."), relative_path)
 
 
 class MusicPlayer(QtWidgets.QMainWindow):
@@ -126,13 +139,12 @@ class MusicPlayer(QtWidgets.QMainWindow):
         # Eq button
         self.ui.more_options_btn.clicked.connect(self.show_equalizer)
 
-        
-        
-        
+           
     connect = sqlite3.connect('music_library.db')
     connect.row_factory = sqlite3.Row  # Enable dict-style access
     cursor = connect.cursor()
 
+    
     def show_about_dialog(self):
         about_dialog = AboutDialog(self)
         about_dialog.exec_()
@@ -435,20 +447,22 @@ class MusicPlayer(QtWidgets.QMainWindow):
         # Set total duration label only once
         self.ui.total_time_label.setText(self.format_time(duration))
 
+
     def get_song_metadata(self, file_path):
-        metadata = File(file_path, easy=True)
+        try:
+            audio = MutagenFile(file_path, easy=True)
+            if not audio:
+                raise ValueError("Unsupported or unrecognized file format")
 
-        if metadata is None:
-            # File not supported or unreadable
-            title = os.path.basename(file_path)
-            artist = "Unknown Artist"
-            album = "Unknown Album"
-        else:
-            title = metadata.get("title", [os.path.basename(file_path)])[0]
-            artist = metadata.get("artist", ["Unknown Artist"])[0]
-            album = metadata.get("album", ["Unknown Album"])[0]
+            title = audio.get("title", [os.path.basename(file_path)])[0]
+            artist = audio.get("artist", ["Unknown Artist"])[0]
+            album = audio.get("album", ["Unknown Album"])[0]
+            return title, artist, album
 
-        return title, artist, album
+        except (HeaderNotFoundError, ValueError, Exception) as e:
+            print(f"Skipping {file_path}: {e}")
+            return os.path.basename(file_path), "Unknown Artist", "Unknown Album"
+
     
     def load_songs(self):
         self.ui.center_stackedWidget.setCurrentIndex(2)
@@ -458,7 +472,7 @@ class MusicPlayer(QtWidgets.QMainWindow):
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
-            item.setIcon(QtGui.QIcon("UI_V2/MusicListItem.png"))
+            item.setIcon(QtGui.QIcon(resource_path("UI_V2/MusicListItem.png")))
             item.setData(QtCore.Qt.UserRole, {
                 "title": title,
                 "artist": artist,
@@ -494,7 +508,7 @@ class MusicPlayer(QtWidgets.QMainWindow):
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
-            item.setIcon(QtGui.QIcon(":/UI_V2/like.png"))
+            item.setIcon(QtGui.QIcon(resource_path("UI_V2/like.png")))
             item.setData(QtCore.Qt.UserRole, {
                 "title": title,
                 "artist": artist,
@@ -619,9 +633,9 @@ class MusicPlayer(QtWidgets.QMainWindow):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.make_favourite_btn.setIcon(QIcon(":/UI_V2/favourite_btn.png"))
+                self.ui.make_favourite_btn.setIcon(QIcon(resource_path("UI_V2/favourite_btn.png")))
             else:
-                self.ui.make_favourite_btn.setIcon(QIcon(":/UI_V2/fav_btn_1.png"))
+                self.ui.make_favourite_btn.setIcon(QIcon(resource_path("UI_V2/fav_btn_1.png")))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -654,10 +668,10 @@ class MusicPlayer(QtWidgets.QMainWindow):
     def toggle_play_pause(self):
         if self.player.is_playing():
             self.player.pause()
-            self.ui.pause_btn.setIcon(QIcon(":/resc/UI_V2/play_alt.png"))
+            self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_alt.png")))
         else:
             self.player.play()
-            self.ui.pause_btn.setIcon(QIcon(":/resc/UI_V2/play_btn.png"))
+            self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_btn.png")))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
@@ -721,9 +735,9 @@ class MusicPlayer(QtWidgets.QMainWindow):
         self.looping = not self.looping
 
         if self.looping:
-            self.ui.loop_btn.setIcon(QIcon(":/UI_V2/loop-one.png"))  # or loop-one.png if looping a single track
+            self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop-one.png")))  # or loop-one.png if looping a single track
         else:
-            self.ui.loop_btn.setIcon(QIcon(":/UI_V2/loop.png"))
+            self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop.png")))
 
         self.ui.loop_btn.setChecked(self.looping)
 
@@ -734,7 +748,7 @@ class MusicPlayer(QtWidgets.QMainWindow):
         self.shuffle = not self.shuffle
 
         self.ui.shuffle_btn.setIcon(
-            QIcon(":/UI_V2/suffle_btn.png") if self.shuffle else QIcon(":/UI_V2/play_all_btn.png")
+            QIcon(resource_path("UI_V2/suffle_btn.png")) if self.shuffle else QIcon(resource_path("UI_V2/play_all_btn.png"))
         )
         self.ui.shuffle_btn.setChecked(self.shuffle)
 
@@ -812,7 +826,7 @@ class MusicPlayer(QtWidgets.QMainWindow):
         if album_art and not album_art.isNull():
             self.ui.Album_art.setPixmap(QPixmap.fromImage(album_art))
         else:
-            default_pixmap = QPixmap(":/UI_V2/No-album-art.png")
+            default_pixmap = QPixmap(resource_path("UI_V2/No-album-art.png"))
             self.ui.Album_art.setPixmap(default_pixmap)
 
     def set_track_info(self, media):
@@ -956,16 +970,18 @@ class TrackInfoDialog(QtWidgets.QDialog):
 
 #DIALOGUE about page
 class AboutDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, MusicPlayer, parent=None):
         super().__init__(parent)
         self.setWindowTitle("About KGM Media Player")
         self.setFixedSize(400, 300)
 
         layout = QVBoxLayout()
 
-        # App logo
+        # Use resource path from passed-in provider
         logo_label = QLabel()
-        logo_pixmap = QPixmap(":/UI_V2/app.png").scaled(70, 70, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        logo_pixmap = QPixmap(resource_path("UI_V2/app.png")).scaled(
+            70, 70, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
         logo_label.setAlignment(Qt.AlignCenter)
         logo_label.setPixmap(logo_pixmap)
 
@@ -976,13 +992,11 @@ class AboutDialog(QDialog):
             "<p>Developed by: Kisakye Gibreel</p>"
             "<p>Thank you for using this player!</p>"
             "<p>Copyright 2025</p>"
-            "<p>Kampala,Uganda 🇺🇬</p>"
+            "<p>Kampala, Uganda 🇺🇬</p>"
         )
         info_label.setAlignment(Qt.AlignCenter)
         info_label.setWordWrap(True)
 
-        # Add widgets to layout
         layout.addWidget(logo_label)
         layout.addWidget(info_label)
-
         self.setLayout(layout)
