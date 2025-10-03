@@ -1,0 +1,2 @@
+pyuic5 -x main.ui -o main.py   
+pyrcc5 resc.qrc -o resc_rc.py 
