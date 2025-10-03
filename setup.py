@@ -23,7 +23,7 @@ OPTIONS = {
     'packages': [
         'PyQt5',
         'vlc',
-        'mutagen'
+        'mutagen',
     ],
     'resources': [
         'UI_v2',             # Needed so py2app copies entire folder

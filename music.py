@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("KGM MediaPlayer")
         MainWindow.resize(995, 784)
         MainWindow.setMinimumSize(QtCore.QSize(100, 0))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
