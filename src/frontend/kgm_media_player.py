@@ -1,6 +1,7 @@
 import PyQt5.QtWidgets as qtw
 import PyQt5.QtGui as qtg
 import PyQt5.QtCore as qtc 
+from .theme_manager import ThemeManager
 
 class MainWindow(qtw.QMainWindow):
     def __init__(self):
@@ -8,6 +9,9 @@ class MainWindow(qtw.QMainWindow):
 
         self.setWindowTitle("KGM Media Player")
         self.resize(900, 600) # Adjusted size to better fit the screenshot
+
+        self.theme_manager = ThemeManager(__file__) #Instantiate the ThemeManager
+        self.theme_manager.load_and_apply_theme() #Load the theme (This sets all QSS)
 
         #Central widget
         self.central_container = qtw.QWidget()
@@ -34,14 +38,18 @@ class MainWindow(qtw.QMainWindow):
         ## 1. Right container (Right Panel)
         # -----------------------------------------------------------
         self.right_container=qtw.QStackedWidget()
-        self.right_container_layout=qtw.QVBoxLayout(self.right_container)
         #self.right_widget.setContentsMargins(10, 10, 10, 10)
         self.right_container.setObjectName("rightWidget")
 
+        self.playlist_page = qtw.QWidget()
+        self.playlist_page_layout = qtw.QVBoxLayout(self.playlist_page)
+        self.playlist_page_layout.setContentsMargins(0, 0, 0, 0) # Use this layout to stack components
+
         self.main_layout.addWidget(self.right_container)
+        
 
         # -----------------------------------------------------------
-        ## 1. Right container Stack top to bottom
+        ##  Right container Stack top to bottom
         # -----------------------------------------------------------
         self.top_label_frame=qtw.QFrame()
         self.top_label_frame_layout=qtw.QHBoxLayout(self.top_label_frame)
@@ -57,9 +65,10 @@ class MainWindow(qtw.QMainWindow):
         self.leftPlaybackTimer=qtw.QLabel("00:00")
         self.rightPlaybackTimer=qtw.QLabel("00:00")
         self.playBackTimer_frame_layout.addWidget(self.leftPlaybackTimer)
+        self.playBackTimer_frame_layout.addStretch()
         self.playBackTimer_frame_layout.addWidget(self.rightPlaybackTimer)
 
-        self.playBackSlider=qtw.QSlider()
+        self.playBackSlider=qtw.QSlider(qtc.Qt.Horizontal)
         self.playBackSlider.setObjectName("playBackSlider")
 
         self.playBackFooter_frame=qtw.QFrame()
@@ -70,13 +79,24 @@ class MainWindow(qtw.QMainWindow):
         self.albumArt_frame=qtw.QFrame()
         self.albumArt_frame_layout=qtw.QHBoxLayout(self.albumArt_frame)
 
+        self.albumArt_view=qtw.QLabel()
+        self.albumArt_view.setObjectName("albumArtView")
+        self.albumArt_frame_layout.addWidget(self.albumArt_view)
+
         self.mediaTitle_frame=qtw.QFrame()
         self.mediaTitle_frame_layout=qtw.QVBoxLayout(self.mediaTitle_frame)
 
         #labels to go in media title frame
         self.songLabel=qtw.QLabel("Song Label")
         self.artistName=qtw.QLabel("Artist Name")
-        self.albumtName=qtw.QLabel("Album Name")
+        self.albumName=qtw.QLabel("Album Name")
+        self.mediaTitle_frame_layout.addWidget(self.songLabel)
+        self.mediaTitle_frame_layout.addWidget(self.artistName)
+        self.mediaTitle_frame_layout.addWidget(self.albumName)
+
+        #Adding componets to media title frame
+        self.albumArt_frame_layout.addWidget(self.albumArt_view)
+        self.albumArt_frame_layout.addWidget(self.mediaTitle_frame)
 
         #playBackControl frame
         self.playBackControl_outerframe=qtw.QFrame()
@@ -90,16 +110,21 @@ class MainWindow(qtw.QMainWindow):
         self.secondaryPlayBackControl_frame_layout=qtw.QVBoxLayout(self.secondaryPlayBackControl_frame)
         self.secondaryPlayBackControl_frame.setObjectName("secondaryPlaybackControlFrame")
 
+        #adding componets to footer
+        self.playBackFooter_frame_layout.addWidget(self.albumArt_frame)
+        self.playBackFooter_frame_layout.addStretch()
+        self.playBackFooter_frame_layout.addWidget(self.playBackControl_outerframe)
+        self.playBackFooter_frame_layout.addStretch()
+
         #adding componenets to rightcontainer
-        self.right_container.addWidget(self.top_label_frame)
-        self.right_container.addWidget(self.listObject)
-        self.right_container.addWidget(self.playBackTimer_frame)
-        self.right_container.addWidget(self.playBackFooter_frame)
-        
+        self.playlist_page_layout.addWidget(self.top_label_frame)
+        self.playlist_page_layout.addWidget(self.listObject)
+        self.playlist_page_layout.addWidget(self.playBackTimer_frame)
+        self.playlist_page_layout.addWidget(self.playBackSlider)
+        self.playlist_page_layout.addWidget(self.playBackFooter_frame)
 
+        self.right_container.addWidget(self.playlist_page)
 
+        self.show()
 
-
-        
-
-
+    

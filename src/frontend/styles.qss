@@ -1,0 +1,75 @@
+/* Root/Window */
+QMainWindow {
+    background-color: __THEME_BACKGROUND__;
+}
+
+/* Sidebar Container (self.sidebar_container) */
+#Sidebar {
+    background-color: __SIDEBAR_BACKGROUND__; 
+}
+
+/* Right Container (The QStackedWidget: self.right_container) */
+#rightWidget {
+    background-color: __CONTENT_BACKGROUND__;
+    /* This gives the entire right panel a rounded top-left corner */
+    border-top-left-radius: 20px; 
+}
+
+/* Header Frame (self.top_label_frame) */
+#topLabel {
+    background-color: __CONTENT_BACKGROUND__;
+    border-bottom: 1px solid __SEPARATOR_COLOR__;
+    padding: 10px 20px; /* Add some padding around the title/search elements */
+}
+
+/* List Widget (The Playlist List: self.listObject) */
+#lisObject { 
+    background-color: __CONTENT_BACKGROUND__;
+    border: none;
+    margin: 10px 20px; /* Separates the list from the header/footer */
+    border-radius: 10px; /* The rounded corners for the list */
+    color: __TEXT_COLOR__;
+    /* Add basic item styling to see selection */
+    QListWidget::item {
+        padding: 8px 10px;
+        color: __TEXT_COLOR__;
+    }
+    /* Style for the selected item (uses the transparent highlight placeholder) */
+    QListWidget::item:selected {
+        background-color: __HIGHLIGHT_COLOR_TRANSPARENT__;
+        color: white;
+        border-left: 3px solid __HIGHLIGHT_COLOR__;
+    }
+}
+
+/* Footer Frame (self.playBackFooter_frame) */
+#playBackFooterFrame { 
+    background-color: __FOOTER_BACKGROUND__;
+    border-top: 1px solid __SEPARATOR_COLOR__;
+    padding: 10px 20px;
+}
+
+/* Generic Label Styling */
+QLabel {
+    color: __TEXT_COLOR__;
+}
+
+/* Playback Control elements (Example Slider Style) */
+QSlider::groove:horizontal {
+    height: 5px; 
+    background: __SEPARATOR_COLOR__;
+    margin: 2px 0;
+    border-radius: 2px;
+}
+QSlider::sub-page:horizontal {
+    background: __HIGHLIGHT_COLOR__; /* Filled part of the slider */
+    border-radius: 2px;
+}
+QSlider::handle:horizontal {
+    background: __HIGHLIGHT_COLOR__;
+    border: none;
+    width: 12px;
+    height: 12px;
+    margin: -4px 0; 
+    border-radius: 6px; 
+}
