@@ -3,34 +3,31 @@ QMainWindow {
     background-color: __THEME_BACKGROUND__;
 }
 
-/* Sidebar Container (self.sidebar_container) */
+
 #Sidebar {
     background-color: __SIDEBAR_BACKGROUND__; 
     min-width: 50px;
     max-width: 50px;
 }
 
-/* Right Container (The QStackedWidget: self.right_container) */
+
 #rightWidget {
     background-color: __CONTENT_BACKGROUND__;
-    /* This gives the entire right panel a rounded top-left corner */
     border-top-left-radius: 20px; 
 }
 
-/* Header Frame (self.top_label_frame) */
 #topLabel {
     background-color: __CONTENT_BACKGROUND__;
     border-bottom: 1px solid __SEPARATOR_COLOR__;
     padding: 10px 20px; /* Add some padding around the title/search elements */
 }
 
-/* List Widget (The Playlist List: self.listObject) */
 #lisObject { 
     background-color: __CONTENT_BACKGROUND__;
     border: none;
     border-radius: 10px; /* The rounded corners for the list */
     color: __TEXT_COLOR__;
-    /* Add basic item styling to see selection */
+    
     
     QListWidget::item {
         padding: 8px 10px;
@@ -49,7 +46,7 @@ QMainWindow {
     margin: 0;
 }
 
-/* Footer Frame (self.playBackFooter_frame) */
+
 #playBackFooterFrame { 
     background-color: __FOOTER_BACKGROUND__;
     border-top: 1px solid __SEPARATOR_COLOR__;
@@ -58,13 +55,12 @@ QMainWindow {
 }
 
 
-/* Generic Label Styling */
 QLabel {
     font-size: 10pt;
     color: __TEXT_COLOR__; /* Using your theme placeholder */
 }
 
-/* Playback Control elements (Example Slider Style) */
+
 QSlider::groove:horizontal {
     height: 4px; 
     background: __SEPARATOR_COLOR__;
@@ -94,17 +90,9 @@ QSlider::handle:horizontal {
 
 /* Media Playback Control Frame Styling (The Outer Container) */
 #playBackControl_outerframe {
-    /* 1. Set a slight background color for definition */
     background-color: __FOOTER_BACKGROUND__; 
-    
-    /* 2. Apply a large border radius for a pill-like shape (e.g., 25px) */
     border-radius: 25px; 
-    
-    /* 3. Apply the light, rounded border */
     border: 1px solid __SEPARATOR_COLOR__; 
-    
-    /* 4. Add some internal padding to give space around the buttons */
-    /* This padding is CRITICAL to push the buttons away from the curved edge */
     padding: 5px 15px; 
 }
 
