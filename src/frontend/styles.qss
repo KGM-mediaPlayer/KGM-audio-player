@@ -6,6 +6,8 @@ QMainWindow {
 /* Sidebar Container (self.sidebar_container) */
 #Sidebar {
     background-color: __SIDEBAR_BACKGROUND__; 
+    min-width: 50px;
+    max-width: 50px;
 }
 
 /* Right Container (The QStackedWidget: self.right_container) */
@@ -26,10 +28,10 @@ QMainWindow {
 #lisObject { 
     background-color: __CONTENT_BACKGROUND__;
     border: none;
-    margin: 10px 20px; /* Separates the list from the header/footer */
     border-radius: 10px; /* The rounded corners for the list */
     color: __TEXT_COLOR__;
     /* Add basic item styling to see selection */
+    
     QListWidget::item {
         padding: 8px 10px;
         color: __TEXT_COLOR__;
@@ -42,28 +44,38 @@ QMainWindow {
     }
 }
 
+#playBackTimerFrame{ 
+    background-color: #1E1E1E; 
+    margin: 0;
+}
+
 /* Footer Frame (self.playBackFooter_frame) */
 #playBackFooterFrame { 
     background-color: __FOOTER_BACKGROUND__;
     border-top: 1px solid __SEPARATOR_COLOR__;
-    padding: 10px 20px;
+    height:50px;
+    padding: 0px 5px;
 }
+
 
 /* Generic Label Styling */
 QLabel {
-    color: __TEXT_COLOR__;
+    font-size: 10pt;
+    color: __TEXT_COLOR__; /* Using your theme placeholder */
 }
 
 /* Playback Control elements (Example Slider Style) */
 QSlider::groove:horizontal {
-    height: 5px; 
+    height: 4px; 
     background: __SEPARATOR_COLOR__;
-    margin: 2px 0;
-    border-radius: 2px;
+    border-radius: 12px;
 }
 QSlider::sub-page:horizontal {
     background: __HIGHLIGHT_COLOR__; /* Filled part of the slider */
     border-radius: 2px;
+    border: none;
+    padding: 0;
+    margin: 0;
 }
 QSlider::handle:horizontal {
     background: __HIGHLIGHT_COLOR__;
@@ -72,4 +84,33 @@ QSlider::handle:horizontal {
     height: 12px;
     margin: -4px 0; 
     border-radius: 6px; 
+}
+
+#albumArtView{
+    border-radius:10px;
+    background-color: __CONTENT_BACKGROUND__;
+    qproperty-alignment: AlignCenter;
+}
+
+/* Media Playback Control Frame Styling (The Outer Container) */
+#playBackControl_outerframe {
+    /* 1. Set a slight background color for definition */
+    background-color: __FOOTER_BACKGROUND__; 
+    
+    /* 2. Apply a large border radius for a pill-like shape (e.g., 25px) */
+    border-radius: 25px; 
+    
+    /* 3. Apply the light, rounded border */
+    border: 1px solid __SEPARATOR_COLOR__; 
+    
+    /* 4. Add some internal padding to give space around the buttons */
+    /* This padding is CRITICAL to push the buttons away from the curved edge */
+    padding: 5px 15px; 
+}
+
+/* Ensure buttons inside this container are flat and minimal */
+#playBackControl_outerframe QPushButton {
+    background-color: transparent;
+    border: none;
+    padding: 5px; 
 }

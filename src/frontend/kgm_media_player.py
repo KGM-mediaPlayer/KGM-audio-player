@@ -2,10 +2,20 @@ import PyQt5.QtWidgets as qtw
 import PyQt5.QtGui as qtg
 import PyQt5.QtCore as qtc 
 from .theme_manager import ThemeManager
+from .asset_loader import create_svg_icon, load_and_scale_image
+import os
 
 class MainWindow(qtw.QMainWindow):
     def __init__(self):
         super().__init__()
+
+        #image loading func
+        def get_asset_path(self, filename):
+            """Resolves the absolute path for an asset file."""
+            # __file__ is the path to kgm_media_player.py
+            base_dir = os.path.dirname(__file__) 
+            return os.path.join(base_dir, 'assets', filename)
+
 
         self.setWindowTitle("KGM Media Player")
         self.resize(900, 600) # Adjusted size to better fit the screenshot
@@ -78,9 +88,16 @@ class MainWindow(qtw.QMainWindow):
         #playBack footer Contents
         self.albumArt_frame=qtw.QFrame()
         self.albumArt_frame_layout=qtw.QHBoxLayout(self.albumArt_frame)
+        self.albumArt_frame_layout.setContentsMargins(0, 0, 0, 0) # Tidy up layout
 
         self.albumArt_view=qtw.QLabel()
         self.albumArt_view.setObjectName("albumArtView")
+        self.albumArt_view.setFixedSize(70, 70)
+
+
+        small_scaled_pixmap = load_and_scale_image(__file__, "No-album-art.png", size=60,round_radius=10)
+        self.albumArt_view.setPixmap(small_scaled_pixmap)
+
         self.albumArt_frame_layout.addWidget(self.albumArt_view)
 
         self.mediaTitle_frame=qtw.QFrame()
@@ -101,6 +118,7 @@ class MainWindow(qtw.QMainWindow):
         #playBackControl frame
         self.playBackControl_outerframe=qtw.QFrame()
         self.playBackControl_outerframe_layout=qtw.QVBoxLayout(self.playBackControl_outerframe)
+        self.playBackControl_outerframe.setObjectName("playBackControl_outerframe")
 
         self.mainPlayBackControl_frame=qtw.QFrame()
         self.mainPlayBackControl_frame_layout=qtw.QVBoxLayout(self.mainPlayBackControl_frame)
@@ -110,12 +128,23 @@ class MainWindow(qtw.QMainWindow):
         self.secondaryPlayBackControl_frame_layout=qtw.QVBoxLayout(self.secondaryPlayBackControl_frame)
         self.secondaryPlayBackControl_frame.setObjectName("secondaryPlaybackControlFrame")
 
+        # ----------------- Volume Control -----------------
+        self.volumeSlider = qtw.QSlider(qtc.Qt.Horizontal)
+        self.volumeSlider.setObjectName("volumeSlider")
+        self.volumeSlider.setMaximumWidth(100)
+
+        self.volumeIcon = qtw.QLabel("🔊")
+
+
         #adding componets to footer
         self.playBackFooter_frame_layout.addWidget(self.albumArt_frame)
         self.playBackFooter_frame_layout.addStretch()
         self.playBackFooter_frame_layout.addWidget(self.playBackControl_outerframe)
         self.playBackFooter_frame_layout.addStretch()
+        self.playBackFooter_frame_layout.addWidget(self.volumeIcon)
+        self.playBackFooter_frame_layout.addWidget(self.volumeSlider)
 
+        
         #adding componenets to rightcontainer
         self.playlist_page_layout.addWidget(self.top_label_frame)
         self.playlist_page_layout.addWidget(self.listObject)

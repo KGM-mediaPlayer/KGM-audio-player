@@ -57,6 +57,11 @@ class ThemeManager:
             dark_palette.setColor(qtg.QPalette.Window, qtg.QColor(colors['theme_background']))
             dark_palette.setColor(qtg.QPalette.Text, qtg.QColor(colors['text_color']))
             dark_palette.setColor(qtg.QPalette.Highlight, qtg.QColor(colors['highlight_color']))
+            dark_palette.setColor(qtg.QPalette.Highlight, qtg.QColor(colors['sidebar_background']))
+            dark_palette.setColor(qtg.QPalette.Highlight, qtg.QColor(colors['content_background']))
+            dark_palette.setColor(qtg.QPalette.Highlight, qtg.QColor(colors['foreground_color']))
+            dark_palette.setColor(qtg.QPalette.Highlight, qtg.QColor(colors['highlight_color']))
+            dark_palette.setColor(qtg.QPalette.Highlight, qtg.QColor(colors['text_color']))
             app.setPalette(dark_palette)
 
 

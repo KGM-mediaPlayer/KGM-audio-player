@@ -2,9 +2,9 @@
     "name": "Default Dark Theme",
     "colors": {
         "theme_background": "#1E1E1E",
-        "sidebar_background": "#1E1E1E",
+        "sidebar_background": "#2C2C2C",
         "content_background": "#282828",
-        "footer_background": "#1E1E1E",
+        "foreground_color": "#1E1E1E",
         "highlight_color": "#FF9600",
         "text_color": "#E6E6E6",
         "dim_text_color": "#B4B4B4",
