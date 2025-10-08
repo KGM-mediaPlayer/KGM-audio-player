@@ -41,6 +41,46 @@ class MainWindow(qtw.QMainWindow):
         self.sidebar_container_layout.setSpacing(5) # Reduced spacing
         self.sidebar_container.setObjectName("Sidebar") 
 
+        #sidebar buttons
+        self.appLogo=qtw.QLabel("")
+        LogoIcon = load_and_scale_image(__file__, "app.png", size=32)
+        self.appLogo.setPixmap(LogoIcon)
+
+        self.playlist_btn=qtw.QPushButton("")
+        playListIcon=create_svg_icon(__file__, "playlist_btn.svg", size=35)
+        self.playlist_btn.setIcon(playListIcon)
+
+        self.music_btn=qtw.QPushButton("")
+        music_btnIcon=create_svg_icon(__file__, "music_btn.svg", size=35)
+        self.music_btn.setIcon(music_btnIcon)
+
+        self.effects_btn=qtw.QPushButton("")
+        effects_btnIcon=create_svg_icon(__file__, "effects_btn.svg", size=35)
+        self.effects_btn.setIcon(effects_btnIcon)
+
+        self.settings_btn=qtw.QPushButton("")
+        settings_btnIcon=create_svg_icon(__file__, "settings_btn.svg", size=35)
+        self.settings_btn.setIcon(settings_btnIcon)
+
+        self.theme_btn=qtw.QPushButton("")
+        themeIcon=create_svg_icon(__file__, "theme_btn.svg", size=35)
+        self.theme_btn.setIcon(themeIcon)
+
+        self.about_btn=qtw.QPushButton("")
+        self.about_btn.setFixedHeight(90)
+        about_btntIcon=create_svg_icon(__file__, "about_btn.svg",)
+        self.about_btn.setIcon(about_btntIcon)
+
+        #Add buttons to side bar
+        self.sidebar_container_layout.addWidget(self.appLogo)
+        self.sidebar_container_layout.addWidget(self.playlist_btn)
+        self.sidebar_container_layout.addWidget(self.music_btn)
+        self.sidebar_container_layout.addWidget(self.effects_btn)
+        self.sidebar_container_layout.addWidget(self.settings_btn)
+        self.sidebar_container_layout.addStretch()
+        self.sidebar_container_layout.addWidget(self.theme_btn)
+        self.sidebar_container_layout.addWidget(self.about_btn)
+
         self.main_layout.addWidget(self.sidebar_container)
 
 
@@ -53,7 +93,7 @@ class MainWindow(qtw.QMainWindow):
 
         self.playlist_page = qtw.QWidget()
         self.playlist_page_layout = qtw.QVBoxLayout(self.playlist_page)
-        self.playlist_page_layout.setContentsMargins(0, 0, 0, 0) # Use this layout to stack components
+        self.playlist_page_layout.setContentsMargins(0, 0, 0, 0) 
 
         self.main_layout.addWidget(self.right_container)
         
@@ -65,8 +105,33 @@ class MainWindow(qtw.QMainWindow):
         self.top_label_frame_layout=qtw.QHBoxLayout(self.top_label_frame)
         self.top_label_frame.setObjectName("topLabel")
 
+        #top label componets
+        self.pageIcon=qtw.QLabel("PlayIcon")
+        self.page_label=qtw.QLabel("Playlist")
+        self.page_label.setObjectName("pageLabel")
+
+        self.searchIcon=qtw.QLabel("SearchIcon")
+        self.searchIcon.setObjectName("searchIcon")
+        searchIcon_btn=load_and_scale_image(__file__, "searchIcon_btn.svg", size=24)
+        self.searchIcon.setPixmap(searchIcon_btn)
+
+        self.searchInput=qtw.QLineEdit("Search")
+        self.searchInput.setObjectName("searchInput")
+
+        #add items to top label frame
+        self.top_label_frame_layout.addWidget(self.pageIcon)
+        self.top_label_frame_layout.addWidget(self.page_label)
+        self.top_label_frame_layout.addStretch()
+        self.top_label_frame_layout.addWidget(self.searchIcon)
+        self.top_label_frame_layout.addWidget(self.searchInput)
+
+        self.centerframe=qtw.QFrame()
+        self.centerframe_layout=qtw.QHBoxLayout(self.centerframe)
+        self.centerframe.setObjectName("centerFrame")
+
         self.listObject=qtw.QListWidget()
-        self.top_label_frame.setObjectName("lisObject")
+        self.listObject.setObjectName("lisObject")
+        self.centerframe_layout.addWidget(self.listObject)
 
         self.playBackTimer_frame=qtw.QFrame()
         self.playBackTimer_frame_layout=qtw.QHBoxLayout(self.playBackTimer_frame)
@@ -80,15 +145,20 @@ class MainWindow(qtw.QMainWindow):
 
         self.playBackSlider=qtw.QSlider(qtc.Qt.Horizontal)
         self.playBackSlider.setObjectName("playBackSlider")
+        self.playBackSlider.setContentsMargins(0, 0, 0, 0)
+        
 
         self.playBackFooter_frame=qtw.QFrame()
         self.playBackFooter_frame_layout=qtw.QHBoxLayout(self.playBackFooter_frame)
         self.playBackTimer_frame.setObjectName("playBackFooterFrame")
+        self.playBackFooter_frame.setContentsMargins(0, 0, 0, 0)
+        self.playBackFooter_frame.setMaximumHeight(80)
 
         #playBack footer Contents
         self.albumArt_frame=qtw.QFrame()
         self.albumArt_frame_layout=qtw.QHBoxLayout(self.albumArt_frame)
         self.albumArt_frame_layout.setContentsMargins(0, 0, 0, 0) # Tidy up layout
+        self.albumArt_frame.setObjectName("albumArtFrame")
 
         self.albumArt_view=qtw.QLabel()
         self.albumArt_view.setObjectName("albumArtView")
@@ -119,21 +189,61 @@ class MainWindow(qtw.QMainWindow):
         self.playBackControl_outerframe=qtw.QFrame()
         self.playBackControl_outerframe_layout=qtw.QVBoxLayout(self.playBackControl_outerframe)
         self.playBackControl_outerframe.setObjectName("playBackControl_outerframe")
+        self.playBackControl_outerframe.setContentsMargins(0, 0, 0, 0)
+        
+        
 
         self.mainPlayBackControl_frame=qtw.QFrame()
-        self.mainPlayBackControl_frame_layout=qtw.QVBoxLayout(self.mainPlayBackControl_frame)
+        self.mainPlayBackControl_frame_layout=qtw.QHBoxLayout(self.mainPlayBackControl_frame)
         self.mainPlayBackControl_frame.setObjectName("mainPlaybackControlFrame")
+        self.mainPlayBackControl_frame.setContentsMargins(0, 0, 0, 0)
+        
 
         self.secondaryPlayBackControl_frame=qtw.QFrame()
-        self.secondaryPlayBackControl_frame_layout=qtw.QVBoxLayout(self.secondaryPlayBackControl_frame)
+        self.secondaryPlayBackControl_frame_layout=qtw.QHBoxLayout(self.secondaryPlayBackControl_frame)
         self.secondaryPlayBackControl_frame.setObjectName("secondaryPlaybackControlFrame")
+        self.secondaryPlayBackControl_frame.setContentsMargins(0, 0, 0, 0)
+
+
+        #playback control. buttons
+        self.prev_track_btn=qtw.QPushButton("prev")
+        self.playPause_track_btn=qtw.QPushButton("play/pause")
+        self.next_track_btn=qtw.QPushButton("next")
+
+        #add to respective frame
+        self.mainPlayBackControl_frame_layout.addWidget(self.prev_track_btn)
+        self.mainPlayBackControl_frame_layout.addWidget(self.playPause_track_btn)
+        self.mainPlayBackControl_frame_layout.addWidget(self.next_track_btn)
+
+        self.repeatOptions_btn=qtw.QPushButton("loop")
+        self.makeFavourite_btn=qtw.QPushButton("Fav")
+        self.shuffle_btn=qtw.QPushButton("shuf")
+        self.trackInfo_btn=qtw.QPushButton("info")
+        
+        #add to respective frame
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.repeatOptions_btn)
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.makeFavourite_btn)
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.shuffle_btn)
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.trackInfo_btn)
+
+        #add both playback control frames
+        #self.playBackControl_outerframe_layout.addStretch() 
+        #self.playBackControl_outerframe_layout.addWidget(self.mainPlayBackControl_frame)
+        #self.playBackControl_outerframe_layout.addWidget(self.secondaryPlayBackControl_frame)
+        #self.playBackControl_outerframe_layout.addStretch(1) 
+
 
         # ----------------- Volume Control -----------------
         self.volumeSlider = qtw.QSlider(qtc.Qt.Horizontal)
         self.volumeSlider.setObjectName("volumeSlider")
-        self.volumeSlider.setMaximumWidth(100)
+        self.volumeSlider.setMaximumWidth(120)
+        self.volumeSlider.setMinimumWidth(120)
 
-        self.volumeIcon = qtw.QLabel("🔊")
+        self.volumeIcon = qtw.QLabel("")
+        self.volumeIcon.setMinimumWidth(15)
+        self.volumeIcon.setMinimumHeight(15)
+        volumeIcon_btn=load_and_scale_image(__file__, "speaker_btn.svg", size=14)
+        self.volumeIcon.setPixmap(volumeIcon_btn)
 
 
         #adding componets to footer
@@ -147,7 +257,7 @@ class MainWindow(qtw.QMainWindow):
         
         #adding componenets to rightcontainer
         self.playlist_page_layout.addWidget(self.top_label_frame)
-        self.playlist_page_layout.addWidget(self.listObject)
+        self.playlist_page_layout.addWidget(self.centerframe)
         self.playlist_page_layout.addWidget(self.playBackTimer_frame)
         self.playlist_page_layout.addWidget(self.playBackSlider)
         self.playlist_page_layout.addWidget(self.playBackFooter_frame)

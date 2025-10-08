@@ -3,13 +3,42 @@ QMainWindow {
     background-color: __THEME_BACKGROUND__;
 }
 
-
+/*Sidebar*/
 #Sidebar {
     background-color: __SIDEBAR_BACKGROUND__; 
     min-width: 50px;
     max-width: 50px;
 }
 
+#Sidebar QPushButton {
+    background-color: transparent;
+    border: none;
+    color: __TEXT_COLOR__;
+    min-width: 30px; 
+    min-height: 30px;
+    max-width: 150px; 
+    padding: 10px 0px; 
+    text-align: center;
+}
+
+#Sidebar QPushButton:hover {
+    background-color: __HIGHLIGHT_COLOR_TRANSPARENT__; 
+    border-radius: 10px; 
+}
+
+#Sidebar QPushButton:pressed {
+    background-color: __HIGHLIGHT_COLOR__;
+    color: black;
+}
+
+
+
+
+
+
+
+
+/*Right container*/
 
 #rightWidget {
     background-color: __CONTENT_BACKGROUND__;
@@ -18,19 +47,38 @@ QMainWindow {
 
 #topLabel {
     background-color: __CONTENT_BACKGROUND__;
-    border-bottom: 1px solid __SEPARATOR_COLOR__;
-    padding: 10px 20px; /* Add some padding around the title/search elements */
+    border-bottom: none;
+    padding: 5px 5px; /* Add some padding around the title/search elements */
+    margin-top:5px;
+    margin-bottom:0px;
 }
 
+#searchInput {
+    color: __SEPARATOR_COLOR__; 
+    border-radius: 10px;
+    border: 2px solid __SEPARATOR_COLOR__;
+    max-width:250px;
+    padding: 5px 10px;
+    background-color: __CONTENT_BACKGROUND__;
+}
+#centerFrame{
+    background-color: transparent; 
+    border-radius: 30px; 
+    border: 2px solid __SEPARATOR_COLOR__; 
+    padding: 10px 10px;
+    margin-top:0px;
+    margin-left:20px;
+    margin-right:20px;
+}
 #lisObject { 
     background-color: __CONTENT_BACKGROUND__;
     border: none;
-    border-radius: 10px; /* The rounded corners for the list */
+    border-radius: 30px; /* The rounded corners for the list */
     color: __TEXT_COLOR__;
     
     
     QListWidget::item {
-        padding: 8px 10px;
+        padding: 5px 5px;
         color: __TEXT_COLOR__;
     }
     /* Style for the selected item (uses the transparent highlight placeholder) */
@@ -41,10 +89,11 @@ QMainWindow {
     }
 }
 
-#playBackTimerFrame{ 
-    background-color: #1E1E1E; 
-    margin: 0;
+#playBackTimerFrame{
+    background-color:__CONTENT_BACKGROUND__;
+
 }
+
 
 
 #playBackFooterFrame { 
@@ -57,7 +106,7 @@ QMainWindow {
 
 QLabel {
     font-size: 10pt;
-    color: __TEXT_COLOR__; /* Using your theme placeholder */
+    color: __TEXT_COLOR__;
 }
 
 
@@ -82,23 +131,37 @@ QSlider::handle:horizontal {
     border-radius: 6px; 
 }
 
+#playBackFooterFrame{
+    max-height:50px;
+    margin-top:2px;
+    margin-bottom:10ppx;
+}
+
+
+
 #albumArtView{
     border-radius:10px;
     background-color: __CONTENT_BACKGROUND__;
-    qproperty-alignment: AlignCenter;
 }
 
 /* Media Playback Control Frame Styling (The Outer Container) */
 #playBackControl_outerframe {
-    background-color: __FOOTER_BACKGROUND__; 
-    border-radius: 25px; 
-    border: 1px solid __SEPARATOR_COLOR__; 
-    padding: 5px 15px; 
+    background-color: __CONTENT_BACKGROUND__; 
+    border-radius: 20px; 
+    /*max-height:50px;*/
+    /*max-width:270px;*/
+    min-width:270px;
+    border: 2px solid __SEPARATOR_COLOR__; 
+    
 }
 
-/* Ensure buttons inside this container are flat and minimal */
-#playBackControl_outerframe QPushButton {
-    background-color: transparent;
-    border: none;
-    padding: 5px; 
+#mainPlaybackControlFrame{
+   color: __HIGHLIGHT_COLOR__;
+   margin:2px;
 }
+
+#secondaryPlaybackControlFrame{
+    color: __HIGHLIGHT_COLOR__;
+    margin-bottom:10px;
+}
+
