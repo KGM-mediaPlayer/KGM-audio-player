@@ -74,7 +74,7 @@ class MainWindow(qtw.QMainWindow):
         self.theme_btn.setToolTip("Interface Themes")
 
 
-        self.about_btn=VerticalButton("")
+        self.about_btn=qtw.QPushButton("")
         self.about_btn.setObjectName("about_btn")
         about_btntIcon=create_svg_icon(__file__, "about_btn.svg")
         self.about_btn.setIcon(about_btntIcon)
@@ -116,6 +116,9 @@ class MainWindow(qtw.QMainWindow):
 
         #top label componets
         self.pageIcon=qtw.QLabel("PlayIcon")
+        pageIcon_btn=load_and_scale_image(__file__, "playPause_btn.svg", size=30)
+        self.pageIcon.setPixmap(pageIcon_btn)
+        
         self.page_label=qtw.QLabel("Playlist")
         self.page_label.setObjectName("pageLabel")
 
@@ -144,7 +147,7 @@ class MainWindow(qtw.QMainWindow):
 
         self.playBackTimer_frame=qtw.QFrame()
         self.playBackTimer_frame_layout=qtw.QHBoxLayout(self.playBackTimer_frame)
-        self.playBackTimer_frame.setObjectName("playBackTimerFrame")
+        self.playBackTimer_frame.setObjectName("playBackTimer")
 
         self.leftPlaybackTimer=qtw.QLabel("00:00")
         self.rightPlaybackTimer=qtw.QLabel("00:00")
@@ -160,8 +163,7 @@ class MainWindow(qtw.QMainWindow):
         self.playBackFooter_frame=qtw.QFrame()
         self.playBackFooter_frame_layout=qtw.QHBoxLayout(self.playBackFooter_frame)
         self.playBackTimer_frame.setObjectName("playBackFooterFrame")
-        self.playBackFooter_frame.setContentsMargins(0, 0, 0, 0)
-        self.playBackFooter_frame.setMaximumHeight(80)
+        self.playBackFooter_frame.setMaximumHeight(100)
 
         #playBack footer Contents
         self.albumArt_frame=qtw.QFrame()
@@ -181,6 +183,7 @@ class MainWindow(qtw.QMainWindow):
 
         self.mediaTitle_frame=qtw.QFrame()
         self.mediaTitle_frame_layout=qtw.QVBoxLayout(self.mediaTitle_frame)
+        self.mediaTitle_frame.setObjectName("mediaTitle_frame")
 
         #labels to go in media title frame
         self.songLabel=qtw.QLabel("Song Label")

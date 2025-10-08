@@ -67,6 +67,11 @@ QMainWindow {
     margin-bottom:0px;
 }
 
+#pageLabel{
+    font-size:25pt;
+    font-weight:bold;
+}
+
 #searchInput {
     color: __SEPARATOR_COLOR__; 
     border-radius: 10px;
@@ -103,8 +108,10 @@ QMainWindow {
     }
 }
 
-#playBackTimerFrame{
-    background-color:__CONTENT_BACKGROUND__;
+#playBackTimer{
+    background-color:__HIGHLIGHT_COLOR__;
+    padding:px;
+    margin:none;
 
 }
 
@@ -112,14 +119,19 @@ QMainWindow {
 
 #playBackFooterFrame { 
     background-color: __FOOTER_BACKGROUND__;
-    border-top: 1px solid __SEPARATOR_COLOR__;
-    height:50px;
-    padding: 0px 5px;
+    border-top: none;
+    margin: 5px 5px;
 }
 
 
+#mediaTitle_frame{
+    margin:1px;
+    padding:1px;
+    min-height:80px;
+}
 QLabel {
     font-size: 10pt;
+    margin:0px;
     color: __TEXT_COLOR__;
 }
 
@@ -144,7 +156,12 @@ QSlider::handle:horizontal {
     margin: -4px 0; 
     border-radius: 6px; 
 }
-
+#playBackSlider{
+    min-height: 6px;
+    max-height: 6px;
+    padding: 0;
+    margin: 0;
+}
 #playBackFooterFrame{
     max-height:50px;
     margin-top:2px;
@@ -156,6 +173,7 @@ QSlider::handle:horizontal {
 #albumArtView{
     border-radius:10px;
     background-color: __CONTENT_BACKGROUND__;
+    padding-bottom:5px;
 }
 
 /* Media Playback Control Frame Styling (The Outer Container) */
