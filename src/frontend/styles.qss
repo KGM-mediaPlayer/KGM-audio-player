@@ -31,6 +31,20 @@ QMainWindow {
     color: black;
 }
 
+#aboutBtn {
+    background-color: __HIGHLIGHT_COLOR__; 
+    border: 2px solid __SEPARATOR_COLOR__; 
+    border-radius: 20px; 
+    color: white; 
+    text-align: center;
+    min-width: 40px; 
+    max-width: 40px; 
+    min-height: 100px; 
+}
+
+#Sidebar #aboutBtn:hover {
+    background-color: #556B8D; /* Slight shade change on hover */
+}
 
 
 

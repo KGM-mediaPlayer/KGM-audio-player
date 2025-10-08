@@ -3,6 +3,7 @@ import PyQt5.QtGui as qtg
 import PyQt5.QtCore as qtc 
 from .theme_manager import ThemeManager
 from .asset_loader import create_svg_icon, load_and_scale_image
+from .vertical_button import VerticalButton
 import os
 
 class MainWindow(qtw.QMainWindow):
@@ -49,30 +50,38 @@ class MainWindow(qtw.QMainWindow):
         self.playlist_btn=qtw.QPushButton("")
         playListIcon=create_svg_icon(__file__, "playlist_btn.svg", size=35)
         self.playlist_btn.setIcon(playListIcon)
+        self.playlist_btn.setToolTip("View and manage your playlist")
+
 
         self.music_btn=qtw.QPushButton("")
         music_btnIcon=create_svg_icon(__file__, "music_btn.svg", size=35)
         self.music_btn.setIcon(music_btnIcon)
+        self.music_btn.setToolTip("music library")
 
         self.effects_btn=qtw.QPushButton("")
-        effects_btnIcon=create_svg_icon(__file__, "effects_btn.svg", size=35)
+        effects_btnIcon=create_svg_icon(__file__, "effects_btn.svg", size=40)
         self.effects_btn.setIcon(effects_btnIcon)
+        self.effects_btn.setToolTip("Special Effects")
 
         self.settings_btn=qtw.QPushButton("")
         settings_btnIcon=create_svg_icon(__file__, "settings_btn.svg", size=35)
         self.settings_btn.setIcon(settings_btnIcon)
+        self.settings_btn.setToolTip("Settings")
 
         self.theme_btn=qtw.QPushButton("")
         themeIcon=create_svg_icon(__file__, "theme_btn.svg", size=35)
         self.theme_btn.setIcon(themeIcon)
+        self.theme_btn.setToolTip("Interface Themes")
 
-        self.about_btn=qtw.QPushButton("")
-        self.about_btn.setFixedHeight(90)
-        about_btntIcon=create_svg_icon(__file__, "about_btn.svg",)
+
+        self.about_btn=VerticalButton("")
+        self.about_btn.setObjectName("about_btn")
+        about_btntIcon=create_svg_icon(__file__, "about_btn.svg")
         self.about_btn.setIcon(about_btntIcon)
+        self.about_btn.setToolTip("About KGM MediaPlayer")
 
         #Add buttons to side bar
-        self.sidebar_container_layout.addWidget(self.appLogo)
+        self.sidebar_container_layout.addWidget(self.appLogo, alignment=qtc.Qt.AlignCenter)
         self.sidebar_container_layout.addWidget(self.playlist_btn)
         self.sidebar_container_layout.addWidget(self.music_btn)
         self.sidebar_container_layout.addWidget(self.effects_btn)
