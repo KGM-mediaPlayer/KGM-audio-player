@@ -117,10 +117,11 @@ QMainWindow {
 
 
 
-#playBackFooterFrame { 
+#playBackTimer_frame{ 
     background-color: __FOOTER_BACKGROUND__;
-    border-top: none;
-    margin: 5px 5px;
+    border: none;
+    margin:none;
+    max-height:10px;
 }
 
 

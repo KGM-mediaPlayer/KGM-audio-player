@@ -147,7 +147,8 @@ class MainWindow(qtw.QMainWindow):
 
         self.playBackTimer_frame=qtw.QFrame()
         self.playBackTimer_frame_layout=qtw.QHBoxLayout(self.playBackTimer_frame)
-        self.playBackTimer_frame.setObjectName("playBackTimer")
+        self.playBackTimer_frame.setObjectName("playBackTimer_frame")
+        self.playBackTimer_frame.setContentsMargins(0, 0, 0, 0)
 
         self.leftPlaybackTimer=qtw.QLabel("00:00")
         self.rightPlaybackTimer=qtw.QLabel("00:00")
@@ -240,7 +241,7 @@ class MainWindow(qtw.QMainWindow):
 
         #add both playback control frames
         #self.playBackControl_outerframe_layout.addStretch() 
-        #self.playBackControl_outerframe_layout.addWidget(self.mainPlayBackControl_frame)
+        self.playBackControl_outerframe_layout.addWidget(self.mainPlayBackControl_frame)
         #self.playBackControl_outerframe_layout.addWidget(self.secondaryPlayBackControl_frame)
         #self.playBackControl_outerframe_layout.addStretch(1) 
 
