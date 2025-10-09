@@ -5,7 +5,6 @@ import sqlite3
 import urllib.parse
 from pathlib import Path
 import random
-import src.frontend.resc_rc as resc_rc
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel
 from PyQt5.QtGui import QPixmap, QIcon
@@ -14,10 +13,12 @@ from PyQt5.QtWidgets import QWidget,QMessageBox
 from mutagen import File as MutagenFile
 from mutagen.mp3 import HeaderNotFoundError
 
-from src.frontend.music import Ui_MainWindow
+from src.frontend.kgm_media_player import MainWindow
 from src.frontend.old.EQ import EqualizerWindow
 import src.backend.database as database
 
+
+#locate media files on system
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and py2app/pyinstaller bundles."""
     if hasattr(sys, '_MEIPASS'):
@@ -31,51 +32,22 @@ def resource_path(relative_path):
         return os.path.join(os.path.abspath("."), relative_path)
 
 
-class MusicPlayer(QtWidgets.QMainWindow):
-    def __init__(self):
+class MediaPlayer(QtCore.QObject):
+    def __init__(self, main_window_instance):
         super().__init__()
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)  # Set up the GUI from music.py
+        self.ui = main_window_instance
         
         self.video_fullscreen = False
 
         # VLC setup
         self.vlc_instance = vlc.Instance('--no-xlib')  # '--no-xlib' for Linux, can be omitted on Windows/macOS
         self.player = self.vlc_instance.media_player_new()
-        self.eq_window = EqualizerWindow(self.player)
-        
-        
-        #remove title bar
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         
         
         # Slider timer
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(1000)  # update every 1 second
         self.timer.timeout.connect(self.update_slider_position)
-        
-        # Window move
-        self.ui.menu_bar.installEventFilter(self)
-
-        self.ui.menu_bar.mousePressEvent = self.start_move
-        self.ui.menu_bar.mouseMoveEvent = self.move_window
-        self.ui.menu_bar.mouseReleaseEvent = self.stop_move
-
-        
-
-        self.setMouseTracking(True)
-        self._drag_active = False
-        self._drag_start_pos = None
-        self.resize_dir = None
-        self.is_resizing = False
-        self.is_moving = False
-
-
-
-        self.video_fullscreen = False
-        self.original_video_parent = self.ui.video_view.parent()
-        self.ui.video_view.installEventFilter(self)
 
         # database
         database.create_tables()
@@ -94,10 +66,10 @@ class MusicPlayer(QtWidgets.QMainWindow):
         self.event_manager = self.player.event_manager()
         self.event_manager.event_attach(vlc.EventType.MediaPlayerEndReached, self.on_track_end)
 
-        self.original_playlist = [self.ui.play_list_widget.item(i).text()
-                          for i in range(self.ui.play_list_widget.count())]
+        """self.original_playlist = [self.ui.play_list_widget.item(i).text()
+                          for i in range(self.ui.playlist_page.count())]"""
         
-        self.ui.play_list_widget.clear()
+        self.ui.listObject.clear()
         for text, metadata in self.original_playlist_data:
             item = QtWidgets.QListWidgetItem(text)
             item.setData(QtCore.Qt.UserRole, metadata)
@@ -106,38 +78,37 @@ class MusicPlayer(QtWidgets.QMainWindow):
 
 
 
-        self.ui.pause_btn.clicked.connect(self.toggle_play_pause)
-        self.ui.next_btn.clicked.connect(self.next_track)
-        self.ui.prev_btn.clicked.connect(self.prev_track)
-        self.ui.all_songs_btn.clicked.connect(self.load_songs)
-        self.ui.favourite_btn.clicked.connect(self.favourite_songs)
-        self.ui.back_to_home.clicked.connect(self.switch_page)
-        self.ui.search_bar.textChanged.connect(self.search_play_list)
-        self.ui.make_favourite_btn.clicked.connect(self.add_to_favourites)
-        self.ui.add_songs_to_library_btn.clicked.connect(self.add_songs_to_library)
-        self.ui.remove_all_songs_btn.clicked.connect(self.remove_songs_from_library)
-        self.ui.remove_current_selection_btn.clicked.connect(self.remove_current_selection)
-        self.ui.app_logo_2.clicked.connect(self.show_about_dialog)
-        self.ui.duration_slider.sliderMoved.connect(self.set_slider_position)
-        self.ui.play_list_widget.itemDoubleClicked.connect(self.play_selected_song)
-        self.ui.play_list_btn.clicked.connect(self.playlist)
-        self.ui.video_view_2.clicked.connect(self.switch_page)
-        self.ui.video_view.mouseDoubleClickEvent = self.set_full_screen
-        self.ui.loop_btn.clicked.connect(self.toggle_loop)
-        self.ui.shuffle_btn.clicked.connect(self.toggle_shuffle)
-        self.ui.about_track_btn.clicked.connect(self.show_track_info)
+        self.ui.playPause_track_btn.clicked.connect(self.toggle_play_pause)
+        self.ui.next_track_btn.clicked.connect(self.next_track)
+        self.ui.prev_track_btn.clicked.connect(self.prev_track)
+        #self.ui.all_songs_btn.clicked.connect(self.load_songs)
+        #self.ui.favourite_btn.clicked.connect(self.favourite_songs)
+        #self.ui.back_to_home.clicked.connect(self.switch_page)
+        #self.ui.search_bar.textChanged.connect(self.search_play_list)
+        #self.ui.make_favourite_btn.clicked.connect(self.add_to_favourites)
+        #self.ui.add_songs_to_library_btn.clicked.connect(self.add_songs_to_library)
+        #self.ui.remove_all_songs_btn.clicked.connect(self.remove_songs_from_library)
+        #self.ui.remove_current_selection_btn.clicked.connect(self.remove_current_selection)
+        self.ui.about_btn.clicked.connect(self.show_about_dialog)
+        #self.ui.play_list_widget.itemDoubleClicked.connect(self.play_selected_song)
+        self.ui.music_btn.clicked.connect(self.load_songs)
+        #self.ui.video_view_2.clicked.connect(self.switch_page)
+        #self.ui.video_view.mouseDoubleClickEvent = self.set_full_screen
+        #self.ui.loop_btn.clicked.connect(self.toggle_loop)
+        #self.ui.shuffle_btn.clicked.connect(self.toggle_shuffle)
+        #self.ui.about_track_btn.clicked.connect(self.show_track_info)
 
 
         #seek slider
-        self.ui.duration_slider.sliderPressed.connect(self.pause_for_seek)
-        self.ui.duration_slider.sliderReleased.connect(self.resume_after_seek)
+        """self.ui.duration_slider.sliderPressed.connect(self.pause_for_seek)
+        self.ui.duration_slider.sliderReleased.connect(self.resume_after_seek)"""
 
         self.event_manager.event_attach(
             vlc.EventType.MediaParsedChanged, self.on_media_parsed
         )
 
         # Eq button
-        self.ui.more_options_btn.clicked.connect(self.show_equalizer)
+        #self.ui.more_options_btn.clicked.connect(self.show_equalizer)
 
            
     connect = sqlite3.connect('music_library.db')
@@ -208,7 +179,7 @@ class MusicPlayer(QtWidgets.QMainWindow):
             self.ui.video_view.setWindowFlags(Qt.Widget)
             self.original_video_parent.layout().addWidget(self.ui.video_view)
             self.ui.video_view.showNormal()
-            self.ui.center_stackedWidget.setCurrentWidget(self.ui.video_view)
+            self.ui.right_container.setCurrentWidget(self.ui.video_view)
             self.video_fullscreen = False
         else:
             # Enter fullscreen
@@ -465,10 +436,10 @@ class MusicPlayer(QtWidgets.QMainWindow):
 
     
     def load_songs(self):
-        self.ui.center_stackedWidget.setCurrentIndex(2)
-        self.ui.page_label.setText("All Songs")
+        self.ui.right_container.setCurrentIndex(0)
+        self.ui.page_label.setText("Playlist")
         songs = database.get_all_songs('music_library')
-        self.ui.play_list_widget.clear()
+        self.ui.listObject.clear()
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
@@ -479,14 +450,14 @@ class MusicPlayer(QtWidgets.QMainWindow):
                 "album": album,
                 "path": path
             })
-            self.ui.play_list_widget.addItem(item)
+            self.ui.listObject.addItem(item)
         self.select_currently_playing_song()
         
     def playlist(self):
-        self.ui.center_stackedWidget.setCurrentIndex(2)
+        self.ui.right_container.setCurrentIndex(0)
         self.ui.page_label.setText("Playlist")
         songs = database.get_all_songs('playlist')
-        self.ui.play_list_widget.clear()
+        self.ui.listObject.clear()
         for song in songs:
             title, artist, album, path = song
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
@@ -496,12 +467,12 @@ class MusicPlayer(QtWidgets.QMainWindow):
                 "album": album,
                 "path": path
             })
-            self.ui.play_list_widget.addItem(item)
+            self.ui.listObject.addItem(item)
         self.select_currently_playing_song()
 
     
     def favourite_songs(self):
-        self.ui.center_stackedWidget.setCurrentIndex(2)
+        self.ui.right_container.setCurrentIndex(2)
         self.ui.page_label.setText("Favourites")
         songs = database.get_all_songs('favourites')
         self.ui.play_list_widget.clear()
@@ -566,13 +537,13 @@ class MusicPlayer(QtWidgets.QMainWindow):
     def switch_page(self):
         sender = self.sender()
         if sender == self.ui.back_to_home:
-            self.ui.center_stackedWidget.setCurrentIndex(0)
+            self.ui.right_container.setCurrentIndex(0)
             self.select_currently_playing_song()
         elif sender == self.ui.video_view_2:
-            self.ui.center_stackedWidget.setCurrentIndex(1)
+            self.ui.right_container.setCurrentIndex(1)
             self.select_currently_playing_song()
         elif sender == self.ui.back_to_list:
-            self.ui.center_stackedWidget.setCurrentIndex(2)
+            self.ui.right_container.setCurrentIndex(2)
             self.select_currently_playing_song()
 
     def add_to_favourites(self):
@@ -641,22 +612,22 @@ class MusicPlayer(QtWidgets.QMainWindow):
             print("❌ Error: No item selected in playlist.")
 
     def select_currently_playing_song(self):
-        title = self.ui.song_label.text().strip()
-        artist = self.ui.artist_name_label.text().strip()
+        title = self.ui.songLabel.text().strip()
+        artist = self.ui.artistName.text().strip()
         current_name = f"{title} - {artist}"
         print(f"Looking for: {current_name}")
 
-        self.ui.play_list_widget.clearSelection()
+        #self.ui.playlist_page.clearSelection()
 
-        for row in range(self.ui.play_list_widget.count()):
-            item = self.ui.play_list_widget.item(row)
+        for row in range(self.ui.listObject.count()):
+            item = self.ui.listObject.item(row)
             item_name = item.text().strip()
             print(f"Checking: {item_name}")
 
             if item_name == current_name:
                 item.setSelected(True)
-                self.ui.play_list_widget.setCurrentRow(row)
-                self.ui.play_list_widget.scrollToItem(item)
+                self.ui.listObject.setCurrentRow(row)
+                self.ui.listObject.scrollToItem(item)
                 print(f"Selected and highlighted row {row}")
                 return
 
@@ -718,7 +689,7 @@ class MusicPlayer(QtWidgets.QMainWindow):
                     break
 
         if has_video:
-            self.ui.center_stackedWidget.setCurrentIndex(1)
+            self.ui.right_container.setCurrentIndex(1)
             self.ui.video_view.show()
             self.attach_vlc_video_output()
         else:

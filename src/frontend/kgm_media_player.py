@@ -210,40 +210,72 @@ class MainWindow(qtw.QMainWindow):
         self.mainPlayBackControl_frame_layout=qtw.QHBoxLayout(self.mainPlayBackControl_frame)
         self.mainPlayBackControl_frame.setObjectName("mainPlaybackControlFrame")
         self.mainPlayBackControl_frame.setContentsMargins(0, 0, 0, 0)
+        #self.mainPlayBackControl_frame_layout.setAlignment(qtc.Qt.AlignHCenter)
         
 
         self.secondaryPlayBackControl_frame=qtw.QFrame()
         self.secondaryPlayBackControl_frame_layout=qtw.QHBoxLayout(self.secondaryPlayBackControl_frame)
         self.secondaryPlayBackControl_frame.setObjectName("secondaryPlaybackControlFrame")
         self.secondaryPlayBackControl_frame.setContentsMargins(0, 0, 0, 0)
+        self.secondaryPlayBackControl_frame_layout.setAlignment(qtc.Qt.AlignHCenter) 
+
 
 
         #playback control. buttons
-        self.prev_track_btn=qtw.QPushButton("prev")
-        self.playPause_track_btn=qtw.QPushButton("play/pause")
-        self.next_track_btn=qtw.QPushButton("next")
+        self.prev_track_btn=qtw.QPushButton("")
+        prev_track_btnIcon=create_svg_icon(__file__, "prev_track_btn.png", size=50)
+        self.prev_track_btn.setIcon(prev_track_btnIcon)
+        self.prev_track_btn.setToolTip("previous item")
+
+        self.playPause_track_btn=qtw.QPushButton("")
+        self.playPause_track_btn.setToolTip("Play / Pause")
+        playPause_btnIcon=create_svg_icon(__file__, "playPause_btn.svg", size=50)
+        self.playPause_track_btn.setIcon(playPause_btnIcon)
+
+        self.next_track_btn=qtw.QPushButton("")
+        self.next_track_btn.setToolTip("next item")
+        next_track_btnIcon=create_svg_icon(__file__, "next_track_btn.png", size=50)
+        self.next_track_btn.setIcon(next_track_btnIcon)
 
         #add to respective frame
         self.mainPlayBackControl_frame_layout.addWidget(self.prev_track_btn)
         self.mainPlayBackControl_frame_layout.addWidget(self.playPause_track_btn)
         self.mainPlayBackControl_frame_layout.addWidget(self.next_track_btn)
 
-        self.repeatOptions_btn=qtw.QPushButton("loop")
-        self.makeFavourite_btn=qtw.QPushButton("Fav")
-        self.shuffle_btn=qtw.QPushButton("shuf")
-        self.trackInfo_btn=qtw.QPushButton("info")
+        self.repeatOptions_btn=qtw.QPushButton("")
+        self.repeatOptions_btn.setToolTip("repeat options")
+        repeatOpyins_btnIcon=create_svg_icon(__file__, "loop.png", size=10)
+        self.repeatOptions_btn.setIcon(repeatOpyins_btnIcon)
+
+        self.makeFavourite_btn=qtw.QPushButton("")
+        self.makeFavourite_btn.setToolTip("add/remove from favourites")
+        makefavourites_btnIcon=create_svg_icon(__file__, "fav_btn.png", size=10)
+        self.makeFavourite_btn.setIcon(makefavourites_btnIcon)
+
+        self.shuffle_btn=qtw.QPushButton("")
+        self.shuffle_btn.setToolTip("shuffle")
+        shuffle_btnIcon=create_svg_icon(__file__, "shuffle_btn.png", size=10)
+        self.shuffle_btn.setIcon(shuffle_btnIcon)
+
+        self.trackInfo_btn=qtw.QPushButton("")
+        self.trackInfo_btn.setToolTip("track Info")
+        trackInfo_btnIcon=create_svg_icon(__file__, "track_info_btn.png", size=10)
+        self.trackInfo_btn.setIcon(trackInfo_btnIcon)
         
         #add to respective frame
+        self.secondaryPlayBackControl_frame_layout.addStretch()
         self.secondaryPlayBackControl_frame_layout.addWidget(self.repeatOptions_btn)
         self.secondaryPlayBackControl_frame_layout.addWidget(self.makeFavourite_btn)
         self.secondaryPlayBackControl_frame_layout.addWidget(self.shuffle_btn)
         self.secondaryPlayBackControl_frame_layout.addWidget(self.trackInfo_btn)
+        self.secondaryPlayBackControl_frame_layout.addStretch()
 
         #add both playback control frames
         #self.playBackControl_outerframe_layout.addStretch() 
         self.playBackControl_outerframe_layout.addWidget(self.mainPlayBackControl_frame)
-        #self.playBackControl_outerframe_layout.addWidget(self.secondaryPlayBackControl_frame)
-        #self.playBackControl_outerframe_layout.addStretch(1) 
+        self.playBackControl_outerframe_layout.addStretch() 
+        self.playBackControl_outerframe_layout.addWidget(self.secondaryPlayBackControl_frame)
+        self.playBackControl_outerframe_layout.addStretch() 
 
 
         # ----------------- Volume Control -----------------
