@@ -16,6 +16,8 @@ from mutagen.mp3 import HeaderNotFoundError
 from src.frontend.kgm_media_player import MainWindow
 from src.frontend.old.EQ import EqualizerWindow
 import src.backend.database as database
+from src.frontend.asset_loader import create_svg_icon, load_and_scale_image
+from src.frontend.aboutDialogue import AboutDialog
 
 
 #locate media files on system
@@ -939,35 +941,3 @@ class TrackInfoDialog(QtWidgets.QDialog):
 
         self.setLayout(layout)
 
-#DIALOGUE about page
-class AboutDialog(QDialog):
-    def __init__(self, MusicPlayer, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("About KGM Media Player")
-        self.setFixedSize(400, 300)
-
-        layout = QVBoxLayout()
-
-        # Use resource path from passed-in provider
-        logo_label = QLabel()
-        logo_pixmap = QPixmap(resource_path("UI_V2/app.png")).scaled(
-            70, 70, Qt.KeepAspectRatio, Qt.SmoothTransformation
-        )
-        logo_label.setAlignment(Qt.AlignCenter)
-        logo_label.setPixmap(logo_pixmap)
-
-        # App info text
-        info_label = QLabel(
-            "<h2>KGM Media Player</h2>"
-            "<p>Version: 2.0.0</p>"
-            "<p>Developed by: Kisakye Gibreel</p>"
-            "<p>Thank you for using this player!</p>"
-            "<p>Copyright 2025</p>"
-            "<p>Kampala, Uganda 🇺🇬</p>"
-        )
-        info_label.setAlignment(Qt.AlignCenter)
-        info_label.setWordWrap(True)
-
-        layout.addWidget(logo_label)
-        layout.addWidget(info_label)
-        self.setLayout(layout)
