@@ -68,14 +68,14 @@ class MediaPlayer(QtCore.QObject):
         self.event_manager = self.player.event_manager()
         self.event_manager.event_attach(vlc.EventType.MediaPlayerEndReached, self.on_track_end)
 
-        """self.original_playlist = [self.ui.play_list_widget.item(i).text()
+        """self.original_playlist = [self.ui.listObject.item(i).text()
                           for i in range(self.ui.playlist_page.count())]"""
         
         self.ui.listObject.clear()
         for text, metadata in self.original_playlist_data:
             item = QtWidgets.QListWidgetItem(text)
             item.setData(QtCore.Qt.UserRole, metadata)
-            self.ui.play_list_widget.addItem(item)
+            self.ui.listObject.addItem(item)
 
 
 
@@ -262,7 +262,7 @@ class MediaPlayer(QtCore.QObject):
     def remove_current_selection(self):
         db_table = self.removal_db_selection()
         if db_table:
-            selected_item = self.ui.play_list_widget.currentItem()
+            selected_item = self.ui.listObject.currentItem()
             if selected_item:
                 song_data = selected_item.data(QtCore.Qt.UserRole)
                 path = song_data["path"]  # Use path as the unique identifier
@@ -270,7 +270,7 @@ class MediaPlayer(QtCore.QObject):
 
                 database.remove_song(db_table, path)  # Pass path instead of title
 
-                self.ui.play_list_widget.takeItem(self.ui.play_list_widget.row(selected_item))
+                self.ui.listObject.takeItem(self.ui.listObject.row(selected_item))
                 QtWidgets.QMessageBox.information(self, "Removed", f"'{title}' removed from {db_table}!")
             else:
                 QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a song to remove.")
@@ -374,7 +374,7 @@ class MediaPlayer(QtCore.QObject):
         self.ui.right_container.setCurrentIndex(2)
         self.ui.page_label.setText("Favourites")
         songs = database.get_all_songs('favourites')
-        self.ui.play_list_widget.clear()
+        self.ui.listObject.clear()
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
@@ -385,7 +385,7 @@ class MediaPlayer(QtCore.QObject):
                 "album": album,
                 "path": path
             })
-            self.ui.play_list_widget.addItem(item)
+            self.ui.listObject.addItem(item)
         self.select_currently_playing_song()
 
     def search_play_list(self):
@@ -446,7 +446,7 @@ class MediaPlayer(QtCore.QObject):
             self.select_currently_playing_song()
 
     def add_to_favourites(self):
-        selected_item = self.ui.play_list_widget.currentItem()
+        selected_item = self.ui.listObject.currentItem()
         if selected_item:
             song = selected_item.data(QtCore.Qt.UserRole)
             if song:  # make sure song is valid
@@ -547,22 +547,22 @@ class MediaPlayer(QtCore.QObject):
         label_text = self.ui.page_label.text()
         self.set_track_info(self.player.get_media())
         if label_text in ["All Songs", "Favourites"]:  # optionally add more page names
-            current_row = self.ui.play_list_widget.currentRow()
-            if current_row < self.ui.play_list_widget.count() - 1:
+            current_row = self.ui.listObject.currentRow()
+            if current_row < self.ui.listObject.count() - 1:
                 next_row = current_row + 1
-                self.ui.play_list_widget.setCurrentRow(next_row)
-                next_item = self.ui.play_list_widget.item(next_row)
+                self.ui.listObject.setCurrentRow(next_row)
+                next_item = self.ui.listObject.item(next_row)
                 self.play_selected_song(next_item)
         
     def prev_track(self):
         label_text = self.ui.page_label.text()
         self.set_track_info(self.player.get_media())
         if label_text in ["All Songs", "Favourites"]:
-            current_row = self.ui.play_list_widget.currentRow()
+            current_row = self.ui.listObject.currentRow()
             if current_row > 0:
                 prev_row = current_row - 1
-                self.ui.play_list_widget.setCurrentRow(prev_row)
-                prev_item = self.ui.play_list_widget.item(prev_row)
+                self.ui.listObject.setCurrentRow(prev_row)
+                prev_item = self.ui.listObject.item(prev_row)
                 self.play_selected_song(prev_item)
     
     def on_media_parsed(self, event):
@@ -637,26 +637,26 @@ class MediaPlayer(QtCore.QObject):
         QTimer.singleShot(0, self.handle_track_end)
 
     def handle_track_end(self):
-        current_row = self.ui.play_list_widget.currentRow()
-        total_rows = self.ui.play_list_widget.count()
+        current_row = self.ui.listObject.currentRow()
+        total_rows = self.ui.listObject.count()
 
         if current_row < 0:
             return  # No item selected
 
         if self.looping:
-            item = self.ui.play_list_widget.item(current_row)
+            item = self.ui.listObject.item(current_row)
 
         elif self.shuffle:
             if not self.playback_order:
                 print("Shuffle is ON but playback_order is empty. Resetting playback order.")
                 self.playback_order = list(range(total_rows))  # fallback
             next_row = random.choice(self.playback_order)
-            self.ui.play_list_widget.setCurrentRow(next_row)
-            item = self.ui.play_list_widget.item(next_row)
+            self.ui.listObject.setCurrentRow(next_row)
+            item = self.ui.listObject.item(next_row)
 
         elif current_row + 1 < total_rows:
-            self.ui.play_list_widget.setCurrentRow(current_row + 1)
-            item = self.ui.play_list_widget.item(current_row + 1)
+            self.ui.listObject.setCurrentRow(current_row + 1)
+            item = self.ui.listObject.item(current_row + 1)
         else:
             return
 

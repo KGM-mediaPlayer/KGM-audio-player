@@ -143,9 +143,11 @@ class MainWindow(qtw.QMainWindow):
         self.centerframe=qtw.QFrame()
         self.centerframe_layout=qtw.QHBoxLayout(self.centerframe)
         self.centerframe.setObjectName("centerFrame")
+        self.centerframe.setContentsMargins(0, 0, 0, 0)
 
         self.listObject=qtw.QListWidget()
         self.listObject.setObjectName("lisObject")
+        self.listObject.setContentsMargins(0, 0, 0, 0)
         self.centerframe_layout.addWidget(self.listObject)
 
         self.playBackTimer_frame=qtw.QFrame()
