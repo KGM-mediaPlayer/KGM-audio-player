@@ -90,27 +90,60 @@ QMainWindow {
     margin-left:20px;
     margin-right:20px;
 }
-#lisObject { 
-    background-color: __CONTENT_BACKGROUND__;
-    border: none;
-    margin:0;
-    border-radius: 50%; /* The rounded corners for the list */
-    color: __TEXT_COLOR__;
-    
-    
-    QListWidget::item {
-        padding: none;
-        color: __TEXT_COLOR__;
-    }
-    /* Style for the selected item (uses the transparent highlight placeholder) */
-    QListWidget::item:selected {
-        background-color: __HIGHLIGHT_COLOR_TRANSPARENT__;
-        color: white;
-        border: 2px solid __HIGHLIGHT_COLOR__;
-        border-radius: 30px;
-        min-height:20px;
-    }
+
+QListWidget {
+background-color:__CONTENT_BACKGROUND__;
+color: white;
+border: none;
+font-family: "Segoe UI", sans-serif;
+font-size: 10px;
+padding: 0.2px;
+outline: none;
+border-radius:10px;
 }
+
+QListWidget::item {
+padding: 5px;
+margin: 2px;
+border-radius: 10px;
+color: #e0e0e0;
+background-color: transparent;
+border: 1px solid transparent;
+}
+
+QListWidget::item:hover {
+background-color: rgba(33, 150, 243, 0.1); /* Light blue glow */
+border: 1px solid #2196f3;
+}
+
+QListWidget::item:selected {
+background-color: #2196f3;
+color: #ffffff;
+border: 1px solid #42a5f5;
+}
+
+QScrollBar:vertical {
+background: transparent;
+width: 8px;
+}
+
+QScrollBar::handle:vertical {
+background: #3e4a5a;
+min-height: 20px;
+border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+height: 0px;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+background: none;
+}
+
+
 
 
 
