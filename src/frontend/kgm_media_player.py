@@ -120,14 +120,17 @@ class MainWindow(qtw.QMainWindow):
         self.pageIcon.setPixmap(pageIcon_btn)
         
         self.page_label=qtw.QLabel("Playlist")
+        self.page_label.setContentsMargins(0, 0, 0, 0)
         self.page_label.setObjectName("pageLabel")
 
         self.searchIcon=qtw.QLabel("SearchIcon")
         self.searchIcon.setObjectName("searchIcon")
+        self.searchIcon.setContentsMargins(0, 0, 0, 0)
         searchIcon_btn=load_and_scale_image(__file__, "searchIcon_btn.svg", size=24)
         self.searchIcon.setPixmap(searchIcon_btn)
 
         self.searchInput=qtw.QLineEdit("Search")
+        self.searchInput.setContentsMargins(0, 0, 0, 0)
         self.searchInput.setObjectName("searchInput")
 
         #add items to top label frame
@@ -149,21 +152,27 @@ class MainWindow(qtw.QMainWindow):
         self.playBackTimer_frame_layout=qtw.QHBoxLayout(self.playBackTimer_frame)
         self.playBackTimer_frame.setObjectName("playBackTimer_frame")
         self.playBackTimer_frame.setContentsMargins(0, 0, 0, 0)
+        #self.playBackTimer_frame.setMaximumHeight(10)
 
         self.leftPlaybackTimer=qtw.QLabel("00:00")
+        self.leftPlaybackTimer.setObjectName("playBackTimer")
         self.rightPlaybackTimer=qtw.QLabel("00:00")
-        self.playBackTimer_frame_layout.addWidget(self.leftPlaybackTimer)
-        self.playBackTimer_frame_layout.addStretch()
-        self.playBackTimer_frame_layout.addWidget(self.rightPlaybackTimer)
+        self.rightPlaybackTimer.setObjectName("playBackTimer")
+        
 
         self.playBackSlider=qtw.QSlider(qtc.Qt.Horizontal)
         self.playBackSlider.setObjectName("playBackSlider")
         self.playBackSlider.setContentsMargins(0, 0, 0, 0)
+
+        self.playBackTimer_frame_layout.addWidget(self.leftPlaybackTimer)
+        #self.playBackTimer_frame_layout.addWidget(self.playBackSlider)
+        self.playBackTimer_frame_layout.addStretch()
+        self.playBackTimer_frame_layout.addWidget(self.rightPlaybackTimer)
         
 
         self.playBackFooter_frame=qtw.QFrame()
         self.playBackFooter_frame_layout=qtw.QHBoxLayout(self.playBackFooter_frame)
-        self.playBackTimer_frame.setObjectName("playBackFooterFrame")
+        self.playBackFooter_frame_layout.setObjectName("playBackFooterFrame")
         self.playBackFooter_frame.setMaximumHeight(100)
 
         #playBack footer Contents
@@ -223,18 +232,22 @@ class MainWindow(qtw.QMainWindow):
 
         #playback control. buttons
         self.prev_track_btn=qtw.QPushButton("")
-        prev_track_btnIcon=create_svg_icon(__file__, "prev_track_btn.png", size=50)
+        prev_track_btnIcon=create_svg_icon(__file__, "prev_track_btn.png", size=20)
+        self.prev_track_btn.setContentsMargins(0, 0, 0, 0)
         self.prev_track_btn.setIcon(prev_track_btnIcon)
         self.prev_track_btn.setToolTip("previous item")
 
         self.playPause_track_btn=qtw.QPushButton("")
         self.playPause_track_btn.setToolTip("Play / Pause")
-        playPause_btnIcon=create_svg_icon(__file__, "playPause_btn.svg", size=50)
+        playPause_btnIcon=create_svg_icon(__file__, "playPause_btn.svg", size=40)
+        self.playPause_track_btn.setObjectName("playpause_btn")
+        self.playPause_track_btn.setContentsMargins(0, 0, 0, 0)
         self.playPause_track_btn.setIcon(playPause_btnIcon)
 
         self.next_track_btn=qtw.QPushButton("")
         self.next_track_btn.setToolTip("next item")
-        next_track_btnIcon=create_svg_icon(__file__, "next_track_btn.png", size=50)
+        next_track_btnIcon=create_svg_icon(__file__, "next_track_btn.png", size=20)
+        self.next_track_btn.setContentsMargins(0, 0, 0, 0)
         self.next_track_btn.setIcon(next_track_btnIcon)
 
         #add to respective frame

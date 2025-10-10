@@ -86,19 +86,20 @@ class MediaPlayer(QtCore.QObject):
         #self.ui.all_songs_btn.clicked.connect(self.load_songs)
         #self.ui.favourite_btn.clicked.connect(self.favourite_songs)
         #self.ui.back_to_home.clicked.connect(self.switch_page)
-        #self.ui.search_bar.textChanged.connect(self.search_play_list)
+        self.ui.searchInput.textChanged.connect(self.search_play_list)
         #self.ui.make_favourite_btn.clicked.connect(self.add_to_favourites)
         #self.ui.add_songs_to_library_btn.clicked.connect(self.add_songs_to_library)
         #self.ui.remove_all_songs_btn.clicked.connect(self.remove_songs_from_library)
         #self.ui.remove_current_selection_btn.clicked.connect(self.remove_current_selection)
         self.ui.about_btn.clicked.connect(self.show_about_dialog)
-        #self.ui.play_list_widget.itemDoubleClicked.connect(self.play_selected_song)
+        self.ui.listObject.itemDoubleClicked.connect(self.play_selected_song)
         self.ui.music_btn.clicked.connect(self.load_songs)
+        self.ui.playlist_btn.clicked.connect(self.playlist)
         #self.ui.video_view_2.clicked.connect(self.switch_page)
         #self.ui.video_view.mouseDoubleClickEvent = self.set_full_screen
         #self.ui.loop_btn.clicked.connect(self.toggle_loop)
         #self.ui.shuffle_btn.clicked.connect(self.toggle_shuffle)
-        #self.ui.about_track_btn.clicked.connect(self.show_track_info)
+        self.ui.about_btn.clicked.connect(self.show_track_info)
 
 
         #seek slider
@@ -201,110 +202,6 @@ class MediaPlayer(QtCore.QObject):
         # Attach the handler
         self.ui.video_view.resizeEvent = self.on_video_resized
     
-    #windows move functions
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.LeftButton:
-            self.start_pos = event.globalPos()
-            self.start_rect = self.geometry()
-
-            if self.resize_dir:
-                self.is_resizing = True
-            else:
-                # Only allow move if mouse is in the title bar region
-                if self.childAt(event.pos()) == self.ui.menu_bar:
-                    self.is_moving = True
-
-            event.accept()
-
-
-    def mouseReleaseEvent(self, event):
-        self.is_moving = False
-        self.is_resizing = False
-        event.accept()
-
-    def start_move(self, event):
-        if event.button() == QtCore.Qt.LeftButton:
-            self.start_pos = event.globalPos()
-            self.is_moving = True
-            event.accept()
-
-    def move_window(self, event):
-        if self.is_moving:
-            delta = event.globalPos() - self.start_pos
-            self.move(self.pos() + delta)
-            self.start_pos = event.globalPos()
-        event.accept()
-
-    def stop_move(self, event):
-        self.is_moving = False
-        event.accept()
-
-    def move_window(self, event):
-        if self.is_moving:
-            self.move(self.pos() + event.globalPos() - self.start_pos)
-            self.start_pos = event.globalPos()
-        event.accept()
-    
-    def update_cursor(self, event):
-        pos = event.pos()
-        rect = self.rect()
-        margin = self.EDGE_MARGIN
-
-        x, y, w, h = pos.x(), pos.y(), rect.width(), rect.height()
-
-        if x <= margin and y <= margin:
-            self.setCursor(QtCore.Qt.SizeFDiagCursor)
-            self.resize_dir = 'top_left'
-        elif x >= w - margin and y <= margin:
-            self.setCursor(QtCore.Qt.SizeBDiagCursor)
-            self.resize_dir = 'top_right'
-        elif x <= margin and y >= h - margin:
-            self.setCursor(QtCore.Qt.SizeBDiagCursor)
-            self.resize_dir = 'bottom_left'
-        elif x >= w - margin and y >= h - margin:
-            self.setCursor(QtCore.Qt.SizeFDiagCursor)
-            self.resize_dir = 'bottom_right'
-        elif x <= margin:
-            self.setCursor(QtCore.Qt.SizeHorCursor)
-            self.resize_dir = 'left'
-        elif x >= w - margin:
-            self.setCursor(QtCore.Qt.SizeHorCursor)
-            self.resize_dir = 'right'
-        elif y <= margin:
-            self.setCursor(QtCore.Qt.SizeVerCursor)
-            self.resize_dir = 'top'
-        elif y >= h - margin:
-            self.setCursor(QtCore.Qt.SizeVerCursor)
-            self.resize_dir = 'bottom'
-        else:
-            self.setCursor(QtCore.Qt.ArrowCursor)
-            self.resize_dir = None
-
-    def resize_window(self, event):
-        if not self.start_pos or not self.start_rect:
-            return
-
-        delta = event.globalPos() - self.start_pos
-        rect = self.start_rect
-
-        x, y, w, h = rect.x(), rect.y(), rect.width(), rect.height()
-
-        if self.resize_dir == 'right':
-            self.setGeometry(x, y, w + delta.x(), h)
-        elif self.resize_dir == 'bottom':
-            self.setGeometry(x, y, w, h + delta.y())
-        elif self.resize_dir == 'bottom_right':
-            self.setGeometry(x, y, w + delta.x(), h + delta.y())
-        elif self.resize_dir == 'left':
-            self.setGeometry(x + delta.x(), y, w - delta.x(), h)
-        elif self.resize_dir == 'top':
-            self.setGeometry(x, y + delta.y(), w, h - delta.y())
-        elif self.resize_dir == 'top_left':
-            self.setGeometry(x + delta.x(), y + delta.y(), w - delta.x(), h - delta.y())
-        elif self.resize_dir == 'top_right':
-            self.setGeometry(x, y + delta.y(), w + delta.x(), h - delta.y())
-        elif self.resize_dir == 'bottom_left':
-            self.setGeometry(x + delta.x(), y, w - delta.x(), h + delta.y())
 
     
     def add_songs_to_library(self):
@@ -382,16 +279,16 @@ class MediaPlayer(QtCore.QObject):
    
     def set_slider_position(self, position):
         self.player.set_time(position)  # Seek to the specified time in ms
-        self.ui.duration_slider.setValue(position)
+        self.ui.playBackSlider.setValue(position)
         current_time = position / 1000  # ms to seconds
         self.ui.current_time_label.setText(self.format_time(current_time))
 
     def update_slider_position(self):
         current_time = self.player.get_time()  # in milliseconds
-        self.ui.duration_slider.blockSignals(True)  # prevent triggering signals while updating
-        self.ui.duration_slider.setValue(current_time)
-        self.ui.duration_slider.blockSignals(False)
-        self.ui.current_time_label.setText(self.format_time(current_time / 1000))
+        self.ui.playBackSlider.blockSignals(True)  # prevent triggering signals while updating
+        self.ui.playBackSlider.setValue(current_time)
+        self.ui.playBackSlider.blockSignals(False)
+        self.ui.leftPlaybackTimer.setText(self.format_time(current_time / 1000))
 
     def format_time(self, seconds):
         minutes, seconds = divmod(seconds, 60)
@@ -411,14 +308,14 @@ class MediaPlayer(QtCore.QObject):
         duration = max(0, duration) / 1000
 
         # Setup slider
-        self.ui.duration_slider.setRange(0, int(duration * 1000))  # use ms
-        self.ui.duration_slider.setValue(0)
-        self.ui.duration_slider.setPageStep(1000)
-        self.ui.duration_slider.setSingleStep(1000)
-        self.ui.duration_slider.setTracking(True)
+        self.ui.playBackSlider.setRange(0, int(duration * 1000))  # use ms
+        self.ui.playBackSlider.setValue(0)
+        self.ui.playBackSlider.setPageStep(1000)
+        self.ui.playBackSlider.setSingleStep(1000)
+        self.ui.playBackSlider.setTracking(True)
 
         # Set total duration label only once
-        self.ui.total_time_label.setText(self.format_time(duration))
+        self.ui.rightPlaybackTimer.setText(self.format_time(duration))
 
 
     def get_song_metadata(self, file_path):
@@ -439,7 +336,7 @@ class MediaPlayer(QtCore.QObject):
     
     def load_songs(self):
         self.ui.right_container.setCurrentIndex(0)
-        self.ui.page_label.setText("Playlist")
+        self.ui.page_label.setText("Music Library")
         songs = database.get_all_songs('music_library')
         self.ui.listObject.clear()
         for song in songs:
@@ -457,7 +354,7 @@ class MediaPlayer(QtCore.QObject):
         
     def playlist(self):
         self.ui.right_container.setCurrentIndex(0)
-        self.ui.page_label.setText("Playlist")
+        self.ui.page_label.setText("Playlist(s)")
         songs = database.get_all_songs('playlist')
         self.ui.listObject.clear()
         for song in songs:
@@ -492,10 +389,10 @@ class MediaPlayer(QtCore.QObject):
         self.select_currently_playing_song()
 
     def search_play_list(self):
-        search_text = self.ui.search_bar.text().strip().lower()
+        search_text = self.ui.searchInput.text().strip().lower()
 
-        for i in range(self.ui.play_list_widget.count()):
-            item = self.ui.play_list_widget.item(i)
+        for i in range(self.ui.listObject.count()):
+            item = self.ui.listObject.item(i)
             item_text = item.text().lower()
 
             if search_text in item_text or not search_text:
@@ -505,7 +402,7 @@ class MediaPlayer(QtCore.QObject):
 
 
     def show_track_info(self):
-        current_item = self.ui.play_list_widget.currentItem()
+        current_item = self.ui.listObject.currentItem()
         if not current_item:
             QtWidgets.QMessageBox.warning(self, "No Track Selected", "Please select a track first.")
             return
@@ -581,7 +478,7 @@ class MediaPlayer(QtCore.QObject):
 
     def play_selected_song(self, selected_item=None):
         if selected_item is None:
-            selected_item = self.ui.play_list_widget.currentItem()
+            selected_item = self.ui.listObject.currentItem()
 
         if selected_item:
             song_data = selected_item.data(QtCore.Qt.UserRole)
@@ -606,9 +503,9 @@ class MediaPlayer(QtCore.QObject):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.make_favourite_btn.setIcon(QIcon(resource_path("UI_V2/favourite_btn.png")))
+                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("frontend/assets/favourite_btn.png")))
             else:
-                self.ui.make_favourite_btn.setIcon(QIcon(resource_path("UI_V2/fav_btn_1.png")))
+                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("frontend/assets/fav_btn_1.png")))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -641,10 +538,10 @@ class MediaPlayer(QtCore.QObject):
     def toggle_play_pause(self):
         if self.player.is_playing():
             self.player.pause()
-            self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_alt.png")))
+            #self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_alt.png")))
         else:
             self.player.play()
-            self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_btn.png")))
+            #self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_btn.png")))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
@@ -694,8 +591,8 @@ class MediaPlayer(QtCore.QObject):
             self.ui.right_container.setCurrentIndex(1)
             self.ui.video_view.show()
             self.attach_vlc_video_output()
-        else:
-            self.ui.video_view.hide()
+        '''else:
+            self.ui.video_view.hide()'''
 
         self.player.play()
 
@@ -797,10 +694,10 @@ class MediaPlayer(QtCore.QObject):
     def set_album_art(self, audio_file_path):
         album_art = self.get_album_art_from_audio(audio_file_path)
         if album_art and not album_art.isNull():
-            self.ui.Album_art.setPixmap(QPixmap.fromImage(album_art))
+            self.ui.albumArt_view.setPixmap(QPixmap.fromImage(album_art))
         else:
             default_pixmap = QPixmap(resource_path("UI_V2/No-album-art.png"))
-            self.ui.Album_art.setPixmap(default_pixmap)
+            self.ui.albumArt_view.setPixmap(default_pixmap)
 
     def set_track_info(self, media):
         media.parse()  # Ensure metadata is loaded
@@ -809,16 +706,16 @@ class MediaPlayer(QtCore.QObject):
         album = media.get_meta(vlc.Meta.Album) or "Unknown Album"
         path = media.get_mrl().replace("file://", "")
 
-        self.ui.song_label.setText(title)
-        self.ui.song_label_2.setText(title)
-        self.ui.album_label_2.setText(album)
-        self.ui.artist_name_label.setText(artist)
-        self.ui.artist_name_label_2.setText(artist)
-        self.ui.album_label.setText(album)
-        self.ui.album_label_2.setText(album)
+        self.ui.songLabel.setText(title)
+        #self.ui.song_label_2.setText(title)
+        #self.ui.albumName_2.setText(album)
+        self.ui.artistName.setText(artist)
+        #self.ui.artist_name_label_2.setText(artist)
+        self.ui.albumName.setText(album)
+        #self.ui.album_label_2.setText(album)
         self.set_album_art(path)
 
-        self.setup_marquee(self.ui.song_label_2, title, self.ui.frame_5.width())
+        #self.setup_marquee(self.ui.song_label_2, title, self.ui.frame_5.width())
 
     def setup_marquee(self, label, text, max_width):
         fm = QtGui.QFontMetrics(label.font())
