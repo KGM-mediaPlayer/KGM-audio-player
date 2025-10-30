@@ -258,6 +258,9 @@ QSlider::handle:horizontal {
     padding-bottom:5px;
 }
 
+#albumArt_frame{
+    max-width:300px;
+}
 /* Media Playback Control Frame Styling (The Outer Container) */
 #playBackControl_outerframe {
     background-color: __CONTENT_BACKGROUND__; 

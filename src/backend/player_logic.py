@@ -20,20 +20,6 @@ from src.frontend.asset_loader import create_svg_icon, load_and_scale_image
 from src.frontend.aboutDialogue import AboutDialog
 
 
-#locate media files on system
-def resource_path(relative_path):
-    """Get absolute path to resource, works for dev and py2app/pyinstaller bundles."""
-    if hasattr(sys, '_MEIPASS'):
-        # PyInstaller / py2app frozen environment
-        return os.path.join(sys._MEIPASS, relative_path)
-    elif getattr(sys, 'frozen', False):
-        # macOS app bundle, typical py2app case
-        return os.path.join(os.path.dirname(sys.executable), '..', 'Resources', relative_path)
-    else:
-        # Normal dev mode
-        return os.path.join(os.path.abspath("."), relative_path)
-
-
 class MediaPlayer(QtCore.QObject):
     def __init__(self, main_window_instance):
         super().__init__()
@@ -90,7 +76,7 @@ class MediaPlayer(QtCore.QObject):
         self.ui.favourites_btn.clicked.connect(self.favourite_songs)
         #self.ui.back_to_home.clicked.connect(self.switch_page)
         self.ui.searchInput.textChanged.connect(self.search_play_list)
-        #self.ui.make_favourite_btn.clicked.connect(self.add_to_favourites)
+        self.ui.makeFavourite_btn.clicked.connect(self.add_to_favourites)
         #self.ui.add_songs_to_library_btn.clicked.connect(self.add_songs_to_library)
         #self.ui.remove_all_songs_btn.clicked.connect(self.remove_songs_from_library)
         #self.ui.remove_current_selection_btn.clicked.connect(self.remove_current_selection)
@@ -99,15 +85,14 @@ class MediaPlayer(QtCore.QObject):
         self.ui.music_btn.clicked.connect(self.load_songs)
         self.ui.playlist_btn.clicked.connect(self.playlist)
         #self.ui.video_view_2.clicked.connect(self.switch_page)
-        #self.ui.video_view.mouseDoubleClickEvent = self.set_full_screen
-        #self.ui.loop_btn.clicked.connect(self.toggle_loop)
-        #self.ui.shuffle_btn.clicked.connect(self.toggle_shuffle)
-        self.ui.about_btn.clicked.connect(self.show_track_info)
+        self.ui.repeatOptions_btn.clicked.connect(self.toggle_loop)
+        self.ui.shuffle_btn.clicked.connect(self.toggle_shuffle)
+        self.ui.trackInfo_btn.clicked.connect(self.show_track_info)
 
 
         #seek slider
-        """self.ui.duration_slider.sliderPressed.connect(self.pause_for_seek)
-        self.ui.duration_slider.sliderReleased.connect(self.resume_after_seek)"""
+        self.ui.playBackSlider.sliderPressed.connect(self.pause_for_seek)
+        self.ui.playBackSlider.sliderReleased.connect(self.resume_after_seek)
 
         self.event_manager.event_attach(
             vlc.EventType.MediaParsedChanged, self.on_media_parsed
@@ -134,13 +119,13 @@ class MediaPlayer(QtCore.QObject):
         current_page = self.ui.page_label.text()
         
         action_add_library = context_menu.addAction("Add Item(s) to Library...")
-        action_add_library.setIcon(QIcon(resource_path("UI_V2/add_icon.png"))) 
+        action_add_library.setIcon(QIcon(load_and_scale_image(__file__, "add_icon.png", size=30))) 
         action_add_library.triggered.connect(self.add_songs_to_library) 
 
         context_menu.addSeparator() 
         
         action_add_fav = context_menu.addAction("Add to Favourites")
-        action_add_fav.setIcon(QIcon(resource_path("UI_V2/fav_btn_1.png"))) 
+        action_add_fav.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn_1.png", size=30))) 
         action_add_fav.triggered.connect(self.add_current_selection_to_favourites)
         action_add_fav.setEnabled(selected_item is not None) 
 
@@ -153,14 +138,14 @@ class MediaPlayer(QtCore.QObject):
             remove_text = "Remove Selected from Playlist"
             
         action_remove = context_menu.addAction(remove_text)
-        action_remove.setIcon(QIcon(resource_path("UI_V2/delete.png")))
+        action_remove.setIcon(QIcon(load_and_scale_image(__file__, "delete.png", size=30)))
         action_remove.triggered.connect(self.remove_current_selection)
         action_remove.setEnabled(selected_item is not None) 
 
         context_menu.addSeparator() 
         
         action_delete_all = context_menu.addAction(f"Delete ALL from {current_page}")
-        action_delete_all.setIcon(QIcon(resource_path("UI_V2/clear_all.png"))) 
+        action_delete_all.setIcon(QIcon(load_and_scale_image(__file__, "clear_all.png", size=30))) 
         action_delete_all.triggered.connect(self.remove_current_selection)
         
         context_menu.exec_(self.ui.listObject.mapToGlobal(position))
@@ -217,25 +202,7 @@ class MediaPlayer(QtCore.QObject):
 
             return super().eventFilter(obj, event)
     
-    def toggle_fullscreen_on_double_click(self, event):
-        if event.type() == QtCore.QEvent.MouseButtonDblClick and event.source() == self.ui.video_view:
-            if getattr(self, "video_fullscreen", False):
-                # Restore to embedded view
-                self.ui.video_view.setParent(self.original_video_parent)
-                self.ui.video_view.setWindowFlags(Qt.Widget)
-                self.original_video_parent.layout().addWidget(self.ui.video_view)
-                self.ui.video_view.showNormal()
-                self.ui.stackedWidget.setCurrentWidget(self.ui.video_view)
-                #self.overlay_ui.hide_overlay() # Assuming overlay_ui exists
-                self.video_fullscreen = False
-            else:
-                # Make fullscreen
-                self.ui.video_view.setParent(None)
-                self.ui.video_view.setWindowFlags(Qt.Window)
-                self.ui.video_view.showFullScreen()
-                #self.overlay_ui.show_on_video(self.ui.video_view) # Assuming overlay_ui exists
-                self.video_fullscreen = True
-            event.accept()
+    
 
     def show_on_video(self, video_widget):
         self.setParent(video_widget)
@@ -429,7 +396,7 @@ class MediaPlayer(QtCore.QObject):
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
-            item.setIcon(QtGui.QIcon(resource_path("UI_V2/MusicListItem.png")))
+            item.setIcon(QtGui.QIcon(load_and_scale_image(__file__, "MusicListItem.png", size=30)))
             item.setData(QtCore.Qt.UserRole, {
                 "title": title,
                 "artist": artist,
@@ -465,7 +432,7 @@ class MediaPlayer(QtCore.QObject):
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
-            item.setIcon(QtGui.QIcon(resource_path("UI_V2/like.png")))
+            item.setIcon(QtGui.QIcon(load_and_scale_image(__file__, "like.png", size=30)))
             item.setData(QtCore.Qt.UserRole, {
                 "title": title,
                 "artist": artist,
@@ -592,9 +559,9 @@ class MediaPlayer(QtCore.QObject):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("UI_V2/favourite_btn.png")))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=30)))
             else:
-                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("UI_V2/fav_btn_1.png")))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn_1.png", size=30)))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -628,10 +595,10 @@ class MediaPlayer(QtCore.QObject):
         if self.player.is_playing():
             self.player.pause()
             # Assuming an icon update is needed here
-            # self.ui.playPause_track_btn.setIcon(QIcon(resource_path("UI_V2/play_alt.png"))) 
+            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=40))) 
         else:
             self.player.play()
-            # self.ui.playPause_track_btn.setIcon(QIcon(resource_path("UI_V2/play_btn.png")))
+            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "playPause_btn.svg", size=50)))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
@@ -696,12 +663,12 @@ class MediaPlayer(QtCore.QObject):
 
         if self.looping:
             # Assuming loop-one.png is for enabled loop
-            self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop-one.png")))  
+            self.ui.repeatOptions_btn.setIcon(QIcon(load_and_scale_image(__file__,'loop-one.png',size=10)))  
         else:
             # Assuming loop.png is for disabled loop
-            self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop.png")))
+            self.ui.repeatOptions_btn.setIcon(QIcon(load_and_scale_image(__file__,'loop.png',size=10)))
 
-        self.ui.loop_btn.setChecked(self.looping)
+        self.ui.repeatOptions_btn.setChecked(self.looping)
 
 
     
@@ -709,7 +676,7 @@ class MediaPlayer(QtCore.QObject):
         self.shuffle = not self.shuffle
 
         self.ui.shuffle_btn.setIcon(
-            QIcon(resource_path("UI_V2/suffle_btn.png")) if self.shuffle else QIcon(resource_path("UI_V2/play_all_btn.png"))
+            QIcon(load_and_scale_image(__file__,'shuffle_btn.png',size=10)) if self.shuffle else QIcon(load_and_scale_image(__file__,'play_all_btn.png',size=10))
         )
         self.ui.shuffle_btn.setChecked(self.shuffle)
 
@@ -780,7 +747,7 @@ class MediaPlayer(QtCore.QObject):
             self.ui.albumArt_view.setPixmap(QPixmap.fromImage(album_art).scaled(
                 self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
-            default_pixmap = QPixmap(resource_path("UI_V2/No-album-art.png"))
+            default_pixmap = QPixmap(load_and_scale_image(__file__, "No-album-art.png", size=60))
             self.ui.albumArt_view.setPixmap(default_pixmap.scaled(
                 self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
@@ -799,7 +766,9 @@ class MediaPlayer(QtCore.QObject):
         self.ui.albumName.setText(album)
         self.set_album_art(path)
 
-        # self.setup_marquee(self.ui.song_label_2, title, self.ui.frame_5.width()) # If marquee is needed
+        self.setup_marquee(self.ui.songLabel, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
+        self.setup_marquee(self.ui.artistName, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
+        self.setup_marquee(self.ui.albumName, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
 
 
     def setup_marquee(self, label, text, max_width):

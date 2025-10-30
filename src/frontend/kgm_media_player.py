@@ -187,6 +187,7 @@ class MainWindow(qtw.QMainWindow):
         self.albumArt_frame_layout=qtw.QHBoxLayout(self.albumArt_frame)
         self.albumArt_frame_layout.setContentsMargins(0, 0, 0, 0) # Tidy up layout
         self.albumArt_frame.setObjectName("albumArtFrame")
+        self.albumArt_frame.setMaximumWidth(200)
 
         self.albumArt_view=qtw.QLabel()
         self.albumArt_view.setObjectName("albumArtView")
@@ -219,6 +220,7 @@ class MainWindow(qtw.QMainWindow):
         self.playBackControl_outerframe_layout=qtw.QVBoxLayout(self.playBackControl_outerframe)
         self.playBackControl_outerframe.setObjectName("playBackControl_outerframe")
         self.playBackControl_outerframe.setContentsMargins(0, 0, 0, 0)
+        self.playBackControl_outerframe.setMaximumWidth(350)
         
         
 
