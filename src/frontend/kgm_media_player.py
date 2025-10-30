@@ -19,7 +19,7 @@ class MainWindow(qtw.QMainWindow):
 
 
         self.setWindowTitle("KGM Media Player")
-        self.resize(900, 600) # Adjusted size to better fit the screenshot
+        self.resize(1000, 750) # Adjusted size to better fit the screenshot
 
         self.theme_manager = ThemeManager(__file__) #Instantiate the ThemeManager
         self.theme_manager.load_and_apply_theme() #Load the theme (This sets all QSS)
@@ -34,7 +34,7 @@ class MainWindow(qtw.QMainWindow):
 
 
         # -----------------------------------------------------------
-        ## 1. Sidebar Setup (Left Panel)
+        ## 1. Sidebar Setup (Left Panel)    
         # -----------------------------------------------------------
         self.sidebar_container = qtw.QWidget()
         self.sidebar_container_layout = qtw.QVBoxLayout(self.sidebar_container)
@@ -63,6 +63,11 @@ class MainWindow(qtw.QMainWindow):
         self.effects_btn.setIcon(effects_btnIcon)
         self.effects_btn.setToolTip("Special Effects")
 
+        self.favourites_btn=qtw.QPushButton("")
+        effects_btnIcon=create_svg_icon(__file__, "favourite_btn.png", size=40)
+        self.favourites_btn.setIcon(effects_btnIcon)
+        self.favourites_btn.setToolTip("Favourites")
+
         self.settings_btn=qtw.QPushButton("")
         settings_btnIcon=create_svg_icon(__file__, "settings_btn.svg", size=35)
         self.settings_btn.setIcon(settings_btnIcon)
@@ -84,7 +89,7 @@ class MainWindow(qtw.QMainWindow):
         self.sidebar_container_layout.addWidget(self.appLogo, alignment=qtc.Qt.AlignCenter)
         self.sidebar_container_layout.addWidget(self.playlist_btn)
         self.sidebar_container_layout.addWidget(self.music_btn)
-        self.sidebar_container_layout.addWidget(self.effects_btn)
+        self.sidebar_container_layout.addWidget(self.favourites_btn)
         self.sidebar_container_layout.addWidget(self.settings_btn)
         self.sidebar_container_layout.addStretch()
         self.sidebar_container_layout.addWidget(self.theme_btn)

@@ -185,7 +185,7 @@ QSlider::handle:horizontal {
     border-radius: 6px; 
 }
 #playBackSlider{
-    min-height: 6px;
+    min-height: 12px;
     max-height: 6px;
     padding: 0;
     margin: 0;

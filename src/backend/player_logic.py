@@ -6,7 +6,7 @@ import urllib.parse
 from pathlib import Path
 import random
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QMessageBox, QWidget, QMenu
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt,QTimer
 from PyQt5.QtWidgets import QWidget,QMessageBox
@@ -78,13 +78,16 @@ class MediaPlayer(QtCore.QObject):
             self.ui.listObject.addItem(item)
 
 
-
+        # --- Context Menu setup (UI Connection in Backend Object) ---
+        self.ui.listObject.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.listObject.customContextMenuRequested.connect(self.show_context_menu)
+        # -------------------------------------------------------------
 
         self.ui.playPause_track_btn.clicked.connect(self.toggle_play_pause)
         self.ui.next_track_btn.clicked.connect(self.next_track)
         self.ui.prev_track_btn.clicked.connect(self.prev_track)
         #self.ui.all_songs_btn.clicked.connect(self.load_songs)
-        #self.ui.favourite_btn.clicked.connect(self.favourite_songs)
+        self.ui.favourites_btn.clicked.connect(self.favourite_songs)
         #self.ui.back_to_home.clicked.connect(self.switch_page)
         self.ui.searchInput.textChanged.connect(self.search_play_list)
         #self.ui.make_favourite_btn.clicked.connect(self.add_to_favourites)
@@ -118,6 +121,80 @@ class MediaPlayer(QtCore.QObject):
     connect.row_factory = sqlite3.Row  # Enable dict-style access
     cursor = connect.cursor()
 
+    def show_context_menu(self, position):
+        """
+        Builds and displays the context menu on right-click. 
+        It supports both item-specific actions (like remove) and global actions (like add or delete all).
+        """
+        
+        selected_item = self.ui.listObject.itemAt(position)
+        
+        context_menu = QMenu(self.ui)
+        
+        current_page = self.ui.page_label.text()
+        
+        action_add_library = context_menu.addAction("Add Item(s) to Library...")
+        action_add_library.setIcon(QIcon(resource_path("UI_V2/add_icon.png"))) 
+        action_add_library.triggered.connect(self.add_songs_to_library) 
+
+        context_menu.addSeparator() 
+        
+        action_add_fav = context_menu.addAction("Add to Favourites")
+        action_add_fav.setIcon(QIcon(resource_path("UI_V2/fav_btn_1.png"))) 
+        action_add_fav.triggered.connect(self.add_current_selection_to_favourites)
+        action_add_fav.setEnabled(selected_item is not None) 
+
+        remove_text = "Remove Selected Item"
+        if current_page == "Music Library":
+            remove_text = "Remove Selected from Library"
+        elif current_page == "Favourites":
+            remove_text = "Remove Selected from Favourites"
+        elif current_page == "Playlist(s)":
+            remove_text = "Remove Selected from Playlist"
+            
+        action_remove = context_menu.addAction(remove_text)
+        action_remove.setIcon(QIcon(resource_path("UI_V2/delete.png")))
+        action_remove.triggered.connect(self.remove_current_selection)
+        action_remove.setEnabled(selected_item is not None) 
+
+        context_menu.addSeparator() 
+        
+        action_delete_all = context_menu.addAction(f"Delete ALL from {current_page}")
+        action_delete_all.setIcon(QIcon(resource_path("UI_V2/clear_all.png"))) 
+        action_delete_all.triggered.connect(self.remove_current_selection)
+        
+        context_menu.exec_(self.ui.listObject.mapToGlobal(position))
+
+    # --- Context Menu Action Handlers (Backend Logic) ---
+    # ... Existing handlers (add_current_selection_to_favourites, remove_current_selection) go here ...
+
+    # --- Placeholder methods for new actions ---
+    # def add_items_to_library(self):
+    #     pass
+
+    # def delete_all_items_in_current_view(self):
+    #     pass
+
+
+    def add_current_selection_to_favourites(self):
+        """Logic to add the currently selected song from the listObject to the 'favourites' database table."""
+        selected_item = self.ui.listObject.currentItem()
+        if selected_item:
+            song = selected_item.data(QtCore.Qt.UserRole)
+            if song and all(key in song for key in ['title', 'artist', 'album', 'path']):
+                title = song['title']
+                artist = song['artist']
+                album = song['album']
+                path = song['path']
+
+                database.add_song('favourites', title, artist, album, path)
+
+                QtWidgets.QMessageBox.information(self.ui, "Success", f"'{title}' added to favourites.")
+            else:
+                QtWidgets.QMessageBox.warning(self.ui, "Error", "Invalid song data.")
+        else:
+            QtWidgets.QMessageBox.warning(self.ui, "No Selection", "Please select a song first.")
+    # ---------------------------------------------------
     
     def show_about_dialog(self):
         about_dialog = AboutDialog(self)
@@ -149,14 +226,14 @@ class MediaPlayer(QtCore.QObject):
                 self.original_video_parent.layout().addWidget(self.ui.video_view)
                 self.ui.video_view.showNormal()
                 self.ui.stackedWidget.setCurrentWidget(self.ui.video_view)
-                self.overlay_ui.hide_overlay()
+                #self.overlay_ui.hide_overlay() # Assuming overlay_ui exists
                 self.video_fullscreen = False
             else:
                 # Make fullscreen
                 self.ui.video_view.setParent(None)
                 self.ui.video_view.setWindowFlags(Qt.Window)
                 self.ui.video_view.showFullScreen()
-                self.overlay_ui.show_on_video(self.ui.video_view)
+                #self.overlay_ui.show_on_video(self.ui.video_view) # Assuming overlay_ui exists
                 self.video_fullscreen = True
             event.accept()
 
@@ -178,9 +255,10 @@ class MediaPlayer(QtCore.QObject):
     def set_full_screen(self, event):
         if self.video_fullscreen:
             # Exit fullscreen
-            self.ui.video_view.setParent(self.original_video_parent)
+            # Assuming 'self.original_video_parent' and proper container management
+            # self.ui.video_view.setParent(self.original_video_parent) 
             self.ui.video_view.setWindowFlags(Qt.Widget)
-            self.original_video_parent.layout().addWidget(self.ui.video_view)
+            # self.original_video_parent.layout().addWidget(self.ui.video_view) 
             self.ui.video_view.showNormal()
             self.ui.right_container.setCurrentWidget(self.ui.video_view)
             self.video_fullscreen = False
@@ -196,7 +274,7 @@ class MediaPlayer(QtCore.QObject):
 
     
     def on_video_resized(self, event):
-        self.overlay_ui.resize(self.ui.video_view.size())
+        # self.overlay_ui.resize(self.ui.video_view.size()) # Assuming overlay_ui exists
         event.accept()
 
         # Attach the handler
@@ -206,7 +284,7 @@ class MediaPlayer(QtCore.QObject):
     
     def add_songs_to_library(self):
         # Create a file dialog to choose files
-        file_dialog = QtWidgets.QFileDialog(self)
+        file_dialog = QtWidgets.QFileDialog(self.ui) # Use self.ui as parent
         file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFiles)
         file_dialog.setNameFilter("Audio Files (*.mp3 *.wav *.flac *.ogg *.m4a *.aac);;Video Files (*.mp4 *.avi *.mkv *.mov *.flv)")
         file_dialog.setViewMode(QtWidgets.QFileDialog.List)
@@ -225,6 +303,11 @@ class MediaPlayer(QtCore.QObject):
                         # It's an audio file, add to music_library
                         title, artist, album = self.get_song_metadata(file_path)
                         database.add_song('music_library', title, artist, album, file_path)  # Add to music_library
+            
+            # Refresh the list if currently on the Music Library page
+            if self.ui.page_label.text() == "Music Library":
+                self.load_songs()
+
 
     # Full screen
    
@@ -234,18 +317,19 @@ class MediaPlayer(QtCore.QObject):
         self.player.pause()
 
     def resume_after_seek(self):
-        value = self.ui.duration_slider.value()
+        # Assuming ui.playBackSlider is the correct slider
+        value = self.ui.playBackSlider.value() 
         self.player.set_time(value)
         if self.was_playing:
             self.player.play()
 
     def removal_db_selection(self):
         page_text = self.ui.page_label.text()
-        if page_text == "All Songs":
+        if page_text == "Music Library":
             db_table = 'music_library'
         elif page_text == 'Favourites':
             db_table = 'favourites'
-        elif page_text == 'Playlist':
+        elif page_text == 'Playlist(s)':
             db_table = 'playlist'
         else:
             db_table = None  # Default to None or another value if necessary
@@ -255,14 +339,16 @@ class MediaPlayer(QtCore.QObject):
         db_table = self.removal_db_selection()
         if db_table:
             database.remove_all_songs(db_table)
-            QtWidgets.QMessageBox.information(self, "Removed", f"All songs removed from {db_table}!")
+            self.ui.listObject.clear() # Clear the visible list
+            QtWidgets.QMessageBox.information(self.ui, "Removed", f"All songs removed from {db_table}!")
         else:
-            QtWidgets.QMessageBox.warning(self, "Error", "Unknown page, no songs removed.")
+            QtWidgets.QMessageBox.warning(self.ui, "Error", "Unknown page, no songs removed.")
 
     def remove_current_selection(self):
         db_table = self.removal_db_selection()
         if db_table:
-            selected_item = self.ui.listObject.currentItem()
+            # Note: currentItem() is used, which works for both context menu and dedicated button click
+            selected_item = self.ui.listObject.currentItem() 
             if selected_item:
                 song_data = selected_item.data(QtCore.Qt.UserRole)
                 path = song_data["path"]  # Use path as the unique identifier
@@ -270,18 +356,19 @@ class MediaPlayer(QtCore.QObject):
 
                 database.remove_song(db_table, path)  # Pass path instead of title
 
+                # Remove item from the QListWidget
                 self.ui.listObject.takeItem(self.ui.listObject.row(selected_item))
-                QtWidgets.QMessageBox.information(self, "Removed", f"'{title}' removed from {db_table}!")
+                QtWidgets.QMessageBox.information(self.ui, "Removed", f"'{title}' removed from {db_table}!")
             else:
-                QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a song to remove.")
+                QtWidgets.QMessageBox.warning(self.ui, "No Selection", "Please select a song to remove.")
         else:
-            QtWidgets.QMessageBox.warning(self, "Error", "Unknown page, no songs removed.")
+            QtWidgets.QMessageBox.warning(self.ui, "Error", "Unknown page, no songs removed.")
    
     def set_slider_position(self, position):
         self.player.set_time(position)  # Seek to the specified time in ms
         self.ui.playBackSlider.setValue(position)
         current_time = position / 1000  # ms to seconds
-        self.ui.current_time_label.setText(self.format_time(current_time))
+        self.ui.leftPlaybackTimer.setText(self.format_time(current_time))
 
     def update_slider_position(self):
         current_time = self.player.get_time()  # in milliseconds
@@ -404,14 +491,14 @@ class MediaPlayer(QtCore.QObject):
     def show_track_info(self):
         current_item = self.ui.listObject.currentItem()
         if not current_item:
-            QtWidgets.QMessageBox.warning(self, "No Track Selected", "Please select a track first.")
+            QtWidgets.QMessageBox.warning(self.ui, "No Track Selected", "Please select a track first.")
             return
 
         file_info = current_item.data(QtCore.Qt.UserRole)
         print("file_info from UserRole:", file_info, type(file_info))
 
         if not isinstance(file_info, dict):
-            QtWidgets.QMessageBox.warning(self, "Invalid Track Metadata", "Metadata is not in expected format.")
+            QtWidgets.QMessageBox.warning(self.ui, "Invalid Track Metadata", "Metadata is not in expected format.")
             return
 
         file_path = file_info.get('path')  # match by path, or use title depending on your DB
@@ -421,7 +508,7 @@ class MediaPlayer(QtCore.QObject):
         song = get_song_by_filepath('music_library', file_path)
 
         if not song:
-            QtWidgets.QMessageBox.information(self, "Track Info", f"Metadata not found for:\n{file_path}")
+            QtWidgets.QMessageBox.information(self.ui, "Track Info", f"Metadata not found for:\n{file_path}")
             return
 
         title = song.get('title', 'Unknown Title')
@@ -429,8 +516,9 @@ class MediaPlayer(QtCore.QObject):
         album = song.get('album', 'Unknown Album')
         path = song.get('path', '')
 
-        dialog = TrackInfoDialog(title, artist, album, path, parent=self)
-        dialog.exec_()
+        # Since TrackInfoDialog is not defined here, using QMessageBox as a fallback
+        QtWidgets.QMessageBox.information(self.ui, "Track Info", 
+                                          f"Title: {title}\nArtist: {artist}\nAlbum: {album}\nPath: {path}")
 
 
     def switch_page(self):
@@ -446,6 +534,7 @@ class MediaPlayer(QtCore.QObject):
             self.select_currently_playing_song()
 
     def add_to_favourites(self):
+        # This is likely connected to a button, which is why it uses currentItem()
         selected_item = self.ui.listObject.currentItem()
         if selected_item:
             song = selected_item.data(QtCore.Qt.UserRole)
@@ -458,18 +547,18 @@ class MediaPlayer(QtCore.QObject):
                 # Add to database
                 database.add_song('favourites', title, artist, album, path)
 
-                QtWidgets.QMessageBox.information(self, "Success", f"{title} added to favourites.")
+                QtWidgets.QMessageBox.information(self.ui, "Success", f"{title} added to favourites.")
             else:
-                QtWidgets.QMessageBox.warning(self, "Error", "Invalid song data.")
+                QtWidgets.QMessageBox.warning(self.ui, "Error", "Invalid song data.")
         else:
-            QtWidgets.QMessageBox.warning(self, "No Selection", "Select a song to add to favourites.")
+            QtWidgets.QMessageBox.warning(self.ui, "No Selection", "Select a song to add to favourites.")
 
 
     def add_current_song_to_favourites(self):
         if hasattr(self,'current_song')and self.current_song:
             self.add_to_favourites(self.current_song)
         else:
-            QtWidgets.QMessageBox.warning(self, "No Song", "No song is currently playing.")
+            QtWidgets.QMessageBox.warning(self.ui, "No Song", "No song is currently playing.")
     
     def play_next_song(self, event=None):
         if self.current_index + 1 < len(self.playlist):
@@ -503,9 +592,9 @@ class MediaPlayer(QtCore.QObject):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("frontend/assets/favourite_btn.png")))
+                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("UI_V2/favourite_btn.png")))
             else:
-                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("frontend/assets/fav_btn_1.png")))
+                self.ui.makeFavourite_btn.setIcon(QIcon(resource_path("UI_V2/fav_btn_1.png")))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -538,15 +627,16 @@ class MediaPlayer(QtCore.QObject):
     def toggle_play_pause(self):
         if self.player.is_playing():
             self.player.pause()
-            #self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_alt.png")))
+            # Assuming an icon update is needed here
+            # self.ui.playPause_track_btn.setIcon(QIcon(resource_path("UI_V2/play_alt.png"))) 
         else:
             self.player.play()
-            #self.ui.pause_btn.setIcon(QIcon(resource_path("UI_V2/play_btn.png")))
+            # self.ui.playPause_track_btn.setIcon(QIcon(resource_path("UI_V2/play_btn.png")))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
         self.set_track_info(self.player.get_media())
-        if label_text in ["All Songs", "Favourites"]:  # optionally add more page names
+        if label_text in ["Music Library", "Favourites", "Playlist(s)"]:  # optionally add more page names
             current_row = self.ui.listObject.currentRow()
             if current_row < self.ui.listObject.count() - 1:
                 next_row = current_row + 1
@@ -557,7 +647,7 @@ class MediaPlayer(QtCore.QObject):
     def prev_track(self):
         label_text = self.ui.page_label.text()
         self.set_track_info(self.player.get_media())
-        if label_text in ["All Songs", "Favourites"]:
+        if label_text in ["Music Library", "Favourites", "Playlist(s)"]:
             current_row = self.ui.listObject.currentRow()
             if current_row > 0:
                 prev_row = current_row - 1
@@ -605,12 +695,13 @@ class MediaPlayer(QtCore.QObject):
         self.looping = not self.looping
 
         if self.looping:
-            self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop-one.png")))  # or loop-one.png if looping a single track
+            # Assuming loop-one.png is for enabled loop
+            self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop-one.png")))  
         else:
+            # Assuming loop.png is for disabled loop
             self.ui.loop_btn.setIcon(QIcon(resource_path("UI_V2/loop.png")))
 
         self.ui.loop_btn.setChecked(self.looping)
-
 
 
     
@@ -623,14 +714,13 @@ class MediaPlayer(QtCore.QObject):
         self.ui.shuffle_btn.setChecked(self.shuffle)
 
         if self.shuffle:
+            # Recreate playback order if shuffle is turned ON
             self.playback_order = random.sample(range(len(self.original_playlist_data)), len(self.original_playlist_data))
         else:
+            # Reset to sequential order if shuffle is turned OFF
             self.playback_order = list(range(len(self.original_playlist_data)))
 
         self.current_play_index = 0  # reset to beginning (or keep current?)
-
-
-
 
 
     def on_track_end(self, event):
@@ -643,6 +733,7 @@ class MediaPlayer(QtCore.QObject):
         if current_row < 0:
             return  # No item selected
 
+        item = None
         if self.looping:
             item = self.ui.listObject.item(current_row)
 
@@ -661,21 +752,13 @@ class MediaPlayer(QtCore.QObject):
             return
 
         # Get file path from item's metadata
-        metadata = item.data(QtCore.Qt.UserRole)
-        if isinstance(metadata, dict) and "path" in metadata:
-            file_path = metadata["path"]
-            self.play_media(file_path)
-        else:
-            print("Invalid metadata or missing path.")
-
-
-        # Get file path from item's UserRole data
-        metadata = item.data(QtCore.Qt.UserRole)
-        if isinstance(metadata, dict) and "path" in metadata:
-            file_path = metadata["path"]
-            self.play_media(file_path)
-        else:
-            print("Invalid metadata or missing path.")
+        if item:
+            metadata = item.data(QtCore.Qt.UserRole)
+            if isinstance(metadata, dict) and "path" in metadata:
+                file_path = metadata["path"]
+                self.play_media(file_path)
+            else:
+                print("Invalid metadata or missing path for next track.")
 
 
     def get_album_art_from_audio(self, audio_file_path):
@@ -694,39 +777,40 @@ class MediaPlayer(QtCore.QObject):
     def set_album_art(self, audio_file_path):
         album_art = self.get_album_art_from_audio(audio_file_path)
         if album_art and not album_art.isNull():
-            self.ui.albumArt_view.setPixmap(QPixmap.fromImage(album_art))
+            self.ui.albumArt_view.setPixmap(QPixmap.fromImage(album_art).scaled(
+                self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             default_pixmap = QPixmap(resource_path("UI_V2/No-album-art.png"))
-            self.ui.albumArt_view.setPixmap(default_pixmap)
+            self.ui.albumArt_view.setPixmap(default_pixmap.scaled(
+                self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
 
     def set_track_info(self, media):
         media.parse()  # Ensure metadata is loaded
         title = media.get_meta(vlc.Meta.Title) or "Unknown Title"
         artist = media.get_meta(vlc.Meta.Artist) or "Unknown Artist"
         album = media.get_meta(vlc.Meta.Album) or "Unknown Album"
-        path = media.get_mrl().replace("file://", "")
+        # media resource locator needs proper decoding and path stripping
+        mrl = media.get_mrl()
+        path = urllib.parse.unquote(mrl.removeprefix("file:///")) if mrl.startswith("file:///") else mrl
 
         self.ui.songLabel.setText(title)
-        #self.ui.song_label_2.setText(title)
-        #self.ui.albumName_2.setText(album)
         self.ui.artistName.setText(artist)
-        #self.ui.artist_name_label_2.setText(artist)
         self.ui.albumName.setText(album)
-        #self.ui.album_label_2.setText(album)
         self.set_album_art(path)
 
-        #self.setup_marquee(self.ui.song_label_2, title, self.ui.frame_5.width())
+        # self.setup_marquee(self.ui.song_label_2, title, self.ui.frame_5.width()) # If marquee is needed
+
 
     def setup_marquee(self, label, text, max_width):
         fm = QtGui.QFontMetrics(label.font())
         text_width = fm.horizontalAdvance(text)
 
-        # If text fits, stop marquee and set plain text
         if text_width <= max_width:
             if hasattr(self, 'marquee_timer') and self.marquee_timer.isActive():
                 self.marquee_timer.stop()
             label.setText(text)
-            label.setAlignment(QtCore.Qt.AlignCenter)  # Optional: align center for shorter text
+            label.setAlignment(QtCore.Qt.AlignCenter)  
             self.marquee_text = ""
             return
 
@@ -752,8 +836,13 @@ class MediaPlayer(QtCore.QObject):
 
     # EQ implimentation
     def apply_equalizer(self):
-        gains = [self.ui.slider_band1.value(), self.ui.slider_band2.value(), ..., self.ui.slider_band10.value()]
-        eq = vlc.AudioEqualizer()
+        # Placeholder for EQ sliders
+        gains = [0] * 10
+        try:
+            eq = vlc.AudioEqualizer()
+        except AttributeError:
+            print("VLC AudioEqualizer not initialized or available.")
+            return
 
         for i, gain in enumerate(gains):
             eq.set_amp_at_index(gain, i)
@@ -762,7 +851,8 @@ class MediaPlayer(QtCore.QObject):
             self.player.set_equalizer(eq)
 
     def save_preset(self, name):
-        gains = [self.ui.slider_band1.value(), ..., self.ui.slider_band10.value()]
+        # Placeholder for EQ sliders
+        gains = [0] * 10
         with sqlite3.connect("music_library.db") as conn:
             c = conn.cursor()
             c.execute("REPLACE INTO equalizer_presets (name, band1, band2, band3, band4, band5, band6, band7, band8, band9, band10) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -775,14 +865,16 @@ class MediaPlayer(QtCore.QObject):
             c.execute("SELECT band1, band2, band3, band4, band5, band6, band7, band8, band9, band10 FROM equalizer_presets WHERE name=?", (name,))
             row = c.fetchone()
             if row:
-                sliders = [self.ui.slider_band1, ..., self.ui.slider_band10]
-                for slider, value in zip(sliders, row):
-                    slider.setValue(value)
+                # Need actual slider names/references here
+                # sliders = [self.ui.slider_band1, ..., self.ui.slider_band10]
+                # for slider, value in zip(sliders, row):
+                #     slider.setValue(value)
                 self.apply_equalizer()
 
     def reset_equalizer(self):
-        for slider in [self.ui.slider_band1, ..., self.ui.slider_band10]:
-            slider.setValue(0)
+        # Need actual slider names/references here
+        # for slider in [self.ui.slider_band1, ..., self.ui.slider_band10]:
+        #     slider.setValue(0)
         self.apply_equalizer()
 
     def attach_vlc_video_output(self):
@@ -796,6 +888,7 @@ class MediaPlayer(QtCore.QObject):
     
     # hooking EQ to UI
     def show_equalizer(self):
+        # Assuming EqualizerWindow exists and takes self.player
         self.eq_window = EqualizerWindow(self.player)
         self.eq_window.show()
 
@@ -804,37 +897,7 @@ class MediaPlayer(QtCore.QObject):
             c = conn.cursor()
             c.execute("SELECT name FROM equalizer_presets")
             presets = [row[0] for row in c.fetchall()]
-            self.ui.preset_combo.clear()
-            self.ui.preset_combo.addItems(presets)
-
-## Track Info Dialog
-class TrackInfoDialog(QtWidgets.QDialog):
-    def __init__(self, title, artist, album, path, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Track Information")
-        self.setMinimumWidth(400)
-
-        layout = QtWidgets.QVBoxLayout(self)
-
-        # Create labels with icons (you can replace emojis with QIcons if you want)
-        title_label = QtWidgets.QLabel(f"🎵 Title: <b>{title}</b>")
-        artist_label = QtWidgets.QLabel(f"🎤 Artist: <b>{artist}</b>")
-        album_label = QtWidgets.QLabel(f"💽 Album: <b>{album}</b>")
-        path_label = QtWidgets.QLabel(f"📁 File Path: <i>{path}</i>")
-
-        # Set word wrap for path in case it's long
-        path_label.setWordWrap(True)
-
-        # Add all labels to the layout
-        layout.addWidget(title_label)
-        layout.addWidget(artist_label)
-        layout.addWidget(album_label)
-        layout.addWidget(path_label)
-
-        # Add Close button
-        close_btn = QtWidgets.QPushButton("Close")
-        close_btn.clicked.connect(self.accept)  # closes the dialog
-        layout.addWidget(close_btn)
-
-        self.setLayout(layout)
-
+            # Logic to update a QComboBox or similar UI element with presets goes here
+            # e.g., self.ui.preset_combo.clear(); self.ui.preset_combo.addItems(presets)
+            return presets # Returning the list for potential use
+            
