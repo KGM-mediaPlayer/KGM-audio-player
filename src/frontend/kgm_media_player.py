@@ -220,7 +220,7 @@ class MainWindow(qtw.QMainWindow):
         self.playBackControl_outerframe_layout=qtw.QVBoxLayout(self.playBackControl_outerframe)
         self.playBackControl_outerframe.setObjectName("playBackControl_outerframe")
         self.playBackControl_outerframe.setContentsMargins(0, 0, 0, 0)
-        self.playBackControl_outerframe.setMaximumWidth(350)
+        self.playBackControl_outerframe.setMaximumWidth(280)
         
         
 

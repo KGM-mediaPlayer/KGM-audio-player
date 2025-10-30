@@ -19,6 +19,17 @@ import src.backend.database as database
 from src.frontend.asset_loader import create_svg_icon, load_and_scale_image
 from src.frontend.aboutDialogue import AboutDialog
 
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and py2app/pyinstaller bundles."""
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller / py2app frozen environment
+        return os.path.join(sys._MEIPASS, relative_path)
+    elif getattr(sys, 'frozen', False):
+        # macOS app bundle, typical py2app case
+        return os.path.join(os.path.dirname(sys.executable), '..', 'Resources', relative_path)
+    else:
+        # Normal dev mode
+        return os.path.join(os.path.abspath("."), relative_path)
 
 class MediaPlayer(QtCore.QObject):
     def __init__(self, main_window_instance):
@@ -559,9 +570,9 @@ class MediaPlayer(QtCore.QObject):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=30)))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=25)))
             else:
-                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn_1.png", size=30)))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn.png", size=20,round_radius=40)))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -747,7 +758,7 @@ class MediaPlayer(QtCore.QObject):
             self.ui.albumArt_view.setPixmap(QPixmap.fromImage(album_art).scaled(
                 self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
-            default_pixmap = QPixmap(load_and_scale_image(__file__, "No-album-art.png", size=60))
+            default_pixmap = QPixmap(load_and_scale_image(__file__, "No-album-art.png", size=36,round_radius=10))
             self.ui.albumArt_view.setPixmap(default_pixmap.scaled(
                 self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
@@ -767,8 +778,8 @@ class MediaPlayer(QtCore.QObject):
         self.set_album_art(path)
 
         self.setup_marquee(self.ui.songLabel, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
-        self.setup_marquee(self.ui.artistName, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
-        self.setup_marquee(self.ui.albumName, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
+        self.setup_marquee(self.ui.artistName, artist, self.ui.mediaTitle_frame.width()) # If marquee is needed
+        self.setup_marquee(self.ui.albumName, album, self.ui.mediaTitle_frame.width()) # If marquee is needed
 
 
     def setup_marquee(self, label, text, max_width):
