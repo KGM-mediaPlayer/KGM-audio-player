@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QMessageBox, QWidget, 
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt,QTimer
 from PyQt5.QtWidgets import QWidget,QMessageBox
+from PyQt5.sip import unwrapinstance
 from mutagen import File as MutagenFile
 from mutagen.mp3 import HeaderNotFoundError
 
@@ -18,6 +19,7 @@ from src.frontend.old.EQ import EqualizerWindow
 import src.backend.database as database
 from src.frontend.asset_loader import create_svg_icon, load_and_scale_image
 from src.frontend.aboutDialogue import AboutDialog
+from src.frontend.videoPlayer import VideoPlayerWindow
 
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and py2app/pyinstaller bundles."""
@@ -36,10 +38,12 @@ class MediaPlayer(QtCore.QObject):
         super().__init__()
         self.ui = main_window_instance
         
+        
         self.video_fullscreen = False
+        self.video_window = None
 
         # VLC setup
-        self.vlc_instance = vlc.Instance('--no-xlib')  # '--no-xlib' for Linux, can be omitted on Windows/macOS
+        self.vlc_instance = vlc.Instance()  # '--no-xlib' for Linux, can be omitted on Windows/macOS
         self.player = self.vlc_instance.media_player_new()
         
         
@@ -86,6 +90,7 @@ class MediaPlayer(QtCore.QObject):
         #self.ui.all_songs_btn.clicked.connect(self.load_songs)
         self.ui.favourites_btn.clicked.connect(self.favourite_songs)
         #self.ui.back_to_home.clicked.connect(self.switch_page)
+        #self.ui.searchInput.clicked.connect(self.free_input_field)
         self.ui.searchInput.textChanged.connect(self.search_play_list)
         self.ui.makeFavourite_btn.clicked.connect(self.add_to_favourites)
         #self.ui.add_songs_to_library_btn.clicked.connect(self.add_songs_to_library)
@@ -111,7 +116,19 @@ class MediaPlayer(QtCore.QObject):
 
         # Eq button
         #self.ui.more_options_btn.clicked.connect(self.show_equalizer)
+    
+    # --- Volume Slider Setup ---
+        try:
+            self.ui.volumeSlider.setRange(0, 100)
+            self.ui.volumeSlider.setValue(50) # Set initial volume to 50%
+            self.player.audio_set_volume(50)
+            self.ui.volumeSlider.valueChanged.connect(self.volumeChanged)
+        except AttributeError:
+            print("Warning: volumeSlider not found in self.ui. Volume control unavailable.")
+        # ----------------------------
 
+    def volumeChanged(self,value):
+        self.player.audio_set_volume(value)
            
     connect = sqlite3.connect('music_library.db')
     connect.row_factory = sqlite3.Row  # Enable dict-style access
@@ -197,7 +214,7 @@ class MediaPlayer(QtCore.QObject):
         about_dialog.exec_()
     
     def eventFilter(self, obj, event):
-            if obj == self.ui.menu_bar:
+            if obj == self.ui.menuBar:
                 if event.type() == QtCore.QEvent.MouseButtonPress and event.button() == QtCore.Qt.LeftButton:
                     self._drag_active = True
                     self._drag_start_pos = event.globalPos() - self.frameGeometry().topLeft()
@@ -215,50 +232,7 @@ class MediaPlayer(QtCore.QObject):
     
     
 
-    def show_on_video(self, video_widget):
-        self.setParent(video_widget)
-        self.resize(video_widget.size())
-        self.move(0, video_widget.height() - self.height())  # align to bottom
-        self.show()
-        self.raise_()  # make sure overlay is on top
-
-
-    def eventFilter(self, obj, event):
-        if obj == self.ui.video_view and event.type() == QtCore.QEvent.MouseButtonDblClick:
-            self.toggle_fullscreen_on_double_click(event)
-            return True
-        return super().eventFilter(obj, event)
-
-
-    def set_full_screen(self, event):
-        if self.video_fullscreen:
-            # Exit fullscreen
-            # Assuming 'self.original_video_parent' and proper container management
-            # self.ui.video_view.setParent(self.original_video_parent) 
-            self.ui.video_view.setWindowFlags(Qt.Widget)
-            # self.original_video_parent.layout().addWidget(self.ui.video_view) 
-            self.ui.video_view.showNormal()
-            self.ui.right_container.setCurrentWidget(self.ui.video_view)
-            self.video_fullscreen = False
-        else:
-            # Enter fullscreen
-            self.ui.video_view.setParent(None)
-            self.ui.video_view.setWindowFlags(Qt.Window)
-            self.ui.video_view.showFullScreen()
-
-            self.video_fullscreen = True
-
-        event.accept()
-
     
-    def on_video_resized(self, event):
-        # self.overlay_ui.resize(self.ui.video_view.size()) # Assuming overlay_ui exists
-        event.accept()
-
-        # Attach the handler
-        self.ui.video_view.resizeEvent = self.on_video_resized
-    
-
     
     def add_songs_to_library(self):
         # Create a file dialog to choose files
@@ -453,6 +427,10 @@ class MediaPlayer(QtCore.QObject):
             self.ui.listObject.addItem(item)
         self.select_currently_playing_song()
 
+
+    def free_input_field(self):
+        self.searchInput.setObjectName("")
+
     def search_play_list(self):
         search_text = self.ui.searchInput.text().strip().lower()
 
@@ -606,7 +584,8 @@ class MediaPlayer(QtCore.QObject):
         if self.player.is_playing():
             self.player.pause()
             # Assuming an icon update is needed here
-            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=40))) 
+            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=40)))
+            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=25)))
         else:
             self.player.play()
             self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "playPause_btn.svg", size=50)))
@@ -636,6 +615,91 @@ class MediaPlayer(QtCore.QObject):
     def on_media_parsed(self, event):
         QtCore.QMetaObject.invokeMethod(self, self.set_duration, QtCore.Qt.QueuedConnection)
 
+    def open_and_setup_video_window(self):
+        """Creates the video player window and connects all shared controls to it."""
+        if not self.video_window:
+            self.video_window = VideoPlayerWindow(self.ui) # Pass main window as parent (optional but good practice)
+            
+            # 1. Connect player control signals to the new window's buttons/slider
+            self.video_window.playPause_track_btn.clicked.connect(self.toggle_play_pause)
+            self.video_window.next_track_btn.clicked.connect(self.next_track)
+            self.video_window.prev_track_btn.clicked.connect(self.prev_track)
+            self.video_window.repeatOptions_btn.clicked.connect(self.toggle_loop)
+            self.video_window.shuffle_btn.clicked.connect(self.toggle_shuffle)
+            self.video_window.makeFavourite_btn.clicked.connect(self.add_to_favourites)
+            self.video_window.trackInfo_btn.clicked.connect(self.show_track_info)
+
+            # 2. Connect slider logic
+            self.video_window.playBackSlider.sliderPressed.connect(self.pause_for_seek)
+            self.video_window.playBackSlider.sliderReleased.connect(self.resume_after_seek)
+
+            # 3. Handle window closing (stop playback when the video window is closed)
+            # Use a lambda to handle the close event, or override closeEvent in VideoPlayerWindow
+            self.video_window.installEventFilter(self) # Re-use the existing filter concept if needed
+
+        # Make the connection for the video surface
+        self.attach_vlc_video_output()
+        self.video_window.show()
+
+        # Update the currently controlled UI elements to the video window's controls
+        self._map_controls_to_video_window()
+        
+    def _map_controls_to_video_window(self):
+        """Temporarily remaps the main UI attributes to the video window's controls."""
+        # Save original UI references before mapping them to the video window's controls.
+        self._original_ui_controls = {
+            'playBackSlider': self.ui.playBackSlider,
+            'leftPlaybackTimer': self.ui.leftPlaybackTimer,
+            'rightPlaybackTimer': self.ui.rightPlaybackTimer,
+            'playPause_track_btn': self.ui.playPause_track_btn
+        }
+
+        # Map the main UI attributes (used by self.ui) to the video window's widgets
+        # This is a bit advanced but necessary for the simple self.ui.playBackSlider references to work.
+        self.ui.playBackSlider = self.video_window.playBackSlider
+        self.ui.leftPlaybackTimer = self.video_window.leftPlaybackTimer
+        self.ui.rightPlaybackTimer = self.video_window.rightPlaybackTimer
+        self.ui.playPause_track_btn = self.video_window.playPause_track_btn
+
+    def _map_controls_to_main_window(self):
+        """Restores the controls back to the main window."""
+        if hasattr(self, '_original_ui_controls'):
+            self.ui.playBackSlider = self._original_ui_controls['playBackSlider']
+            self.ui.leftPlaybackTimer = self._original_ui_controls['leftPlaybackTimer']
+            self.ui.rightPlaybackTimer = self._original_ui_controls['rightPlaybackTimer']
+            self.ui.playPause_track_btn = self._original_ui_controls['playPause_track_btn']
+            del self._original_ui_controls
+
+
+    def attach_vlc_video_output(self):
+        """Attaches the VLC media player output to the designated PyQt widget (VideoPlayerWindow)."""
+        if not self.video_window:
+            return
+
+        # 1. Ensure the video surface widget is referenced (now a QGraphicsView)
+        video_widget = self.video_window.video_view
+        
+        # 2. Get the window ID based on the OS, using the correct native handle for macOS
+        if sys.platform.startswith('linux'): # Linux (X11)
+            # Use XWindow ID
+            self.player.set_xwindow(video_widget.winId()) 
+        elif sys.platform == 'win32': # Windows
+            # Use Window Handle
+            self.player.set_hwnd(video_widget.winId())
+        elif sys.platform == 'darwin': # macOS (Fixes the ctypes.ArgumentError and Bus Error)
+            try:
+                # Use sip.unwrapinstance to get the raw C++ NSView pointer
+                # This pointer is what libVLC expects on macOS.
+                native_handle = unwrapinstance(video_widget)
+                self.player.set_nsobject(native_handle)
+                print(f"VLC output attached successfully to NSView pointer on macOS.")
+            except Exception as e:
+                print(f"❌ Critical Error attaching VLC on macOS: {e}")
+                print("HINT: Ensure PyQt5.sip is available and the widget is correctly displayed.")
+                
+        else:
+            print("Unsupported operating system for video output attachment.")
+
     def play_media(self, file_path):
         # Stop current playback if necessary
         if self.player.is_playing():
@@ -656,9 +720,7 @@ class MediaPlayer(QtCore.QObject):
                     break
 
         if has_video:
-            self.ui.right_container.setCurrentIndex(1)
-            self.ui.video_view.show()
-            self.attach_vlc_video_output()
+            self.open_and_setup_video_window()
         '''else:
             self.ui.video_view.hide()'''
 
@@ -857,14 +919,6 @@ class MediaPlayer(QtCore.QObject):
         #     slider.setValue(0)
         self.apply_equalizer()
 
-    def attach_vlc_video_output(self):
-        win_id = int(self.ui.video_view.winId())
-        if sys.platform.startswith("linux"):
-            self.player.set_xwindow(win_id)
-        elif sys.platform == "win32":
-            self.player.set_hwnd(win_id)
-        elif sys.platform == "darwin":
-            self.player.set_nsobject(win_id)
     
     # hooking EQ to UI
     def show_equalizer(self):

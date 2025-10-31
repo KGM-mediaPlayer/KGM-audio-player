@@ -4,6 +4,7 @@ import PyQt5.QtCore as qtc
 from .theme_manager import ThemeManager
 from .asset_loader import create_svg_icon, load_and_scale_image
 from .vertical_button import VerticalButton
+
 import os
 
 class MainWindow(qtw.QMainWindow):
@@ -32,6 +33,7 @@ class MainWindow(qtw.QMainWindow):
         self.main_layout.setContentsMargins(0, 0, 0, 0) # Remove margin for full-bleed sidebar/content
         self.main_layout.setSpacing(0) # No space between sidebar and main content
 
+        
 
         # -----------------------------------------------------------
         ## 1. Sidebar Setup (Left Panel)    
@@ -305,6 +307,7 @@ class MainWindow(qtw.QMainWindow):
         self.volumeSlider.setObjectName("volumeSlider")
         self.volumeSlider.setMaximumWidth(120)
         self.volumeSlider.setMinimumWidth(120)
+        
 
         self.volumeIcon = qtw.QLabel("")
         self.volumeIcon.setMinimumWidth(15)

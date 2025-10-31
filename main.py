@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from src.frontend.kgm_media_player import MainWindow 
+from src.frontend.kgm_media_player import MainWindow
+from src.frontend.videoPlayer import VideoPlayerWindow
 from src.backend.player_logic import MediaPlayer, resource_path 
 import sys
 
