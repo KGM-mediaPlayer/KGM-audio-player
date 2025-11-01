@@ -1,252 +1,179 @@
-import sys
+import PyQt5.QtWidgets as qtw
+import PyQt5.QtGui as qtg
+import PyQt5.QtCore as qtc 
+from .theme_manager import ThemeManager
+from .asset_loader import create_svg_icon, load_and_scale_image
+
 import os
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QSlider, 
-    QLabel, QPushButton, QSizePolicy, QGraphicsView, QGraphicsScene, QApplication,
-    QMessageBox
-)
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QSize
 
-# --- VLC and macOS Dependencies ---
-try:
-    # Attempt to import VLC and the necessary PyQt utilities
-    import vlc
-    from PyQt5.sip import unwrapinstance
-    VLC_AVAILABLE = True
-except ImportError:
-    vlc = None
-    unwrapinstance = None
-    VLC_AVAILABLE = False
-    print("VLC or PyQt5.sip not fully available. Video playback will be simulated.")
+class VideoWindow(qtw.QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-# --- MOCK DEPENDENCIES FOR INDEPENDENT EXECUTION ---
+        #image loading func
+        def get_asset_path(self, filename):
+            """Resolves the absolute path for an asset file."""
+            # __file__ is the path to kgm_media_player.py
+            base_dir = os.path.dirname(__file__) 
+            return os.path.join(base_dir, 'assets', filename)
 
-# Placeholder asset_loader functions to prevent ImportError when running standalone
-def create_svg_icon(file_path, svg_filename, size=40):
-    """Placeholder for loading SVG icons."""
-    return QIcon() 
 
-def load_and_scale_image(file_path, image_filename, size=40, round_radius=0):
-    """Placeholder for loading PNG/image icons."""
-    return QIcon()
+        self.setWindowTitle("Video Player")
+        self.resize(1000, 750) # Adjusted size to better fit the screenshot
 
-# --- VIDEO PLAYER WINDOW CLASS ---
+        self.theme_manager = ThemeManager(__file__) #Instantiate the ThemeManager
+        self.theme_manager.load_and_apply_theme() #Load the theme (This sets all QSS)
 
-class VideoPlayerWindow(QMainWindow):
-    """
-    Defines the modular UI for the Video Player as a separate QMainWindow,
-    using QGraphicsView as the video display surface.
-    """
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("KGM Video Player (Standalone Test)")
-        self.setMinimumSize(800, 600)
-        self.setObjectName("VideoPlayerWindow")
-        
-        # Central Widget
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        
-        # --- Main Layout ---
-        self.main_layout = QVBoxLayout(self.central_widget)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.main_layout.setSpacing(0)
-        
-        # 1. Video Display Surface (QGraphicsView)
-        self.video_view = QGraphicsView() 
-        self.video_view.setObjectName("video_view")
-        self.video_view.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.video_view.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.video_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        
-        # Set up a necessary QGraphicsScene
-        self.video_scene = QGraphicsScene(self)
-        self.video_view.setScene(self.video_scene)
-        
-        # Optimization for video: turn off scrollbars
-        self.video_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.video_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        
-        # Add the graphics view to the layout
-        self.main_layout.addWidget(self.video_view)
+        #Central widget
+        self.central_container = qtw.QWidget()
+        self.setCentralWidget(self.central_container)
 
-        # 2. Control Overlay Container
-        self.controls_overlay_container = QFrame()
-        self.controls_overlay_container.setObjectName("controls_overlay_container")
-        self.controls_overlay_container.setMaximumHeight(150)
-        self.controls_layout = QVBoxLayout(self.controls_overlay_container)
-        self.controls_layout.setContentsMargins(10, 5, 10, 5)
-        self.controls_layout.setSpacing(5)
-        
-        # 3. Playback Timer and Slider Frame (Reusable Element 1)
-        self.playBackTimer_frame = QFrame()
+        self.main_layout = qtw.QVBoxLayout(self.central_container)
+        self.main_layout.setContentsMargins(0, 0, 0, 0) # Remove margin for full-bleed sidebar/content
+        self.main_layout.setSpacing(0) # No space between sidebar and main content
+
+        self.playBackTimer_frame=qtw.QFrame()
+        self.playBackTimer_frame_layout=qtw.QHBoxLayout(self.playBackTimer_frame)
         self.playBackTimer_frame.setObjectName("playBackTimer_frame")
-        self.playBackTimer_frame.setMinimumHeight(40) 
-        self.playBackTimer_frame.setMaximumHeight(40)
-        self.playBackTimer_frame.setLayout(self._setup_timer_slider_layout())
-        self.controls_layout.addWidget(self.playBackTimer_frame)
+        self.playBackTimer_frame.setContentsMargins(0, 0, 0, 0)
+        #self.playBackTimer_frame.setMaximumHeight(10)
 
-        # 4. Playback Controls Buttons Frame (Reusable Element 2)
-        self.playBackControl_outerframe = QFrame()
-        self.playBackControl_outerframe.setObjectName("playBackControl_outerframe")
-        self.playBackControl_outerframe.setMinimumHeight(70)
-        self.playBackControl_outerframe.setMaximumHeight(70)
-        self.playBackControl_outerframe.setLayout(self._setup_playback_buttons_layout())
-        self.controls_layout.addWidget(self.playBackControl_outerframe)
+        self.leftPlaybackTimer=qtw.QLabel("00:00")
+        self.leftPlaybackTimer.setObjectName("playBackTimer")
+        self.rightPlaybackTimer=qtw.QLabel("00:00")
+        self.rightPlaybackTimer.setObjectName("playBackTimer")
+        
 
-        # Add control overlay to the bottom of the video view
-        self.main_layout.addWidget(self.controls_overlay_container)
-
-        self.controls_overlay_container.show()
-
-    def _setup_timer_slider_layout(self):
-        """Sets up the layout for the timer labels and slider."""
-        timer_slider_layout = QHBoxLayout()
-        timer_slider_layout.setContentsMargins(0, 0, 0, 0)
-        timer_slider_layout.setSpacing(5)
-
-        # Left Timer Label
-        self.leftPlaybackTimer = QLabel("00:00")
-        self.leftPlaybackTimer.setObjectName("leftPlaybackTimer")
-        self.leftPlaybackTimer.setMinimumWidth(50)
-        self.leftPlaybackTimer.setMaximumWidth(50)
-        timer_slider_layout.addWidget(self.leftPlaybackTimer)
-
-        # Playback Slider
-        self.playBackSlider = QSlider(Qt.Horizontal)
+        self.playBackSlider=qtw.QSlider(qtc.Qt.Horizontal)
         self.playBackSlider.setObjectName("playBackSlider")
-        self.playBackSlider.setRange(0, 100)
-        timer_slider_layout.addWidget(self.playBackSlider)
+        self.playBackSlider.setContentsMargins(0, 0, 0, 0)
 
-        # Right Timer Label
-        self.rightPlaybackTimer = QLabel("00:00")
-        self.rightPlaybackTimer.setObjectName("rightPlaybackTimer")
-        self.rightPlaybackTimer.setMinimumWidth(50)
-        timer_slider_layout.addWidget(self.rightPlaybackTimer)
-
-        return timer_slider_layout
-
-    def _setup_playback_buttons_layout(self):
-        """Sets up the layout for the playback control buttons."""
+        self.playBackTimer_frame_layout.addWidget(self.leftPlaybackTimer)
+        #self.playBackTimer_frame_layout.addWidget(self.playBackSlider)
+        self.playBackTimer_frame_layout.addStretch()
+        self.playBackTimer_frame_layout.addWidget(self.rightPlaybackTimer)
         
-        playback_controls_layout = QVBoxLayout()
-        playback_controls_layout.setContentsMargins(10, 5, 10, 5)
-        playback_controls_layout.setSpacing(5)
 
-        # --- Top Row (Prev/Play/Next) ---
-        top_row = QHBoxLayout()
-        top_row.setSpacing(15)
+        self.playBackFooter_frame=qtw.QFrame()
+        self.playBackFooter_frame_layout=qtw.QHBoxLayout(self.playBackFooter_frame)
+        self.playBackFooter_frame_layout.setObjectName("playBackFooterFrame")
+        self.playBackFooter_frame.setMaximumHeight(100)
 
-        # 1. Previous Track Button
-        self.prev_track_btn = QPushButton()
-        self.prev_track_btn.setIcon(create_svg_icon(__file__, "prev_btn.svg", size=40))
-        top_row.addWidget(self.prev_track_btn)
-
-        # 2. Play/Pause Button
-        self.playPause_track_btn = QPushButton()
-        self.playPause_track_btn.setIcon(load_and_scale_image(__file__,'play_btn.png',size=40)) 
-        top_row.addWidget(self.playPause_track_btn)
-
-        # 3. Next Track Button
-        self.next_track_btn = QPushButton()
-        self.next_track_btn.setIcon(create_svg_icon(__file__, "next_btn.svg", size=40))
-        top_row.addWidget(self.next_track_btn)
+        #playBack footer Contents
         
-        # Center the top row buttons
-        top_row_frame = QFrame()
-        top_row_frame.setLayout(top_row)
-        top_row.setAlignment(Qt.AlignCenter)
-        playback_controls_layout.addWidget(top_row_frame)
 
-
-        # --- Bottom Row (Extra Options) ---
-        bottom_row = QHBoxLayout()
-        bottom_row.setSpacing(15)
-
-        # 1. Repeat Button
-        self.repeatOptions_btn = QPushButton()
-        self.repeatOptions_btn.setIcon(load_and_scale_image(__file__,'loop.png',size=10))
-        bottom_row.addWidget(self.repeatOptions_btn)
-
-        # 2. Favourite Button
-        self.makeFavourite_btn = QPushButton()
-        self.makeFavourite_btn.setIcon(load_and_scale_image(__file__, "fav_btn.png", size=20,round_radius=40))
-        bottom_row.addWidget(self.makeFavourite_btn)
-
-        # 3. Shuffle Button
-        self.shuffle_btn = QPushButton()
-        self.shuffle_btn.setIcon(load_and_scale_image(__file__,'play_all_btn.png',size=10))
-        bottom_row.addWidget(self.shuffle_btn)
-
-        # 4. Info Button (Track Info)
-        self.trackInfo_btn = QPushButton()
-        self.trackInfo_btn.setIcon(load_and_scale_image(__file__,'information.png',size=15))
-        bottom_row.addWidget(self.trackInfo_btn)
-
-        # Center the bottom row buttons
-        bottom_row_frame = QFrame()
-        bottom_row_frame.setLayout(bottom_row)
-        bottom_row.setAlignment(Qt.AlignCenter)
-        playback_controls_layout.addWidget(bottom_row_frame)
+        #playBackControl frame
+        self.playBackControl_outerframe=qtw.QFrame()
+        self.playBackControl_outerframe_layout=qtw.QVBoxLayout(self.playBackControl_outerframe)
+        self.playBackControl_outerframe.setObjectName("playBackControl_outerframe")
+        self.playBackControl_outerframe.setContentsMargins(0, 0, 0, 0)
+        self.playBackControl_outerframe.setMaximumWidth(280)
         
-        return playback_controls_layout
+        
 
-# --- INDEPENDENT EXECUTION BLOCK ---
+        self.mainPlayBackControl_frame=qtw.QFrame()
+        self.mainPlayBackControl_frame_layout=qtw.QHBoxLayout(self.mainPlayBackControl_frame)
+        self.mainPlayBackControl_frame.setObjectName("mainPlaybackControlFrame")
+        self.mainPlayBackControl_frame.setContentsMargins(0, 0, 0, 0)
+        #self.mainPlayBackControl_frame_layout.setAlignment(qtc.Qt.AlignHCenter)
+        
 
-if __name__ == '__main__':
-    # --- CONFIGURATION ---
-    TARGET_VIDEO_PATH = "/Users/gibreel/Downloads/DJ Khaled - I'm On One (Explicit Version) ft. Drake, Rick Ross, Lil Wayne.mp4"
-    
-    # 1. Setup
-    app = QApplication(sys.argv)
-    window = VideoPlayerWindow(parent=None)
-    
-    # 2. Mock VLC and Playback Logic
-    if VLC_AVAILABLE:
-        try:
-            # a. Initialize VLC with macOS-stable options to prevent SegFault/Bus Error
-            instance = vlc.Instance('--vout=macosx', '--no-sub-autodetect-file', '--no-video-title-show')
-            player = instance.media_player_new()
+        self.secondaryPlayBackControl_frame=qtw.QFrame()
+        self.secondaryPlayBackControl_frame_layout=qtw.QHBoxLayout(self.secondaryPlayBackControl_frame)
+        self.secondaryPlayBackControl_frame.setObjectName("secondaryPlaybackControlFrame")
+        self.secondaryPlayBackControl_frame.setContentsMargins(0, 0, 0, 0)
+        self.secondaryPlayBackControl_frame_layout.setAlignment(qtc.Qt.AlignHCenter) 
 
-            # b. Define the playback function
-            def start_playback():
-                if player.is_playing():
-                    player.pause()
-                    return
 
-                if not os.path.exists(TARGET_VIDEO_PATH):
-                    QMessageBox.critical(window, "File Not Found", f"Video file not found at: {TARGET_VIDEO_PATH}")
-                    return
 
-                # i. Attach VLC output (The macOS FIX)
-                # Ensure the window is shown and events processed for a valid native handle
-                window.show()
-                QtWidgets.QApplication.instance().processEvents() 
+        #playback control. buttons
+        self.prev_track_btn=qtw.QPushButton("")
+        prev_track_btnIcon=create_svg_icon(__file__, "prev_track_btn.png", size=20)
+        self.prev_track_btn.setContentsMargins(0, 0, 0, 0)
+        self.prev_track_btn.setIcon(prev_track_btnIcon)
+        self.prev_track_btn.setToolTip("previous item")
 
-                video_widget = window.video_view
-                
-                if sys.platform == 'darwin': # macOS
-                    # Use sip.unwrapinstance to get the raw C++ NSView pointer
-                    native_handle = unwrapinstance(video_widget)
-                    player.set_nsobject(native_handle)
-                elif sys.platform == 'win32': # Windows
-                    player.set_hwnd(video_widget.winId())
-                elif sys.platform.startswith('linux'): # Linux
-                    player.set_xwindow(video_widget.winId())
-                
-                # ii. Set and Play Media
-                media = instance.media_new(TARGET_VIDEO_PATH)
-                player.set_media(media)
-                player.play()
-                
-            # c. Connect Play/Pause button to start playback
-            window.playPause_track_btn.clicked.connect(start_playback)
-            
-        except Exception as e:
-            QMessageBox.critical(window, "VLC Initialization Error", f"Failed to initialize VLC: {e}. Showing UI only.")
-            
-    # 3. Show Window and Start Loop
-    window.show()
-    sys.exit(app.exec_())
+        self.playPause_track_btn=qtw.QPushButton("")
+        self.playPause_track_btn.setToolTip("Play / Pause")
+        playPause_btnIcon=create_svg_icon(__file__, "playPause_btn.svg", size=40)
+        self.playPause_track_btn.setObjectName("playpause_btn")
+        self.playPause_track_btn.setContentsMargins(0, 0, 0, 0)
+        self.playPause_track_btn.setIcon(playPause_btnIcon)
+
+        self.next_track_btn=qtw.QPushButton("")
+        self.next_track_btn.setToolTip("next item")
+        next_track_btnIcon=create_svg_icon(__file__, "next_track_btn.png", size=20)
+        self.next_track_btn.setContentsMargins(0, 0, 0, 0)
+        self.next_track_btn.setIcon(next_track_btnIcon)
+
+        #add to respective frame
+        self.mainPlayBackControl_frame_layout.addWidget(self.prev_track_btn)
+        self.mainPlayBackControl_frame_layout.addWidget(self.playPause_track_btn)
+        self.mainPlayBackControl_frame_layout.addWidget(self.next_track_btn)
+
+        self.repeatOptions_btn=qtw.QPushButton("")
+        self.repeatOptions_btn.setToolTip("repeat options")
+        repeatOpyins_btnIcon=create_svg_icon(__file__, "loop.png", size=10)
+        self.repeatOptions_btn.setIcon(repeatOpyins_btnIcon)
+
+        self.makeFavourite_btn=qtw.QPushButton("")
+        self.makeFavourite_btn.setToolTip("add/remove from favourites")
+        makefavourites_btnIcon=create_svg_icon(__file__, "fav_btn.png", size=10)
+        self.makeFavourite_btn.setIcon(makefavourites_btnIcon)
+
+        self.shuffle_btn=qtw.QPushButton("")
+        self.shuffle_btn.setToolTip("shuffle")
+        shuffle_btnIcon=create_svg_icon(__file__, "shuffle_btn.png", size=10)
+        self.shuffle_btn.setIcon(shuffle_btnIcon)
+
+        self.trackInfo_btn=qtw.QPushButton("")
+        self.trackInfo_btn.setToolTip("track Info")
+        trackInfo_btnIcon=create_svg_icon(__file__, "track_info_btn.png", size=10)
+        self.trackInfo_btn.setIcon(trackInfo_btnIcon)
+        
+        #add to respective frame
+        self.secondaryPlayBackControl_frame_layout.addStretch()
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.repeatOptions_btn)
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.makeFavourite_btn)
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.shuffle_btn)
+        self.secondaryPlayBackControl_frame_layout.addWidget(self.trackInfo_btn)
+        self.secondaryPlayBackControl_frame_layout.addStretch()
+
+        #add both playback control frames
+        #self.playBackControl_outerframe_layout.addStretch() 
+        self.playBackControl_outerframe_layout.addWidget(self.mainPlayBackControl_frame)
+        self.playBackControl_outerframe_layout.addStretch() 
+        self.playBackControl_outerframe_layout.addWidget(self.secondaryPlayBackControl_frame)
+        self.playBackControl_outerframe_layout.addStretch() 
+
+
+        # ----------------- Volume Control -----------------
+        self.volumeSlider = qtw.QSlider(qtc.Qt.Horizontal)
+        self.volumeSlider.setObjectName("volumeSlider")
+        self.volumeSlider.setMaximumWidth(120)
+        self.volumeSlider.setMinimumWidth(120)
+        
+
+        self.volumeIcon = qtw.QLabel("")
+        self.volumeIcon.setMinimumWidth(15)
+        self.volumeIcon.setMinimumHeight(15)
+        volumeIcon_btn=load_and_scale_image(__file__, "speaker_btn.svg", size=14)
+        self.volumeIcon.setPixmap(volumeIcon_btn)
+
+
+        #adding componets to footer
+        self.playBackFooter_frame_layout.addStretch()
+        self.playBackFooter_frame_layout.addWidget(self.playBackControl_outerframe)
+        self.playBackFooter_frame_layout.addStretch()
+        #self.playBackFooter_frame_layout.addWidget(self.volumeIcon)
+        #self.playBackFooter_frame_layout.addWidget(self.volumeSlider)
+
+        
+        #adding componenets to rightcontainer
+        self.main_layout.addStretch()
+        self.main_layout.addWidget(self.playBackSlider)
+        #self.main_layout.addWidget(self.playBackTimer_frame)
+        self.main_layout.addWidget(self.playBackFooter_frame)
+
+
+        self.show()

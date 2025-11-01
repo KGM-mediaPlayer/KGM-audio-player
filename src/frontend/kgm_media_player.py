@@ -3,7 +3,6 @@ import PyQt5.QtGui as qtg
 import PyQt5.QtCore as qtc 
 from .theme_manager import ThemeManager
 from .asset_loader import create_svg_icon, load_and_scale_image
-from .vertical_button import VerticalButton
 
 import os
 
@@ -52,7 +51,7 @@ class MainWindow(qtw.QMainWindow):
         self.playlist_btn=qtw.QPushButton("")
         playListIcon=create_svg_icon(__file__, "playlist_btn.svg", size=35)
         self.playlist_btn.setIcon(playListIcon)
-        self.playlist_btn.setToolTip("View and manage your playlist")
+        self.playlist_btn.setToolTip("Video playlist")
 
 
         self.music_btn=qtw.QPushButton("")

@@ -14,7 +14,7 @@ from mutagen import File as MutagenFile
 from mutagen.mp3 import HeaderNotFoundError
 
 from src.frontend.kgm_media_player import MainWindow
-from src.frontend.old.EQ import EqualizerWindow
+
 import src.backend.database as database
 from src.frontend.asset_loader import create_svg_icon, load_and_scale_image
 

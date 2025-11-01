@@ -15,11 +15,10 @@ from mutagen import File as MutagenFile
 from mutagen.mp3 import HeaderNotFoundError
 
 from src.frontend.kgm_media_player import MainWindow
-from src.frontend.old.EQ import EqualizerWindow
 import src.backend.database as database
 from src.frontend.asset_loader import create_svg_icon, load_and_scale_image
 from src.frontend.aboutDialogue import AboutDialog
-from src.frontend.videoPlayer import VideoPlayerWindow
+from src.frontend.videoPlayer import VideoWindow
 
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and py2app/pyinstaller bundles."""
@@ -40,7 +39,7 @@ class MediaPlayer(QtCore.QObject):
         
         
         self.video_fullscreen = False
-        self.video_window = None
+        self.video_Window=VideoWindow()
 
         # VLC setup
         self.vlc_instance = vlc.Instance()  # '--no-xlib' for Linux, can be omitted on Windows/macOS
@@ -153,7 +152,7 @@ class MediaPlayer(QtCore.QObject):
         context_menu.addSeparator() 
         
         action_add_fav = context_menu.addAction("Add to Favourites")
-        action_add_fav.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn_1.png", size=30))) 
+        action_add_fav.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn_1.png", size=10))) 
         action_add_fav.triggered.connect(self.add_current_selection_to_favourites)
         action_add_fav.setEnabled(selected_item is not None) 
 
@@ -548,9 +547,9 @@ class MediaPlayer(QtCore.QObject):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=25)))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=10)))
             else:
-                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn.png", size=20,round_radius=40)))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn.png", size=10)))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -584,11 +583,11 @@ class MediaPlayer(QtCore.QObject):
         if self.player.is_playing():
             self.player.pause()
             # Assuming an icon update is needed here
-            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=40)))
-            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=25)))
+            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=30)))
+            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=10)))
         else:
             self.player.play()
-            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "playPause_btn.svg", size=50)))
+            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "playPause_btn.svg", size=30)))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
@@ -618,7 +617,7 @@ class MediaPlayer(QtCore.QObject):
     def open_and_setup_video_window(self):
         """Creates the video player window and connects all shared controls to it."""
         if not self.video_window:
-            self.video_window = VideoPlayerWindow(self.ui) # Pass main window as parent (optional but good practice)
+            self.video_window = VideoWindow(self.ui) # Pass main window as parent (optional but good practice)
             
             # 1. Connect player control signals to the new window's buttons/slider
             self.video_window.playPause_track_btn.clicked.connect(self.toggle_play_pause)
