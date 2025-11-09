@@ -19,7 +19,7 @@ class VideoWindow(qtw.QMainWindow):
 
 
         self.setWindowTitle("Video Player")
-        self.resize(1000, 750) # Adjusted size to better fit the screenshot
+        self.resize(900, 750) # Adjusted size to better fit the screenshot
 
         self.theme_manager = ThemeManager(__file__) #Instantiate the ThemeManager
         self.theme_manager.load_and_apply_theme() #Load the theme (This sets all QSS)
@@ -32,11 +32,16 @@ class VideoWindow(qtw.QMainWindow):
         self.main_layout.setContentsMargins(0, 0, 0, 0) # Remove margin for full-bleed sidebar/content
         self.main_layout.setSpacing(0) # No space between sidebar and main content
 
-        self.playBackTimer_frame=qtw.QFrame()
-        self.playBackTimer_frame_layout=qtw.QHBoxLayout(self.playBackTimer_frame)
-        self.playBackTimer_frame.setObjectName("playBackTimer_frame")
-        self.playBackTimer_frame.setContentsMargins(0, 0, 0, 0)
+        self.leftPlayBackTimer_frame=qtw.QFrame()
+        self.leftPlayBackTimer_frame_layout=qtw.QHBoxLayout(self.leftPlayBackTimer_frame)
+        self.leftPlayBackTimer_frame.setObjectName("playBackTimer_frame")
+        self.leftPlayBackTimer_frame.setContentsMargins(0, 0, 0, 0)
         #self.playBackTimer_frame.setMaximumHeight(10)
+
+        self.rightPlayBackTimer_frame=qtw.QFrame()
+        self.rightPlayBackTimer_frame_layout=qtw.QHBoxLayout(self.rightPlayBackTimer_frame)
+        self.rightPlayBackTimer_frame.setObjectName("playBackTimer_frame")
+        self.rightPlayBackTimer_frame.setContentsMargins(0, 0, 0, 0)
 
         self.leftPlaybackTimer=qtw.QLabel("00:00")
         self.leftPlaybackTimer.setObjectName("playBackTimer")
@@ -48,10 +53,8 @@ class VideoWindow(qtw.QMainWindow):
         self.playBackSlider.setObjectName("playBackSlider")
         self.playBackSlider.setContentsMargins(0, 0, 0, 0)
 
-        self.playBackTimer_frame_layout.addWidget(self.leftPlaybackTimer)
-        #self.playBackTimer_frame_layout.addWidget(self.playBackSlider)
-        self.playBackTimer_frame_layout.addStretch()
-        self.playBackTimer_frame_layout.addWidget(self.rightPlaybackTimer)
+        self.leftPlayBackTimer_frame_layout.addWidget(self.leftPlaybackTimer)
+        self.rightPlayBackTimer_frame_layout.addWidget(self.rightPlaybackTimer)
         
 
         self.playBackFooter_frame=qtw.QFrame()
@@ -95,7 +98,7 @@ class VideoWindow(qtw.QMainWindow):
 
         self.playPause_track_btn=qtw.QPushButton("")
         self.playPause_track_btn.setToolTip("Play / Pause")
-        playPause_btnIcon=create_svg_icon(__file__, "playPause_btn.svg", size=40)
+        playPause_btnIcon=create_svg_icon(__file__, "play_alt.png", size=30)
         self.playPause_track_btn.setObjectName("playpause_btn")
         self.playPause_track_btn.setContentsMargins(0, 0, 0, 0)
         self.playPause_track_btn.setIcon(playPause_btnIcon)
@@ -162,9 +165,11 @@ class VideoWindow(qtw.QMainWindow):
 
 
         #adding componets to footer
+        self.playBackFooter_frame_layout.addWidget(self.rightPlaybackTimer)
         self.playBackFooter_frame_layout.addStretch()
         self.playBackFooter_frame_layout.addWidget(self.playBackControl_outerframe)
         self.playBackFooter_frame_layout.addStretch()
+        self.playBackFooter_frame_layout.addWidget(self.leftPlaybackTimer)
         #self.playBackFooter_frame_layout.addWidget(self.volumeIcon)
         #self.playBackFooter_frame_layout.addWidget(self.volumeSlider)
 

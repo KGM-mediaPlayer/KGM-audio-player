@@ -16,7 +16,7 @@ class ThemeManager:
         hex_color = hex_color.lstrip('#')
         return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
-    def load_and_apply_theme(self, theme_json_filename="default_dark.json"):
+    def load_and_apply_theme(self, theme_json_filename="default_light.json"):
         
         app = qtw.QApplication.instance()
         if not app: 

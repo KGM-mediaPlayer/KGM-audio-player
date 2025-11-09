@@ -135,7 +135,7 @@ class MainWindow(qtw.QMainWindow):
         searchIcon_btn=load_and_scale_image(__file__, "searchIcon_btn.svg", size=24)
         self.searchIcon.setPixmap(searchIcon_btn)
 
-        self.searchInput=qtw.QLineEdit("Search")
+        self.searchInput=qtw.QLineEdit("")
         self.searchInput.setContentsMargins(0, 0, 0, 0)
         self.searchInput.setObjectName("searchInput")
 
@@ -153,7 +153,7 @@ class MainWindow(qtw.QMainWindow):
 
         self.listObject=qtw.QListWidget()
         self.listObject.setObjectName("lisObject")
-        self.listObject.setContentsMargins(0, 0, 0, 0)
+        self.listObject.setViewportMargins(0, 0, 0, 0)
         self.centerframe_layout.addWidget(self.listObject)
 
         self.playBackTimer_frame=qtw.QFrame()
@@ -249,7 +249,7 @@ class MainWindow(qtw.QMainWindow):
 
         self.playPause_track_btn=qtw.QPushButton("")
         self.playPause_track_btn.setToolTip("Play / Pause")
-        playPause_btnIcon=create_svg_icon(__file__, "playPause_btn.svg", size=40)
+        playPause_btnIcon=create_svg_icon(__file__, "play_alt.png", size=30)
         self.playPause_track_btn.setObjectName("playpause_btn")
         self.playPause_track_btn.setContentsMargins(0, 0, 0, 0)
         self.playPause_track_btn.setIcon(playPause_btnIcon)

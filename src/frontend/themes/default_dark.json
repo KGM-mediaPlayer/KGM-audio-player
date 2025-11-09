@@ -3,9 +3,9 @@
     "colors": {
         "theme_background": "#1E1E1E",
         "sidebar_background": "#2C2C2C",
-        "content_background": "#282828",
+        "content_background": "#252525",
         "foreground_color": "#1E1E1E",
-        "highlight_color": "#FF9600",
+        "highlight_color": "#F2951F",
         "text_color": "#E6E6E6",
         "dim_text_color": "#B4B4B4",
         "separator_color": "#3C3C3C"

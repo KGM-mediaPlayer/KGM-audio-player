@@ -113,8 +113,6 @@ class MediaPlayer(QtCore.QObject):
             vlc.EventType.MediaParsedChanged, self.on_media_parsed
         )
 
-        # Eq button
-        #self.ui.more_options_btn.clicked.connect(self.show_equalizer)
     
     # --- Volume Slider Setup ---
         try:
@@ -584,10 +582,10 @@ class MediaPlayer(QtCore.QObject):
             self.player.pause()
             # Assuming an icon update is needed here
             self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=30)))
-            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=10)))
+            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn.png", size=10)))
         else:
             self.player.play()
-            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "playPause_btn.svg", size=30)))
+            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "play_alt.png", size=30)))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
