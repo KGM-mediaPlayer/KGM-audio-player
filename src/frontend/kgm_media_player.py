@@ -88,10 +88,10 @@ class MainWindow(qtw.QMainWindow):
 
         #Add buttons to side bar
         self.sidebar_container_layout.addWidget(self.appLogo, alignment=qtc.Qt.AlignCenter)
-        self.sidebar_container_layout.addWidget(self.playlist_btn)
+        #self.sidebar_container_layout.addWidget(self.playlist_btn)
         self.sidebar_container_layout.addWidget(self.music_btn)
         self.sidebar_container_layout.addWidget(self.favourites_btn)
-        self.sidebar_container_layout.addWidget(self.settings_btn)
+        #self.sidebar_container_layout.addWidget(self.settings_btn)
         self.sidebar_container_layout.addStretch()
         self.sidebar_container_layout.addWidget(self.theme_btn)
         self.sidebar_container_layout.addWidget(self.about_btn)

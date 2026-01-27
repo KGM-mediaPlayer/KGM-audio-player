@@ -39,7 +39,7 @@ class MediaPlayer(QtCore.QObject):
         
         
         self.video_fullscreen = False
-        self.video_Window=VideoWindow()
+        #self.video_Window=VideoWindow()
 
         # VLC setup
         self.vlc_instance = vlc.Instance()  # '--no-xlib' for Linux, can be omitted on Windows/macOS
@@ -614,20 +614,20 @@ class MediaPlayer(QtCore.QObject):
 
     def open_and_setup_video_window(self):
         """Creates the video player window and connects all shared controls to it."""
-        if not self.video_window:
-            self.video_window = VideoWindow(self.ui) # Pass main window as parent (optional but good practice)
+        if not self.video_Window:
+            self.video_Window = VideoWindow(self.ui) # Pass main window as parent (optional but good practice)
             
             # 1. Connect player control signals to the new window's buttons/slider
-            self.video_window.playPause_track_btn.clicked.connect(self.toggle_play_pause)
-            self.video_window.next_track_btn.clicked.connect(self.next_track)
-            self.video_window.prev_track_btn.clicked.connect(self.prev_track)
-            self.video_window.repeatOptions_btn.clicked.connect(self.toggle_loop)
-            self.video_window.shuffle_btn.clicked.connect(self.toggle_shuffle)
-            self.video_window.makeFavourite_btn.clicked.connect(self.add_to_favourites)
-            self.video_window.trackInfo_btn.clicked.connect(self.show_track_info)
+            self.video_Window.playPause_track_btn.clicked.connect(self.toggle_play_pause)
+            self.video_Window.next_track_btn.clicked.connect(self.next_track)
+            self.video_Window.prev_track_btn.clicked.connect(self.prev_track)
+            self.video_Window.repeatOptions_btn.clicked.connect(self.toggle_loop)
+            self.video_Window.shuffle_btn.clicked.connect(self.toggle_shuffle)
+            self.video_Window.makeFavourite_btn.clicked.connect(self.add_to_favourites)
+            self.video_Window.trackInfo_btn.clicked.connect(self.show_track_info)
 
             # 2. Connect slider logic
-            self.video_window.playBackSlider.sliderPressed.connect(self.pause_for_seek)
+            self.video_Window.playBackSlider.sliderPressed.connect(self.pause_for_seek)
             self.video_window.playBackSlider.sliderReleased.connect(self.resume_after_seek)
 
             # 3. Handle window closing (stop playback when the video window is closed)
