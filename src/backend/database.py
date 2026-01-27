@@ -6,7 +6,13 @@ def create_tables():
     connect = sqlite3.connect(DB_NAME)
     cursor = connect.cursor()
 
-    # Corrected schema with consistent column names
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+    ''')
+
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS music_library (
             title TEXT NOT NULL,
@@ -37,11 +43,24 @@ def create_tables():
     connect.commit()
     connect.close()
 
-# Add song to a specified table
+def save_setting(key, value):
+    connect = sqlite3.connect(DB_NAME)
+    cursor = connect.cursor()
+    cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value))
+    connect.commit()
+    connect.close()
+
+def get_setting(key, default=None):
+    connect = sqlite3.connect(DB_NAME)
+    cursor = connect.cursor()
+    cursor.execute("SELECT value FROM settings WHERE key = ?", (key,))
+    row = cursor.fetchone()
+    connect.close()
+    return row[0] if row else default
+
 def add_song(table_name, title, artist, album, path):
     connect = sqlite3.connect(DB_NAME)
     cursor = connect.cursor()
-
     query = f'''
         INSERT OR IGNORE INTO {table_name} (title, artist, album, path)
         VALUES (?, ?, ?, ?)
@@ -50,11 +69,9 @@ def add_song(table_name, title, artist, album, path):
     connect.commit()
     connect.close()
 
-# Remove song by title
 def remove_song(table_name, title):
     connect = sqlite3.connect(DB_NAME)
     cursor = connect.cursor()
-
     query = f'''
         DELETE FROM {table_name} WHERE path= ?
     '''
@@ -65,7 +82,6 @@ def remove_song(table_name, title):
 def remove_all_songs(table_name):
     connect = sqlite3.connect(DB_NAME)
     cursor = connect.cursor()
-
     query = f'''
         DELETE FROM {table_name}
     '''
@@ -73,11 +89,9 @@ def remove_all_songs(table_name):
     connect.commit()
     connect.close()
 
-# Get all songs from a table
 def get_all_songs(table_name):
     connect = sqlite3.connect(DB_NAME)
     cursor = connect.cursor()
-
     query = f'''
         SELECT * FROM {table_name}
     '''
@@ -86,11 +100,9 @@ def get_all_songs(table_name):
     connect.close()
     return songs
 
-# check if a song exists in a table
 def song_exists(table_name, title):
     connect = sqlite3.connect(DB_NAME)
     cursor = connect.cursor()
-
     query = f'''
         SELECT * FROM {table_name} WHERE path= ?
     '''
@@ -99,20 +111,16 @@ def song_exists(table_name, title):
     connect.close()
     return song is not None
 
-    #song exist by name (for track info)
-
 def get_song_by_filepath(table_name, file_path):
     import sqlite3
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-
     query = f'''
         SELECT title, artist, album, path FROM {table_name} WHERE path = ?
     '''
     cursor.execute(query, (file_path,))
     row = cursor.fetchone()
     conn.close()
-
     if row:
         return {
             'title': row[0],
@@ -122,9 +130,6 @@ def get_song_by_filepath(table_name, file_path):
         }
     return None
 
-
-
-# EQ presets
 def create_eq_table():
     conn = sqlite3.connect('music_library.db')
     c = conn.cursor()
