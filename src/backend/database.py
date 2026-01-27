@@ -1,9 +1,29 @@
 import sqlite3
+import os
+import sys
+import platform
 
-DB_NAME = "music_library.db"
+def get_app_data_path():
+    app_name = "KGM_Player"
+    
+    if platform.system() == "Windows":
+        base_path = os.environ.get("LOCALAPPDATA", os.path.expanduser("~"))
+    elif platform.system() == "Darwin":
+        base_path = os.path.expanduser("~/Library/Application Support")
+    else:
+        base_path = os.path.expanduser("~/.local/share")
+        
+    full_path = os.path.join(base_path, app_name)
+    
+    if not os.path.exists(full_path):
+        os.makedirs(full_path)
+        
+    return full_path
+
+DB_PATH = os.path.join(get_app_data_path(), "music_library.db")
 
 def create_tables():
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
 
     cursor.execute('''
@@ -44,14 +64,14 @@ def create_tables():
     connect.close()
 
 def save_setting(key, value):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
     cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value))
     connect.commit()
     connect.close()
 
 def get_setting(key, default=None):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
     cursor.execute("SELECT value FROM settings WHERE key = ?", (key,))
     row = cursor.fetchone()
@@ -59,109 +79,81 @@ def get_setting(key, default=None):
     return row[0] if row else default
 
 def add_song(table_name, title, artist, album, path):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
-    query = f'''
-        INSERT OR IGNORE INTO {table_name} (title, artist, album, path)
-        VALUES (?, ?, ?, ?)
-    '''
+    query = f'INSERT OR IGNORE INTO {table_name} (title, artist, album, path) VALUES (?, ?, ?, ?)'
     cursor.execute(query, (title, artist, album, path))
     connect.commit()
     connect.close()
 
 def remove_song(table_name, title):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
-    query = f'''
-        DELETE FROM {table_name} WHERE path= ?
-    '''
+    query = f'DELETE FROM {table_name} WHERE path= ?'
     cursor.execute(query, (title,))
     connect.commit()
     connect.close()
 
 def remove_all_songs(table_name):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
-    query = f'''
-        DELETE FROM {table_name}
-    '''
+    query = f'DELETE FROM {table_name}'
     cursor.execute(query)
     connect.commit()
     connect.close()
 
 def get_all_songs(table_name):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
-    query = f'''
-        SELECT * FROM {table_name}
-    '''
+    query = f'SELECT * FROM {table_name}'
     cursor.execute(query)
     songs = cursor.fetchall()
     connect.close()
     return songs
 
 def song_exists(table_name, title):
-    connect = sqlite3.connect(DB_NAME)
+    connect = sqlite3.connect(DB_PATH)
     cursor = connect.cursor()
-    query = f'''
-        SELECT * FROM {table_name} WHERE path= ?
-    '''
+    query = f'SELECT * FROM {table_name} WHERE path= ?'
     cursor.execute(query, (title,))
     song = cursor.fetchone()
     connect.close()
     return song is not None
 
 def get_song_by_filepath(table_name, file_path):
-    import sqlite3
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = f'''
-        SELECT title, artist, album, path FROM {table_name} WHERE path = ?
-    '''
+    query = f'SELECT title, artist, album, path FROM {table_name} WHERE path = ?'
     cursor.execute(query, (file_path,))
     row = cursor.fetchone()
     conn.close()
     if row:
-        return {
-            'title': row[0],
-            'artist': row[1],
-            'album': row[2],
-            'path': row[3]
-        }
+        return {'title': row[0], 'artist': row[1], 'album': row[2], 'path': row[3]}
     return None
 
 def create_eq_table():
-    conn = sqlite3.connect('music_library.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS equalizer_presets (
             name TEXT PRIMARY KEY,
-            band_60 REAL,
-            band_170 REAL,
-            band_310 REAL,
-            band_600 REAL,
-            band_1000 REAL,
-            band_3000 REAL,
-            band_6000 REAL,
-            band_12000 REAL,
-            band_14000 REAL,
-            band_16000 REAL
+            band_60 REAL, band_170 REAL, band_310 REAL, band_600 REAL,
+            band_1000 REAL, band_3000 REAL, band_6000 REAL, band_12000 REAL,
+            band_14000 REAL, band_16000 REAL
         );
     ''')
     conn.commit()
     conn.close()
 
 def save_eq_preset(name, values):
-    conn = sqlite3.connect('music_library.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("""
-        INSERT OR REPLACE INTO equalizer_presets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (name, *values))
+    c.execute("INSERT OR REPLACE INTO equalizer_presets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name, *values))
     conn.commit()
     conn.close()
 
 def get_eq_presets():
-    conn = sqlite3.connect('music_library.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT * FROM equalizer_presets")
     rows = c.fetchall()

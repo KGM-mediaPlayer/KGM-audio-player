@@ -32,7 +32,7 @@ class AboutDialog(QDialog):
         logo_label = QLabel()
         
         # Using a dummy path 'app.png' and ensuring resource_path is used
-        logo_path = load_and_scale_image(__file__, "app.png", size=70) 
+        logo_path = load_and_scale_image("app.png", size=70) 
         logo_label.setPixmap(logo_path)
         logo_label.setAlignment(Qt.AlignCenter)
         

@@ -11,7 +11,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt,QTimer
 from PyQt5.QtWidgets import QWidget,QMessageBox
 from PyQt5.sip import unwrapinstance
-from mutagen import File as MutagenFile
+from mutagen import File
 from mutagen.mp3 import HeaderNotFoundError
 
 from src.frontend.kgm_media_player import MainWindow
@@ -144,13 +144,13 @@ class MediaPlayer(QtCore.QObject):
         current_page = self.ui.page_label.text()
         
         action_add_library = context_menu.addAction("Add Item(s) to Library...")
-        action_add_library.setIcon(QIcon(load_and_scale_image(__file__, "add_icon.png", size=30))) 
+        action_add_library.setIcon(QIcon(load_and_scale_image("add_icon.png", size=30))) 
         action_add_library.triggered.connect(self.add_songs_to_library) 
 
         context_menu.addSeparator() 
         
         action_add_fav = context_menu.addAction("Add to Favourites")
-        action_add_fav.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn_1.png", size=10))) 
+        action_add_fav.setIcon(QIcon(load_and_scale_image( "", size=10))) 
         action_add_fav.triggered.connect(self.add_current_selection_to_favourites)
         action_add_fav.setEnabled(selected_item is not None) 
 
@@ -163,15 +163,15 @@ class MediaPlayer(QtCore.QObject):
             remove_text = "Remove Selected from Playlist"
             
         action_remove = context_menu.addAction(remove_text)
-        action_remove.setIcon(QIcon(load_and_scale_image(__file__, "delete.png", size=30)))
+        action_remove.setIcon(QIcon(load_and_scale_image( "", size=30)))
         action_remove.triggered.connect(self.remove_current_selection)
         action_remove.setEnabled(selected_item is not None) 
 
         context_menu.addSeparator() 
         
         action_delete_all = context_menu.addAction(f"Delete ALL from {current_page}")
-        action_delete_all.setIcon(QIcon(load_and_scale_image(__file__, "clear_all.png", size=30))) 
-        action_delete_all.triggered.connect(self.remove_current_selection)
+        action_delete_all.setIcon(QIcon(load_and_scale_image( "", size=30))) 
+        action_delete_all.triggered.connect(self.remove_songs_from_library)
         
         context_menu.exec_(self.ui.listObject.mapToGlobal(position))
 
@@ -378,7 +378,7 @@ class MediaPlayer(QtCore.QObject):
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
-            item.setIcon(QtGui.QIcon(load_and_scale_image(__file__, "MusicListItem.png", size=30)))
+            item.setIcon(QtGui.QIcon(load_and_scale_image( "MusicListItem.png", size=30)))
             item.setData(QtCore.Qt.UserRole, {
                 "title": title,
                 "artist": artist,
@@ -414,7 +414,7 @@ class MediaPlayer(QtCore.QObject):
         for song in songs:
             title, artist, album, path = song  # unpack tuple
             item = QtWidgets.QListWidgetItem(f"{title} - {artist}")
-            item.setIcon(QtGui.QIcon(load_and_scale_image(__file__, "like.png", size=30)))
+            item.setIcon(QtGui.QIcon(load_and_scale_image( "like.png", size=30)))
             item.setData(QtCore.Qt.UserRole, {
                 "title": title,
                 "artist": artist,
@@ -545,9 +545,9 @@ class MediaPlayer(QtCore.QObject):
             self.play_media(file_path)
 
             if database.song_exists('favourites', file_path):
-                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "favourite_btn.png", size=10)))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image( "favourite_btn.png", size=10)))
             else:
-                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn.png", size=10)))
+                self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image( "fav_btn.png", size=10)))
         
         else:
             print("❌ Error: No item selected in playlist.")
@@ -581,11 +581,11 @@ class MediaPlayer(QtCore.QObject):
         if self.player.is_playing():
             self.player.pause()
             # Assuming an icon update is needed here
-            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image(__file__,'play_btn.png',size=30)))
-            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image(__file__, "fav_btn.png", size=10)))
+            self.ui.playPause_track_btn.setIcon(QIcon(load_and_scale_image('play_btn.png',size=30)))
+            self.ui.makeFavourite_btn.setIcon(QIcon(load_and_scale_image( "fav_btn.png", size=10)))
         else:
             self.player.play()
-            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon(__file__, "play_alt.png", size=30)))
+            self.ui.playPause_track_btn.setIcon(QIcon(create_svg_icon( "play_alt.png", size=30)))
 
     def next_track(self):
         label_text = self.ui.page_label.text()
@@ -733,10 +733,10 @@ class MediaPlayer(QtCore.QObject):
 
         if self.looping:
             # Assuming loop-one.png is for enabled loop
-            self.ui.repeatOptions_btn.setIcon(QIcon(load_and_scale_image(__file__,'loop-one.png',size=10)))  
+            self.ui.repeatOptions_btn.setIcon(QIcon(load_and_scale_image('loop-one.png',size=10)))  
         else:
             # Assuming loop.png is for disabled loop
-            self.ui.repeatOptions_btn.setIcon(QIcon(load_and_scale_image(__file__,'loop.png',size=10)))
+            self.ui.repeatOptions_btn.setIcon(QIcon(load_and_scale_image('loop.png',size=10)))
 
         self.ui.repeatOptions_btn.setChecked(self.looping)
 
@@ -746,7 +746,7 @@ class MediaPlayer(QtCore.QObject):
         self.shuffle = not self.shuffle
 
         self.ui.shuffle_btn.setIcon(
-            QIcon(load_and_scale_image(__file__,'shuffle_btn.png',size=10)) if self.shuffle else QIcon(load_and_scale_image(__file__,'play_all_btn.png',size=10))
+            QIcon(load_and_scale_image('shuffle_btn.png',size=10)) if self.shuffle else QIcon(load_and_scale_image('play_all_btn.png',size=10))
         )
         self.ui.shuffle_btn.setChecked(self.shuffle)
 
@@ -800,79 +800,72 @@ class MediaPlayer(QtCore.QObject):
 
     def get_album_art_from_audio(self, audio_file_path):
         try:
-            from mutagen.id3 import ID3, APIC
-            decoded_path = urllib.parse.unquote(audio_file_path)
+            parsed_uri = urllib.parse.urlparse(audio_file_path)
+            decoded_path = urllib.parse.unquote(parsed_uri.path)
+            
+            if not decoded_path.startswith('/') and not decoded_path[1:3] == ':\\':
+                decoded_path = '/' + decoded_path
 
-            tags = ID3(decoded_path)
-            for tag in tags.values():
-                if isinstance(tag, APIC):  # Covers APIC: tag
-                    return QtGui.QImage.fromData(tag.data)
+            audio = File(decoded_path)
+            if audio is None:
+                return None
+
+            # 1. Try standard ID3 (MP3)
+            if hasattr(audio, 'tags') and audio.tags:
+                for tag_name in audio.tags.keys():
+                    if tag_name.startswith('APIC'):
+                        return QtGui.QImage.fromData(audio.tags[tag_name].data)
+
+            # 2. Try FLAC/OGG (Vorbis)
+            if hasattr(audio, 'pictures') and audio.pictures:
+                return QtGui.QImage.fromData(audio.pictures[0].data)
+
+            # 3. Try MP4/M4A (Apple)
+            if 'covr' in audio.tags:
+                return QtGui.QImage.fromData(audio.tags['covr'][0])
+
+            # 4. Final Fallback: Search all tags for raw bytes that look like an image
+            for tag in audio.values():
+                if hasattr(tag, 'data') and isinstance(tag.data, bytes):
+                    if tag.data.startswith(b'\xff\xd8') or tag.data.startswith(b'\x89PNG'):
+                        return QtGui.QImage.fromData(tag.data)
+                    
         except Exception as e:
-            print(f"Album art extraction error: {e}")
+            print(f"Deep extraction error: {e}")
         return None
 
     def set_album_art(self, audio_file_path):
         album_art = self.get_album_art_from_audio(audio_file_path)
+        
         if album_art and not album_art.isNull():
-            self.ui.albumArt_view.setPixmap(QPixmap.fromImage(album_art).scaled(
-                self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            pixmap = QtGui.QPixmap.fromImage(album_art)
+            self.ui.albumArt_view.setPixmap(pixmap.scaled(
+                self.ui.albumArt_view.size(), 
+                QtCore.Qt.KeepAspectRatio, 
+                QtCore.Qt.SmoothTransformation
+            ))
         else:
-            default_pixmap = QPixmap(load_and_scale_image(__file__, "No-album-art.png", size=36,round_radius=10))
-            self.ui.albumArt_view.setPixmap(default_pixmap.scaled(
-                self.ui.albumArt_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
-
-
+            default_pixmap = load_and_scale_image("No-album-art.png", size=70, round_radius=10)
+            if not default_pixmap.isNull():
+                self.ui.albumArt_view.setPixmap(default_pixmap)
+    
     def set_track_info(self, media):
-        media.parse()  # Ensure metadata is loaded
+        media.parse()
         title = media.get_meta(vlc.Meta.Title) or "Unknown Title"
         artist = media.get_meta(vlc.Meta.Artist) or "Unknown Artist"
         album = media.get_meta(vlc.Meta.Album) or "Unknown Album"
-        # media resource locator needs proper decoding and path stripping
+        
         mrl = media.get_mrl()
-        path = urllib.parse.unquote(mrl.removeprefix("file:///")) if mrl.startswith("file:///") else mrl
+        parsed_uri = urllib.parse.urlparse(mrl)
+        path = urllib.parse.unquote(parsed_uri.path)
+        if not path.startswith('/'):
+            path = '/' + path
 
         self.ui.songLabel.setText(title)
         self.ui.artistName.setText(artist)
         self.ui.albumName.setText(album)
         self.set_album_art(path)
-
-        self.setup_marquee(self.ui.songLabel, title, self.ui.mediaTitle_frame.width()) # If marquee is needed
-        self.setup_marquee(self.ui.artistName, artist, self.ui.mediaTitle_frame.width()) # If marquee is needed
-        self.setup_marquee(self.ui.albumName, album, self.ui.mediaTitle_frame.width()) # If marquee is needed
-
-
-    def setup_marquee(self, label, text, max_width):
-        fm = QtGui.QFontMetrics(label.font())
-        text_width = fm.horizontalAdvance(text)
-
-        if text_width <= max_width:
-            if hasattr(self, 'marquee_timer') and self.marquee_timer.isActive():
-                self.marquee_timer.stop()
-            label.setText(text)
-            label.setAlignment(QtCore.Qt.AlignCenter)  
-            self.marquee_text = ""
-            return
-
-        label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
-        self.marquee_offset = 0
-        self.marquee_text = text
-        self.marquee_label = label
-        self.marquee_width = text_width
-
-        if hasattr(self, 'marquee_timer') and self.marquee_timer.isActive():
-            self.marquee_timer.stop()
-
-        self.marquee_timer = QtCore.QTimer()
-        self.marquee_timer.timeout.connect(self.scroll_marquee)
-        self.marquee_timer.start(100)
-
-    def scroll_marquee(self):
-        offset = self.marquee_offset
-        display_text = self.marquee_text[offset:] + '   ' + self.marquee_text[:offset]
-        self.marquee_label.setText(display_text)
-        self.marquee_offset = (self.marquee_offset + 1) % len(self.marquee_text)
-
-
+    
     # EQ implimentation
     def apply_equalizer(self):
         # Placeholder for EQ sliders
@@ -918,10 +911,7 @@ class MediaPlayer(QtCore.QObject):
 
     
     # hooking EQ to UI
-    def show_equalizer(self):
-        # Assuming EqualizerWindow exists and takes self.player
-        self.eq_window = EqualizerWindow(self.player)
-        self.eq_window.show()
+    
 
     def update_preset_list(self):
         with sqlite3.connect("music_library.db") as conn:
@@ -932,3 +922,30 @@ class MediaPlayer(QtCore.QObject):
             # e.g., self.ui.preset_combo.clear(); self.ui.preset_combo.addItems(presets)
             return presets # Returning the list for potential use
             
+class MarqueeLabel(QtWidgets.QLabel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._scroll_offset = 0
+        self._full_text = ""
+        self._timer = QtCore.QTimer(self)
+        self._timer.timeout.connect(self._update_scroll)
+        self.setContentsMargins(5, 0, 5, 0)
+
+    def setText(self, text):
+        self._full_text = text
+        self._scroll_offset = 0
+        self._timer.stop()
+        
+        fm = self.fontMetrics()
+        if fm.horizontalAdvance(text) > self.width() and self.width() > 0:
+            self._timer.start(150)
+        else:
+            super().setText(text)
+
+    def _update_scroll(self):
+        self._scroll_offset += 1
+        if self._scroll_offset > len(self._full_text) + 3:
+            self._scroll_offset = 0
+        
+        display_text = self._full_text[self._scroll_offset:] + "   " + self._full_text[:self._scroll_offset]
+        super().setText(display_text)

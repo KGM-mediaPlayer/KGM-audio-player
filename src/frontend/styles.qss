@@ -164,6 +164,14 @@ QLabel {
     color: __TEXT_COLOR__;
 }
 
+QToolTip {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid __HIGHLIGHT_COLOR__;
+    padding: 1px;
+    border-radius: 3px;
+    font-size: 9px;
+}
 
 QSlider::groove:horizontal {
     height: 4px; 
@@ -256,14 +264,34 @@ QSlider::handle:horizontal {
     color: black;
 }
 
-#albumArtView{
-    border-radius:10px;
-    background-color: __CONTENT_BACKGROUND__;
-    padding-bottom:5px;
+#albumArtFrame {
+    background-color: transparent;
+    min-width: 250px;
+    max-width: 350px;
 }
 
-#albumArt_frame{
-    max-width:300px;
+#albumArtView {
+    border-radius: 10px;
+    background-color: __CONTENT_BACKGROUND__;
+    border: 1px solid __SEPARATOR_COLOR__; /* Subtle border for the image box */
+}
+
+#mediaTitle_frame {
+    background-color: transparent;
+    margin: 0px;
+    padding: 0px;
+    min-height: 70px; /* Match the album art height */
+}
+
+/* Make the song label stand out more than artist/album */
+#songLabel {
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+#artistName, #albumName {
+    font-size: 9pt;
+    color: rgba(__TEXT_COLOR__, 0.7); /* Slightly fade the sub-details */
 }
 /* Media Playback Control Frame Styling (The Outer Container) */
 #playBackControl_outerframe {
