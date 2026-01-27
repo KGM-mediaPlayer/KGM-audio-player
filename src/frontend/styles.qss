@@ -1,0 +1,280 @@
+/* Root/Window */
+QMainWindow {
+    background-color: __THEME_BACKGROUND__;
+}
+
+/*Sidebar*/
+#Sidebar {
+    background-color: __SIDEBAR_BACKGROUND__; 
+    min-width: 50px;
+    max-width: 50px;
+}
+
+#Sidebar QPushButton {
+    background-color: transparent;
+    border: none;
+    color: __TEXT_COLOR__;
+    min-width: 30px; 
+    min-height: 30px;
+    max-width: 150px; 
+    padding: 10px 0px; 
+    text-align: center;
+}
+
+#Sidebar QPushButton:hover {
+    background-color: __HIGHLIGHT_COLOR_TRANSPARENT__; 
+    border-radius: 10px; 
+}
+
+#Sidebar QPushButton:pressed {
+    background-color: __HIGHLIGHT_COLOR__;
+    color: black;
+}
+
+#aboutBtn {
+    background-color: __HIGHLIGHT_COLOR__; 
+    border: 2px solid __SEPARATOR_COLOR__; 
+    border-radius: 20px; 
+    color: white; 
+    text-align: center;
+    min-width: 40px; 
+    max-width: 40px; 
+    min-height: 100px; 
+}
+
+#Sidebar #aboutBtn:hover {
+    background-color: #556B8D; /* Slight shade change on hover */
+}
+
+
+
+
+
+
+
+/*Right container*/
+
+#rightWidget {
+    background-color:__THEME_BACKGROUND__;
+    border-top-left-radius: 20px; 
+}
+
+#topLabel {
+    background-color: __THEME_BACKGROUND__;
+    border: none;
+    padding-left: 5px; /* Add some padding around the title/search elements */
+    padding-right:5px;
+    padding-top:1px;
+    margin:-5pt 1pt;
+}
+
+#pageLabel{
+    font-size:25pt;
+    font-weight:bold;
+}
+
+#searchInput {
+    color: __SEPARATOR_COLOR__; 
+    border-radius: 10px;
+    border: 2px solid __SEPARATOR_COLOR__;
+    max-width:250px;
+    padding: 5px 10px;
+    background-color: __CONTENT_BACKGROUND__;
+}
+#centerFrame{
+    background-color: transparent; 
+    border-radius: 20px; 
+    border: 2px solid __SEPARATOR_COLOR__; 
+    padding: 0.2px;
+    margin-top:0px;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+QListWidget {
+background-color:__CONTENT_BACKGROUND__;
+color: white;
+border: none;
+font-family: "Segoe UI", sans-serif;
+font-size: 10px;
+padding: 0.2px;
+outline: none;
+margin:0pt;
+border-radius:10px;
+}
+
+QListWidget::item {
+padding: 5px;
+margin: 2px;
+border-radius: 10px;
+color: __TEXT_COLOR__;
+background-color: transparent;
+border: 1px solid transparent;
+}
+
+QListWidget::item:hover {
+background-color: rgba(33, 150, 243, 0.1); /* Light blue glow */
+border: 1px solid #2196f3;
+}
+
+QListWidget::item:selected {
+background-color: #393939;
+color: #ffffff;
+border: 1px solid #42a5f5;
+}
+
+QScrollBar:vertical {
+background: transparent;
+width: 8px;
+}
+
+QScrollBar::handle:vertical {
+background: #3e4a5a;
+min-height: 20px;
+border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+height: 0px;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+background: none;
+}
+
+
+
+
+
+#playBackTimer_frame{ 
+    background-color: __THEME_BACKGROUND__;
+    max-height:33px;
+}
+
+#mediaTitle_frame{
+    margin:1px;
+    padding:1px;
+    min-height:80px;
+}
+QLabel {
+    font-size: 10pt;
+    margin:0px;
+    color: __TEXT_COLOR__;
+}
+
+
+QSlider::groove:horizontal {
+    height: 4px; 
+    background: __SEPARATOR_COLOR__;
+    border-radius: 12px;
+}
+QSlider::sub-page:horizontal {
+    background: __HIGHLIGHT_COLOR__; /* Filled part of the slider */
+    border-radius: 2px;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+QSlider::handle:horizontal {
+    background: __HIGHLIGHT_COLOR__;
+    border: none;
+    width: 12px;
+    height: 12px;
+    margin: -4px 0; 
+    border-radius: 6px; 
+}
+#playBackSlider{
+    min-height: 12px;
+    max-height: 6px;
+    padding: 0;
+    margin: 0;
+}
+
+
+#mainPlaybackControlFrame {
+    background-color: transparent; 
+    min-height:30px;
+    border-radius: 10px;
+    margin:1pt 0pt;
+    
+}
+
+#mainPlaybackControlFrame QPushButton {
+    background-color: transparent;
+    border: none;
+    color: __TEXT_COLOR__;
+    min-height: 21px;
+    max-height:21px;
+    max-width: 50px; 
+    padding: 1px 1px;
+    margin:0;
+    text-align: center;
+    border-radius:10px;
+}
+
+#secondaryPlaybackControlFrame {
+    background-color: transparent; 
+    min-height:30px;
+    margin:5pt 5pt;
+}
+
+#mainPlaybackControlFrame QPushButton:hover {
+    background-color: __HIGHLIGHT_COLOR_TRANSPARENT__;
+    border: none;
+    text-align: center;
+    padding: 1pt, 1pt;
+    margin:1pt, 1pt;
+    border-radius: 20px; 
+}
+
+
+#mainPlaybackControlFrame QPushButton:pressed {
+    background-color: __HIGHLIGHT_COLOR__;
+    color: black;
+}
+
+
+#secondaryPlaybackControlFrame QPushButton {
+    background-color: transparent;
+    border: none;
+    color: __TEXT_COLOR__;
+    min-width: 10px; 
+    min-height: 10px;
+    max-width: 200px;
+    text-align: center;
+}
+
+#secondaryPlaybackControlFrame QPushButton:hover {
+    background-color: __HIGHLIGHT_COLOR_TRANSPARENT__; 
+    border-radius: 20px; 
+}
+
+#secondaryPlaybackControlFrame QPushButton:pressed {
+    background-color: __HIGHLIGHT_COLOR__;
+    color: black;
+}
+
+#albumArtView{
+    border-radius:10px;
+    background-color: __CONTENT_BACKGROUND__;
+    padding-bottom:5px;
+}
+
+#albumArt_frame{
+    max-width:300px;
+}
+/* Media Playback Control Frame Styling (The Outer Container) */
+#playBackControl_outerframe {
+    background-color: __FOREGROUND_COLOR__; 
+    padding:1pt,1pt;
+    margin-top:0pt;
+    border-radius: 20px; 
+    /*max-height:50px;*/
+    /*max-width:270px;*/
+    min-width:270px;
+    border: 2px solid __SEPARATOR_COLOR__; 
+    
+}
+

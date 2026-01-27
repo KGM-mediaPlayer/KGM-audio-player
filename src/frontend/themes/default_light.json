@@ -1,0 +1,13 @@
+{
+    "name": "Default Blue Theme",
+    "colors": {
+        "theme_background": "#AAA5A5",
+        "sidebar_background": "#989797",
+        "content_background": "#989797",
+        "foreground_color": "#363434",
+        "highlight_color": "#FF9600",
+        "text_color": "#1B1B1B",
+        "dim_text_color": "#B4B4B4",
+        "separator_color": "#707070"
+    }
+}
